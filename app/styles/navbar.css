@@ -1,0 +1,18 @@
+/* Shared navbar styles are intentionally isolated here. */
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+}
+
+.header-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.header + .hero,
+.header + main .hero {
+  margin-top: 0;
+}
