@@ -7,6 +7,14 @@
   z-index: 1000;
 }
 
+.header.force-closed .nav-dropdown,
+.header.force-closed .nav-submenu {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  transform: none !important;
+}
+
 .header-inner {
   max-width: 1400px;
   margin: 0 auto;

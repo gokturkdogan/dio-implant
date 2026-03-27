@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import "./globals.css";
 import "./styles/navbar.css";
 import "./styles/homepage.css";
 import "./styles/footer.css";
+import "./styles/dio-navi.css";
 import { Navbar } from "../components/common/navbar";
 
 export const metadata: Metadata = {
@@ -20,6 +22,7 @@ export default function RootLayout({
       <body>
         <Navbar />
         {children}
+        <Script src="/homepage/script.js" strategy="afterInteractive" />
       </body>
     </html>
   );
