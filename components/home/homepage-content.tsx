@@ -9,7 +9,7 @@ export function HomepageContent() {
             <div className="slide-bg">
               <img
                 className="slide-hero-bg"
-                src="/homepage/assets/images/technology-bg.png"
+                src="https://res.cloudinary.com/drjz8v617/image/upload/banner-bg.webp"
                 alt=""
               />
               <div className="slide-gradient" />
@@ -20,7 +20,7 @@ export function HomepageContent() {
             <div className="slide-floats">
               <div className="slide-product">
                 <img
-                  src="/homepage/assets/images/product-coretech-01.png"
+                  src="https://res.cloudinary.com/drjz8v617/image/upload/banner-carusel-1.webp"
                   alt="DIO Implant"
                 />
               </div>
@@ -31,7 +31,7 @@ export function HomepageContent() {
             <div className="slide-bg">
               <img
                 className="slide-hero-bg"
-                src="/homepage/assets/images/technology-bg.png"
+                src="https://res.cloudinary.com/drjz8v617/image/upload/banner-bg.webp"
                 alt=""
               />
               <div className="slide-gradient" />
@@ -46,7 +46,7 @@ export function HomepageContent() {
             <div className="slide-floats">
               <div className="slide-product">
                 <img
-                  src="/homepage/assets/images/product-coretech-02.png"
+                  src="https://res.cloudinary.com/drjz8v617/image/upload/banner-carusel-2.webp"
                   alt="DIO Implant"
                 />
               </div>
@@ -57,7 +57,7 @@ export function HomepageContent() {
             <div className="slide-bg">
               <img
                 className="slide-hero-bg"
-                src="/homepage/assets/images/technology-bg.png"
+                src="https://res.cloudinary.com/drjz8v617/image/upload/banner-bg.webp"
                 alt=""
               />
               <div className="slide-gradient" />
@@ -72,7 +72,7 @@ export function HomepageContent() {
             <div className="slide-floats">
               <div className="slide-product">
                 <img
-                  src="/homepage/assets/images/product-coretech-03.png"
+                  src="https://res.cloudinary.com/drjz8v617/image/upload/banner-carusel-3.webp"
                   alt="DIO UF Surgical Kit"
                 />
               </div>
@@ -83,24 +83,24 @@ export function HomepageContent() {
         <div className="hero-content">
           <div className="hero-tag">
             <span className="tag-line" />
-            <span className="tag-text">Dijital Dis Hekimligi Lideri</span>
+            <span className="tag-text">DIO IMPLANT</span>
           </div>
           <h1 className="hero-title">
-            <span className="title-line line-1">Dijital Kimliginde</span>
+            <span className="title-line line-1">Dijital Diş Hekimliğinde</span>
             <span className="title-line line-2">
-              <em>Dunya</em> <span className="title-line-suffix">Lideri</span>
+              <em>Dünya Lideri</em>
             </span>
           </h1>
           <p className="hero-desc">
-            Dijital cerrahi teknolojileriyle gelecegin implantolojisini bugunden
-            deneyimleyin. Hassasiyet, guvenilirlik ve inovasyon bir arada.
+            Dijital cerrahi teknolojileriyle geleceğin implantolojisini bugünden
+            deneyimleyin. Hassasiyet, güvenilirlik ve inovasyon bir arada.
           </p>
           <div className="hero-actions">
             <a href="#" className="btn btn-primary">
-              <span>Urunleri Gor</span>
+              <span>Ürünleri Gör</span>
             </a>
             <a href="#" className="btn btn-outline">
-              <span>Katalog Indir</span>
+              <span>Katalog İndir</span>
             </a>
           </div>
         </div>
@@ -126,30 +126,36 @@ export function HomepageContent() {
               <span className="tag-text">Neden DIO Implant</span>
             </div>
             <h2 className="core-tech-title">
-              CEKIRDEK
+              ÇEKİRDEK
               <br />
-              <em>TEKNOLOJI</em>
+              <em>TEKNOLOJİ</em>
             </h2>
             <p className="core-tech-desc">
-              DIO&apos;nun teknolojik uzmanligi, surdurulebilir Ar-Ge yatirimi ve
-              kuresel pazar anlayisiyla dis hekimliginin paradigmasini yeniden
-              tanimlar.
+              DIO&apos;nun teknolojik uzmanlığı, sürdürülebilir Ar-Ge yatırımı ve
+              küresel pazar anlayışıyla diş hekimliğinin paradigmasını yeniden
+              tanımlar.
             </p>
           </div>
 
           <div className="core-tech-pins">
             <div className="ct-pin ct-pin-1" data-animate>
               <div className="pin-shape pin-lg">
-                <img src="/homepage/assets/images/technology-01.png" alt="" />
+                <img
+                  src="https://res.cloudinary.com/drjz8v617/image/upload/tech-bg-1.webp"
+                  alt=""
+                />
                 <div className="pin-content">
-                  <p className="pin-subtitle">DIO Implant Cift Yuzey Islemi</p>
-                  <h3 className="pin-title">Hibrit Yuzey Teknolojisi</h3>
+                  <p className="pin-subtitle">DIO Implant Çift Yüzey İşlemi</p>
+                  <h3 className="pin-title">Hibrit Yüzey Teknolojisi</h3>
                 </div>
               </div>
             </div>
             <div className="ct-pin ct-pin-2" data-animate>
               <div className="pin-shape pin-md">
-                <img src="/homepage/assets/images/technology-02.png" alt="" />
+                <img
+                  src="https://res.cloudinary.com/drjz8v617/image/upload/tech-bg-2.webp"
+                  alt=""
+                />
                 <div className="pin-content">
                   <p className="pin-subtitle">
                     DIO Vakum UV Aktivasyon Teknolojisi
@@ -160,12 +166,15 @@ export function HomepageContent() {
             </div>
             <div className="ct-pin ct-pin-3" data-animate>
               <div className="pin-shape pin-md">
-                <img src="/homepage/assets/images/history-02.png" alt="" />
+                <img
+                  src="https://res.cloudinary.com/drjz8v617/image/upload/tech-bg-3.webp"
+                  alt=""
+                />
                 <div className="pin-content">
                   <p className="pin-subtitle">
                     Tam dijital implant cerrahi sistemi.
                   </p>
-                  <h3 className="pin-title">DIO NAVI Kilavuz Sistemi</h3>
+                  <h3 className="pin-title">DIO NAVI Kılavuz Sistemi</h3>
                 </div>
               </div>
             </div>
@@ -175,7 +184,10 @@ export function HomepageContent() {
 
       <section className="dionavi-banner" id="dioNavi">
         <div className="dionavi-bg-img">
-          <img src="/homepage/assets/images/dionavi-bg.jpg" alt="" />
+          <img
+            src="https://res.cloudinary.com/drjz8v617/image/upload/dionavi-banner-bg.webp"
+            alt=""
+          />
         </div>
         <div className="dionavi-bg">
           <div className="dionavi-grid" />
@@ -191,12 +203,12 @@ export function HomepageContent() {
               <span>Dijital Cerrahi Teknolojisi</span>
             </div>
             <h2 className="dionavi-title">
-              <span className="dionavi-title-sub">Gelecegin Cerrahisi</span>
+              <span className="dionavi-title-sub">Geleceğin Cerrahisi</span>
               DIO <em>NAVI</em>
             </h2>
             <p className="dionavi-desc">
-              Tam dijital implant cerrahi planlama ve kilavuz sistemi. Hassas,
-              ongorulebilir ve minimal invaziv tedavi deneyimi.
+              Tam dijital implant cerrahi planlama ve kılavuz sistemi. Hassas,
+              öngörülebilir ve minimal invaziv tedavi deneyimi.
             </p>
             <div className="dionavi-stats">
               <div className="dionavi-stat">
@@ -211,11 +223,11 @@ export function HomepageContent() {
               <div className="dionavi-stat-divider" />
               <div className="dionavi-stat">
                 <span className="dionavi-stat-val">Full</span>
-                <span className="dionavi-stat-label">Dijital Akis</span>
+                <span className="dionavi-stat-label">Dijital Akış</span>
               </div>
             </div>
             <a href="#" className="btn btn-primary dionavi-btn">
-              <span>DIO NAVI&apos;yi Kesfet</span>
+              <span>DIO NAVI&apos;yi Keşfet</span>
               <svg
                 width="18"
                 height="18"
@@ -234,25 +246,25 @@ export function HomepageContent() {
                 <div className="navi-carousel-ring" id="naviRing">
                   <div className="navi-carousel-item">
                     <img
-                      src="/homepage/assets/images/dionavi-comp-front.png"
+                      src="https://res.cloudinary.com/drjz8v617/image/upload/dionavi-banner-1.webp"
                       alt="DIO NAVI Cerrahi Planlama"
                     />
                   </div>
                   <div className="navi-carousel-item">
                     <img
-                      src="/homepage/assets/images/dionavi-implant-connector.png"
-                      alt="DIO NAVI Implant Baglanti"
+                      src="https://res.cloudinary.com/drjz8v617/image/upload/dionavi-banner-2.webp"
+                      alt="DIO NAVI İmplant Bağlantı"
                     />
                   </div>
                   <div className="navi-carousel-item">
                     <img
-                      src="/homepage/assets/images/dionavi-uvplus-abutment.png"
+                      src="https://res.cloudinary.com/drjz8v617/image/upload/dionavi-banner-3.webp"
                       alt="DIO NAVI UV Plus Abutment"
                     />
                   </div>
                   <div className="navi-carousel-item">
                     <img
-                      src="/homepage/assets/images/dionavi-initial-drill.png"
+                      src="https://res.cloudinary.com/drjz8v617/image/upload/dionavi-banner-4.webp"
                       alt="DIO NAVI Initial Drill"
                     />
                   </div>
@@ -274,20 +286,20 @@ export function HomepageContent() {
           <div className="pcat-tabs">
             <div className="section-tag">
               <span className="tag-line" />
-              <span className="tag-text">Urun Kategorileri</span>
+              <span className="tag-text">Ürün Kategorileri</span>
             </div>
             <h2 className="pcat-title">
-              Urun
+              Ürün
               <br />
-              <em>Portfoyu</em>
+              <em>Portföyü</em>
             </h2>
 
             <div className="pcat-tab-list">
               <button className="pcat-tab active" data-tab="implant">
                 <div className="pcat-tab-info">
-                  <span className="pcat-tab-name">Implant Sistemleri</span>
+                  <span className="pcat-tab-name">İmplant Sistemleri</span>
                   <span className="pcat-tab-desc">
-                    UF II, UF III, Narrow ve daha fazlasi
+                    UF II, UF III, Narrow ve daha fazlası
                   </span>
                 </div>
                 <span className="pcat-tab-arrow">
@@ -306,7 +318,7 @@ export function HomepageContent() {
 
               <button className="pcat-tab" data-tab="dijital">
                 <div className="pcat-tab-info">
-                  <span className="pcat-tab-name">Dijital Cozumler</span>
+                  <span className="pcat-tab-name">Dijital Çözümler</span>
                   <span className="pcat-tab-desc">
                     DIO Navi, tarama ve planlama
                   </span>
@@ -329,7 +341,7 @@ export function HomepageContent() {
                 <div className="pcat-tab-info">
                   <span className="pcat-tab-name">Cerrahi Setler</span>
                   <span className="pcat-tab-desc">
-                    Cerrahi kitler ve yardimci ekipmanlar
+                    Cerrahi kitler ve yardımcı ekipmanlar
                   </span>
                 </div>
                 <span className="pcat-tab-arrow">
@@ -352,13 +364,13 @@ export function HomepageContent() {
             <div className="pcat-panel active" data-panel="implant">
               <div className="pcat-image-wrap">
                 <img
-                  src="/homepage/assets/images/product-coretech-01.png"
-                  alt="Implant Sistemleri"
+                  src="https://res.cloudinary.com/drjz8v617/image/upload/portfoy-implant.webp"
+                  alt="İmplant Sistemleri"
                 />
                 <div className="pcat-image-glow" />
               </div>
               <a href="#" className="btn btn-primary pcat-btn">
-                <span>Daha Fazla Goruntule</span>
+                <span>Daha Fazla Görüntüle</span>
                 <svg
                   width="18"
                   height="18"
@@ -375,13 +387,13 @@ export function HomepageContent() {
             <div className="pcat-panel" data-panel="dijital">
               <div className="pcat-image-wrap">
                 <img
-                  src="/homepage/assets/images/product-coretech-02.png"
-                  alt="Dijital Cozumler"
+                  src="https://res.cloudinary.com/drjz8v617/image/upload/portfoy-digital.webp"
+                  alt="Dijital Çözümler"
                 />
                 <div className="pcat-image-glow" />
               </div>
               <a href="#" className="btn btn-primary pcat-btn">
-                <span>Daha Fazla Goruntule</span>
+                <span>Daha Fazla Görüntüle</span>
                 <svg
                   width="18"
                   height="18"
@@ -398,13 +410,13 @@ export function HomepageContent() {
             <div className="pcat-panel" data-panel="cerrahi">
               <div className="pcat-image-wrap">
                 <img
-                  src="/homepage/assets/images/product-coretech-03.png"
+                  src="https://res.cloudinary.com/drjz8v617/image/upload/portfoy-kits.webp"
                   alt="Cerrahi Setler"
                 />
                 <div className="pcat-image-glow" />
               </div>
               <a href="#" className="btn btn-primary pcat-btn">
-                <span>Daha Fazla Goruntule</span>
+                <span>Daha Fazla Görüntüle</span>
                 <svg
                   width="18"
                   height="18"
