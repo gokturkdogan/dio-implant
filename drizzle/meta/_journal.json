@@ -8,6 +8,20 @@
       "when": 1774623025990,
       "tag": "0000_vengeful_luminals",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1774623272264,
+      "tag": "0001_tan_winter_soldier",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1774625579132,
+      "tag": "0002_medical_swarm",
+      "breakpoints": true
     }
   ]
 }

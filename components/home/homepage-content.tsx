@@ -1,8 +1,10 @@
 import { Footer } from "../common/footer";
+import { HomepagePopup } from "./homepage-popup";
 
 export function HomepageContent() {
   return (
     <>
+      <HomepagePopup />
       <section className="hero" id="hero">
         <div className="hero-slides">
           <div className="hero-slide active" data-index="0">
