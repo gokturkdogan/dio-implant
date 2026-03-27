@@ -1,10 +1,11 @@
-import Script from "next/script";
 import Link from "next/link";
 import { Footer } from "../../../components/common/footer";
+import { DioNaviEnhancements } from "../../../components/dio-navi/dio-navi-enhancements";
 
 export default function DioNaviPage() {
   return (
     <>
+      <DioNaviEnhancements />
       <main className="navi-page">
       <section className="np-hero" aria-labelledby="np-hero-title">
         <div className="np-hero-media">
@@ -563,7 +564,6 @@ export default function DioNaviPage() {
       </section>
       </main>
       <Footer />
-      <Script src="/dio-navi/script.js" strategy="afterInteractive" />
     </>
   );
 }

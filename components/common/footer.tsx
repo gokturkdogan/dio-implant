@@ -8,7 +8,7 @@ export function Footer() {
           <div className="footer-brand">
             <Link href="/" className="footer-logo">
               <img
-                src="/homepage/assets/logos/dio-logo.png"
+                src="https://res.cloudinary.com/drjz8v617/image/upload/dio-logo-light.webp"
                 alt="DIO Implant"
                 className="footer-logo-img"
               />

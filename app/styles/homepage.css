@@ -172,9 +172,26 @@ img {
 }
 
 .logo-img {
-  height: 85px;
+  height: clamp(28px, 2.6vw, 40px);
   width: auto;
   display: block;
+}
+
+.logo .logo-img-light {
+  display: block;
+}
+
+.logo .logo-img-dark {
+  display: none;
+}
+
+.header.scrolled .logo .logo-img-light {
+  display: none;
+}
+
+.header.scrolled .logo .logo-img-dark {
+  display: block;
+  filter: none;
 }
 
 /* Navigation */

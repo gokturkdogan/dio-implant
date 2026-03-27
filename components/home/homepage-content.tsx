@@ -1,9 +1,11 @@
 import { Footer } from "../common/footer";
 import { HomepagePopup } from "./homepage-popup";
+import { HomepageEnhancements } from "./homepage-enhancements";
 
 export function HomepageContent() {
   return (
     <>
+      <HomepageEnhancements />
       <HomepagePopup />
       <section className="hero" id="hero">
         <div className="hero-slides">

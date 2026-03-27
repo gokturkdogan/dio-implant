@@ -6,9 +6,14 @@ export function Navbar() {
       <div className="header-inner">
         <Link href="/" className="logo">
           <img
-            src="/homepage/assets/logos/dio-logo.png"
+            src="https://res.cloudinary.com/drjz8v617/image/upload/dio-logo-light.webp"
             alt="DIO Implant"
-            className="logo-img"
+            className="logo-img logo-img-light"
+          />
+          <img
+            src="https://res.cloudinary.com/drjz8v617/image/upload/dio-logo-dark.webp"
+            alt="DIO Implant"
+            className="logo-img logo-img-dark"
           />
         </Link>
 
