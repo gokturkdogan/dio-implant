@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
-import { Footer } from "../components/footer";
-import { Navbar } from "../components/navbar";
 import "./globals.css";
+import "./styles/navbar.css";
+import "./styles/homepage.css";
+import "./styles/footer.css";
+import { Navbar } from "../components/common/navbar";
 
 export const metadata: Metadata = {
   title: "DIO Implant",
@@ -17,8 +19,7 @@ export default function RootLayout({
     <html lang="tr">
       <body>
         <Navbar />
-        <main className="container main-content">{children}</main>
-        <Footer />
+        {children}
       </body>
     </html>
   );
