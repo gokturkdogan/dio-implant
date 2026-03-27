@@ -969,6 +969,11 @@ img {
   color: var(--light-100);
 }
 
+/* Slightly smaller first line headline */
+.hero-title .line-1 {
+  font-size: 0.86em;
+}
+
 .line-2 {
   animation-delay: 0.7s;
 }

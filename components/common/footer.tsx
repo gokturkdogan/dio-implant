@@ -14,8 +14,8 @@ export function Footer() {
               />
             </Link>
             <p className="footer-tagline">
-              Dijital kimliginde dunya lideri. 35 yili askin deneyimle dis
-              hekimliginin gelecegini sekillendiriyoruz.
+              Dijital kimliğinde dünya lideri. 35 yılı aşkın deneyimle diş
+              hekimliğinin geleceğini şekillendiriyoruz.
             </p>
             <div className="footer-socials">
               <a href="#" className="footer-social" aria-label="Facebook">
@@ -38,13 +38,13 @@ export function Footer() {
 
           <div className="footer-links">
             <div className="footer-col">
-              <h4 className="footer-col-title">Urunler</h4>
+              <h4 className="footer-col-title">Ürünler</h4>
               <ul>
                 <li>
-                  <a href="#">Implant Sistemleri</a>
+                  <a href="#">İmplant Sistemleri</a>
                 </li>
                 <li>
-                  <a href="#">Dijital Cozumler</a>
+                  <a href="#">Dijital Çözümler</a>
                 </li>
                 <li>
                   <a href="#">Cerrahi Setler</a>
@@ -58,13 +58,13 @@ export function Footer() {
               <h4 className="footer-col-title">Kurumsal</h4>
               <ul>
                 <li>
-                  <a href="#">Hakkimizda</a>
+                  <a href="#">Hakkımızda</a>
                 </li>
                 <li>
                   <a href="#">DIO Akademi</a>
                 </li>
                 <li>
-                  <a href="#">Ar-Ge ve Inovasyon</a>
+                  <a href="#">Ar-Ge & İnovasyon</a>
                 </li>
                 <li>
                   <a href="#">Kariyer</a>
@@ -75,13 +75,13 @@ export function Footer() {
               <h4 className="footer-col-title">Destek</h4>
               <ul>
                 <li>
-                  <a href="#">Iletisim</a>
+                  <a href="#">İletişim</a>
                 </li>
                 <li>
-                  <a href="#">Bayi Agi</a>
+                  <a href="#">Bayi Ağı</a>
                 </li>
                 <li>
-                  <a href="#">Katalog Indir</a>
+                  <a href="#">Katalog İndir</a>
                 </li>
                 <li>
                   <a href="#">SSS</a>
@@ -95,12 +95,12 @@ export function Footer() {
       <div className="footer-bottom">
         <div className="footer-inner">
           <span className="footer-copy">
-            © {new Date().getFullYear()} DIO Implant. Tum haklari saklidir.
+            © {new Date().getFullYear()} DIO Implant. Tüm hakları saklıdır.
           </span>
           <div className="footer-legal">
-            <a href="#">Gizlilik Politikasi</a>
-            <a href="#">Kullanim Kosullari</a>
-            <a href="#">Cerez Politikasi</a>
+            <a href="#">Gizlilik Politikası</a>
+            <a href="#">Kullanım Koşulları</a>
+            <a href="#">Çerez Politikası</a>
           </div>
         </div>
       </div>

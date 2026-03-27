@@ -138,13 +138,13 @@ export function Navbar() {
                   </div>
                   <ul className="nav-submenu" id="nav-sub-cerrahi-kits" role="menu">
                     <li role="none"><a href="#" className="nav-dropdown-link" role="menuitem">Union Kit</a></li>
-                    <li role="none"><a href="#" className="nav-dropdown-link" role="menuitem">Surgial Kit</a></li>
+                    <li role="none"><a href="#" className="nav-dropdown-link" role="menuitem">Surgical Kit</a></li>
                     <li role="none"><a href="#" className="nav-dropdown-link" role="menuitem">Master Kit</a></li>
                     <li role="none"><a href="#" className="nav-dropdown-link" role="menuitem">Special Kit</a></li>
                     <li role="none"><a href="#" className="nav-dropdown-link" role="menuitem">Narrow Kit</a></li>
                     <li role="none"><a href="#" className="nav-dropdown-link" role="menuitem">Sinus Kit</a></li>
                     <li role="none"><a href="#" className="nav-dropdown-link" role="menuitem">Sas Kit</a></li>
-                    <li role="none"><a href="#" className="nav-dropdown-link" role="menuitem">Osteonomi Kit</a></li>
+                    <li role="none"><a href="#" className="nav-dropdown-link" role="menuitem">Osteotomi Kit</a></li>
                   </ul>
                 </li>
                 <li className="nav-dropdown-item nav-dropdown-item-has-children" role="none">
@@ -241,7 +241,7 @@ export function Navbar() {
         </nav>
 
         <div className="header-actions">
-          <button className="hamburger" id="hamburger" aria-label="Menu">
+          <button className="hamburger" id="hamburger" aria-label="Menü">
             <span />
             <span />
             <span />
