@@ -226,7 +226,10 @@ export function HomepageContent() {
                 <span className="dionavi-stat-label">Dijital Akış</span>
               </div>
             </div>
-            <a href="#" className="btn btn-primary dionavi-btn">
+            <a
+              href="/digital-solutions/dio-navi"
+              className="btn btn-primary dionavi-btn"
+            >
               <span>DIO NAVI&apos;yi Keşfet</span>
               <svg
                 width="18"

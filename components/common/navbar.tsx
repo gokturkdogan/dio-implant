@@ -185,7 +185,13 @@ export function Navbar() {
               </div>
               <ul className="nav-dropdown" id="nav-submenu-dijital" role="menu">
                 <li className="nav-dropdown-item" role="none">
-                  <a href="#" className="nav-dropdown-link" role="menuitem">DIO NAVI</a>
+                  <Link
+                    href="/digital-solutions/dio-navi"
+                    className="nav-dropdown-link"
+                    role="menuitem"
+                  >
+                    DIO NAVI
+                  </Link>
                 </li>
                 <li className="nav-dropdown-item" role="none">
                   <a href="#" className="nav-dropdown-link" role="menuitem">DIO NAVI Full Arch</a>

@@ -58,10 +58,37 @@
     if (wasOpen) resetProductMenus();
   });
 
-  mainNav.querySelectorAll('a').forEach(link => {
-    link.addEventListener('click', () => {
+  function forceCloseNavOverlays() {
+    if (!header) return;
+    header.classList.add('force-closed');
+    // remove shortly after to allow normal hover behavior again
+    window.setTimeout(() => {
+      header.classList.remove('force-closed');
+    }, 250);
+  }
+
+  // Any link click inside navbar should close dropdown states.
+  // If mobile nav is open, also close the overlay.
+  mainNav.addEventListener('click', (e) => {
+    const a = e.target && e.target.closest ? e.target.closest('a') : null;
+    if (!a) return;
+
+    // Always collapse dropdown/submenu states on navigation intent.
+    resetProductMenus();
+    forceCloseNavOverlays();
+
+    // Drop focus to avoid :focus-within keeping dropdowns open on desktop.
+    try {
+      if (document.activeElement && document.activeElement.blur) {
+        document.activeElement.blur();
+      }
+      if (a.blur) a.blur();
+    } catch {}
+
+    // If the mobile nav overlay is open, fully close it.
+    if (mainNav.classList.contains('open')) {
       closeMobileNav();
-    });
+    }
   });
 
   // ─── Ürünler dropdown (mobil: aç / kapat) ───
