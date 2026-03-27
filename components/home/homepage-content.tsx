@@ -153,7 +153,7 @@ export function HomepageContent() {
             <div className="ct-pin ct-pin-2" data-animate>
               <div className="pin-shape pin-md">
                 <img
-                  src="https://res.cloudinary.com/drjz8v617/image/upload/tech-bg-2.webp"
+                  src="https://res.cloudinary.com/drjz8v617/image/upload/tech-bg-3.webp"
                   alt=""
                 />
                 <div className="pin-content">
@@ -167,7 +167,7 @@ export function HomepageContent() {
             <div className="ct-pin ct-pin-3" data-animate>
               <div className="pin-shape pin-md">
                 <img
-                  src="https://res.cloudinary.com/drjz8v617/image/upload/tech-bg-3.webp"
+                  src="https://res.cloudinary.com/drjz8v617/image/upload/tech-bg-2.webp"
                   alt=""
                 />
                 <div className="pin-content">
