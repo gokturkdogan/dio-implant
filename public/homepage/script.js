@@ -21,8 +21,12 @@
   let slideTimer = null;
   let isTransitioning = false;
 
+  // Admin panel gibi header olmayan sayfalarda nav davranışları çalışmasın.
+  const hasNav = !!(header && hamburger && mainNav);
+
   // ─── Header scroll behavior ───
   function handleScroll() {
+    if (!header) return;
     header.classList.toggle('scrolled', window.scrollY > 40);
   }
 
@@ -43,6 +47,7 @@
   }
 
   function closeMobileNav() {
+    if (!hasNav) return;
     hamburger.classList.remove('active');
     mainNav.classList.remove('open');
     document.body.style.overflow = '';
@@ -50,7 +55,7 @@
   }
 
   // ─── Mobile menu ───
-  hamburger.addEventListener('click', () => {
+  if (hasNav) hamburger.addEventListener('click', () => {
     const wasOpen = mainNav.classList.contains('open');
     hamburger.classList.toggle('active');
     mainNav.classList.toggle('open');
@@ -69,7 +74,7 @@
 
   // Any link click inside navbar should close dropdown states.
   // If mobile nav is open, also close the overlay.
-  mainNav.addEventListener('click', (e) => {
+  if (hasNav) mainNav.addEventListener('click', (e) => {
     const a = e.target && e.target.closest ? e.target.closest('a') : null;
     if (!a) return;
 
