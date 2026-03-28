@@ -3,19 +3,30 @@
 .ab-timeline {
   position: relative;
   padding: clamp(3.5rem, 9vw, 5.5rem) 0;
-  background: linear-gradient(
-    180deg,
-    var(--dark-900) 0%,
-    var(--dark-800) 45%,
-    #15132a 100%
-  );
+  background-color: #0a0816;
+  /* Harita: güçlü örtü ile soluk; ön içerik öne çıksın */
+  background-image:
+    linear-gradient(
+      180deg,
+      rgba(10, 9, 20, 0.72) 0%,
+      rgba(12, 11, 26, 0.58) 48%,
+      rgba(10, 9, 20, 0.76) 100%
+    ),
+    linear-gradient(
+      rgba(14, 12, 30, 0.78),
+      rgba(14, 12, 30, 0.78)
+    ),
+    url("https://res.cloudinary.com/drjz8v617/image/upload/aboutus-timeline-bg.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   overflow: hidden;
 }
 
 .ab-timeline-grid-bg {
   position: absolute;
   inset: 0;
-  opacity: 0.07;
+  opacity: 0.03;
   background-image:
     linear-gradient(rgba(157, 141, 241, 0.4) 1px, transparent 1px),
     linear-gradient(90deg, rgba(157, 141, 241, 0.35) 1px, transparent 1px);
@@ -29,7 +40,7 @@
   border-radius: 50%;
   filter: blur(80px);
   pointer-events: none;
-  opacity: 0.45;
+  opacity: 0.18;
 }
 
 .ab-timeline-glow--1 {

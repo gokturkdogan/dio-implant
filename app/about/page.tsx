@@ -101,11 +101,35 @@ export default function AboutPage() {
                   </p>
                 </div>
               </div>
-              <div className="ab-story-visual">
-                <img
-                  src="https://res.cloudinary.com/drjz8v617/image/upload/aboutus-story.webp"
-                  alt="DIO Implant ürün ve teknoloji görseli"
-                />
+              <div className="ab-story-visuals">
+                <div className="ab-story-visuals__ambient" aria-hidden="true" />
+                <div className="ab-story-pin ab-story-pin--global">
+                  <img
+                    src="https://res.cloudinary.com/drjz8v617/image/upload/aboutus-float-1.png"
+                    alt="Küresel ağ ve dijital bağlantı"
+                    width={400}
+                    height={520}
+                    decoding="async"
+                  />
+                </div>
+                <div className="ab-story-pin ab-story-pin--hq">
+                  <img
+                    src="https://res.cloudinary.com/drjz8v617/image/upload/aboutus-float-2.png"
+                    alt="DIO Implant merkez ofis"
+                    width={280}
+                    height={360}
+                    decoding="async"
+                  />
+                </div>
+                <div className="ab-story-pin ab-story-pin--mark" aria-hidden="true">
+                  <img
+                    src="https://res.cloudinary.com/drjz8v617/image/upload/aboutus-float-3.png"
+                    alt=""
+                    width={192}
+                    height={192}
+                    decoding="async"
+                  />
+                </div>
               </div>
             </div>
           </div>

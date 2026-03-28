@@ -277,30 +277,98 @@
   margin-bottom: 0;
 }
 
-.ab-story-visual {
+/* Hikayemiz: damla maskeli görseller + hafif yüzen hareket */
+.ab-story-visuals {
   position: relative;
-  border-radius: var(--radius-xl);
-  overflow: hidden;
-  aspect-ratio: 4 / 3;
-  box-shadow: 0 20px 50px rgba(54, 52, 148, 0.18);
+  min-height: clamp(300px, 52vw, 460px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem 0.5rem 2.5rem;
 }
 
-.ab-story-visual img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.ab-story-visual::after {
-  content: "";
+.ab-story-visuals__ambient {
   position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    180deg,
-    transparent 40%,
-    rgba(78, 76, 176, 0.35) 100%
+  inset: 8% 6% 12%;
+  background: radial-gradient(
+    ellipse 72% 58% at 48% 38%,
+    rgba(78, 76, 176, 0.14) 0%,
+    rgba(157, 141, 241, 0.08) 48%,
+    transparent 70%
   );
+  animation: ab-glow-pulse 9s ease-in-out infinite;
   pointer-events: none;
+}
+
+.ab-story-pin {
+  position: relative;
+  filter: drop-shadow(0 20px 42px rgba(54, 52, 148, 0.2));
+}
+
+.ab-story-pin img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.ab-story-pin--global {
+  width: min(94%, 380px);
+  z-index: 2;
+  animation: ab-float-soft 9s ease-in-out infinite;
+}
+
+.ab-story-pin--hq {
+  position: absolute;
+  width: min(40%, 210px);
+  min-width: 132px;
+  left: clamp(0%, 3vw, 10%);
+  bottom: 2%;
+  z-index: 3;
+  animation: ab-float-soft 6.8s ease-in-out infinite reverse;
+}
+
+/* Küçük DIO markası — HQ pin ile aynı köşe mantığı, sağ alt (aynalı) */
+.ab-story-pin--mark {
+  --ab-pin-drop-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 118'%3E%3Cpath fill='%23fff' d='M50 4c24 0 44 20 44 45 0 30-44 69-44 69S6 79 6 49c0-25 20-45 44-45z'/%3E%3C/svg%3E");
+  position: absolute;
+  left: auto;
+  margin-left: 0;
+  top: auto;
+  right: clamp(11%, 10vw, 30%);
+  bottom: clamp(10%, 6vw, 20%);
+  width: clamp(52px, 11.5vw, 80px);
+  aspect-ratio: 100 / 118;
+  z-index: 4;
+  box-sizing: border-box;
+  padding: 0.42rem 0.36rem 0.62rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 0;
+  background: linear-gradient(
+    168deg,
+    rgba(255, 255, 255, 0.94) 0%,
+    rgba(248, 247, 252, 0.9) 48%,
+    rgba(255, 255, 255, 0.85) 100%
+  );
+  -webkit-mask-image: var(--ab-pin-drop-mask);
+  mask-image: var(--ab-pin-drop-mask);
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  filter: drop-shadow(0 20px 42px rgba(54, 52, 148, 0.2));
+  animation: ab-float-soft 6.8s ease-in-out infinite reverse;
+}
+
+.ab-story-pin--mark img {
+  display: block;
+  width: 72%;
+  height: auto;
+  object-fit: contain;
 }
 
 /* —— Pillars —— */
@@ -497,10 +565,26 @@
     grid-template-columns: 1fr;
   }
 
-  .ab-story-visual {
+  .ab-story-visuals {
     order: -1;
-    max-height: 280px;
-    aspect-ratio: auto;
+    min-height: 240px;
+    padding-bottom: 2.75rem;
+  }
+
+  .ab-story-pin--hq {
+    width: min(46%, 168px);
+    left: 0;
+    bottom: -2%;
+  }
+
+  .ab-story-pin--mark {
+    left: auto;
+    margin-left: 0;
+    top: auto;
+    right: clamp(10%, 12vw, 24%);
+    bottom: clamp(4%, 5vw, 12%);
+    width: clamp(44px, 12vw, 64px);
+    padding: 0.28rem;
   }
 
   .ab-pillars {
@@ -525,5 +609,42 @@
     grid-template-columns: 1fr 1fr;
     gap: 0.5rem;
     padding: 1rem;
+  }
+}
+
+@keyframes ab-float-soft {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+
+  45% {
+    transform: translateY(-14px) rotate(0.4deg);
+  }
+
+  72% {
+    transform: translateY(-5px) rotate(-0.25deg);
+  }
+}
+
+@keyframes ab-glow-pulse {
+  0%,
+  100% {
+    opacity: 0.88;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1.035);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ab-story-pin--global,
+  .ab-story-pin--hq,
+  .ab-story-pin--mark,
+  .ab-story-visuals__ambient {
+    animation: none !important;
   }
 }
