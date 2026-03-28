@@ -18,7 +18,10 @@
 .footer-inner {
   max-width: 1400px;
   margin: 0 auto;
-  padding: 0 clamp(1.5rem, 4vw, 3rem);
+  padding-left: max(var(--page-gutter), env(safe-area-inset-left, 0px));
+  padding-right: max(var(--page-gutter), env(safe-area-inset-right, 0px));
+  padding-top: 0;
+  padding-bottom: 0;
 }
 
 .footer-top {

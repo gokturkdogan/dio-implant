@@ -5,6 +5,8 @@ import "./styles/homepage.css";
 import "./styles/homepage-popup.css";
 import "./styles/footer.css";
 import "./styles/dio-navi.css";
+import "./styles/about.css";
+import "./styles/about-timeline.css";
 import "./styles/admin-panel.css";
 import { NavbarShell } from "../components/common/navbar-shell";
 import { NavbarEnhancements } from "../components/common/navbar-enhancements";
