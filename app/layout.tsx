@@ -5,6 +5,7 @@ import "./styles/homepage.css";
 import "./styles/homepage-popup.css";
 import "./styles/footer.css";
 import "./styles/dio-navi.css";
+import "./styles/dio-fullarch.css";
 import "./styles/about.css";
 import "./styles/about-timeline.css";
 import "./styles/admin-panel.css";

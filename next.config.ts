@@ -18,6 +18,11 @@ const nextConfig: NextConfig = {
         destination: "/about",
         permanent: true,
       },
+      {
+        source: "/digital-solutions/dio-navi/full-arch",
+        destination: "/digital-solutions/full-arch",
+        permanent: true,
+      },
     ];
   },
 };

@@ -1,6 +1,22 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+
+function pathMatches(pathname: string, base: string) {
+  if (base === "/") return pathname === "/";
+  return pathname === base || pathname.startsWith(`${base}/`);
+}
 
 export function Navbar() {
+  const pathname = usePathname() ?? "";
+
+  const homeActive = pathname === "/";
+  const digitalActive = pathMatches(pathname, "/digital-solutions");
+  const corporateActive = pathMatches(pathname, "/about");
+  const dioNaviActive = pathMatches(pathname, "/digital-solutions/dio-navi");
+  const fullArchActive = pathMatches(pathname, "/digital-solutions/full-arch");
+
   return (
     <header className="header" id="header">
       <div className="header-inner">
@@ -19,7 +35,7 @@ export function Navbar() {
 
         <nav className="main-nav" id="mainNav">
           <ul className="nav-list">
-            <li className="nav-item active">
+            <li className={`nav-item${homeActive ? " active" : ""}`}>
               <Link href="/">Anasayfa</Link>
             </li>
 
@@ -174,7 +190,9 @@ export function Navbar() {
               </ul>
             </li>
 
-            <li className="nav-item nav-item-dropdown">
+            <li
+              className={`nav-item nav-item-dropdown${digitalActive ? " active" : ""}`}
+            >
               <div className="nav-dropdown-row">
                 <a href="#" className="nav-dropdown-trigger">
                   Dijital Çözümler
@@ -192,14 +210,20 @@ export function Navbar() {
                 <li className="nav-dropdown-item" role="none">
                   <Link
                     href="/digital-solutions/dio-navi"
-                    className="nav-dropdown-link"
+                    className={`nav-dropdown-link${dioNaviActive ? " active" : ""}`}
                     role="menuitem"
                   >
                     DIO NAVI
                   </Link>
                 </li>
                 <li className="nav-dropdown-item" role="none">
-                  <a href="#" className="nav-dropdown-link" role="menuitem">DIO NAVI Full Arch</a>
+                  <Link
+                    href="/digital-solutions/full-arch"
+                    className={`nav-dropdown-link${fullArchActive ? " active" : ""}`}
+                    role="menuitem"
+                  >
+                    DIO NAVI Full Arch
+                  </Link>
                 </li>
               </ul>
             </li>
@@ -223,7 +247,9 @@ export function Navbar() {
                 <li className="nav-dropdown-item" role="none"><a href="#" className="nav-dropdown-link" role="menuitem">Beni Bilgilendir</a></li>
               </ul>
             </li>
-            <li className="nav-item nav-item-dropdown">
+            <li
+              className={`nav-item nav-item-dropdown${corporateActive ? " active" : ""}`}
+            >
               <div className="nav-dropdown-row">
                 <a href="#" className="nav-dropdown-trigger">
                   Kurumsal
@@ -239,7 +265,11 @@ export function Navbar() {
               </div>
               <ul className="nav-dropdown" id="nav-submenu-kurumsal" role="menu">
                 <li className="nav-dropdown-item" role="none">
-                  <Link href="/about" className="nav-dropdown-link" role="menuitem">
+                  <Link
+                    href="/about"
+                    className={`nav-dropdown-link${corporateActive ? " active" : ""}`}
+                    role="menuitem"
+                  >
                     Hakkımızda
                   </Link>
                 </li>

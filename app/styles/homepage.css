@@ -138,11 +138,13 @@ img {
 .header.scrolled .nav-item:not(.nav-item-dropdown) > a:hover,
 .header.scrolled .nav-dropdown-trigger:hover,
 .header.scrolled .nav-item.active:not(.nav-item-dropdown) > a,
-.header.scrolled .nav-item-dropdown:hover .nav-dropdown-trigger {
+.header.scrolled .nav-item-dropdown:hover .nav-dropdown-trigger,
+.header.scrolled .nav-item-dropdown.active .nav-dropdown-trigger {
   color: var(--primary);
 }
 
-.header.scrolled .nav-item.active:not(.nav-item-dropdown) > a::after {
+.header.scrolled .nav-item.active:not(.nav-item-dropdown) > a::after,
+.header.scrolled .nav-item-dropdown.active .nav-dropdown-trigger::after {
   background: var(--gradient-accent);
 }
 
@@ -224,11 +226,13 @@ img {
 .nav-item.active:not(.nav-item-dropdown) > a,
 .nav-dropdown-trigger:hover,
 .nav-item-dropdown:hover .nav-dropdown-trigger,
-.nav-item-dropdown:focus-within .nav-dropdown-trigger {
+.nav-item-dropdown:focus-within .nav-dropdown-trigger,
+.nav-item-dropdown.active .nav-dropdown-trigger {
   color: var(--light-100);
 }
 
-.nav-item.active:not(.nav-item-dropdown) > a::after {
+.nav-item.active:not(.nav-item-dropdown) > a::after,
+.nav-item-dropdown.active .nav-dropdown-trigger::after {
   content: '';
   position: absolute;
   bottom: 2px;
@@ -468,6 +472,16 @@ img {
 
 .nav-dropdown .nav-dropdown-link:hover::before,
 .nav-dropdown .nav-dropdown-link:focus-visible::before {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.nav-dropdown .nav-dropdown-link.active {
+  background: linear-gradient(135deg, rgba(78, 76, 176, 0.09) 0%, rgba(157, 141, 241, 0.06) 100%);
+  color: var(--primary-dark);
+}
+
+.nav-dropdown .nav-dropdown-link.active::before {
   opacity: 1;
   transform: scale(1);
 }
@@ -1326,7 +1340,8 @@ img {
   .main-nav.open .nav-item:not(.nav-item-dropdown) > a:hover,
   .main-nav.open .nav-dropdown-trigger:hover,
   .main-nav.open .nav-item.active:not(.nav-item-dropdown) > a,
-  .main-nav.open .nav-item-dropdown:hover .nav-dropdown-trigger {
+  .main-nav.open .nav-item-dropdown:hover .nav-dropdown-trigger,
+  .main-nav.open .nav-item-dropdown.active .nav-dropdown-trigger {
     color: var(--light-100);
   }
 
