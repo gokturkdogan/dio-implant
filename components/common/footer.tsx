@@ -58,7 +58,7 @@ export function Footer() {
               <h4 className="footer-col-title">Kurumsal</h4>
               <ul>
                 <li>
-                  <a href="#">Hakkımızda</a>
+                  <Link href="/about">Hakkımızda</Link>
                 </li>
                 <li>
                   <a href="#">DIO Akademi</a>

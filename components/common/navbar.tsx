@@ -238,7 +238,11 @@ export function Navbar() {
                 </button>
               </div>
               <ul className="nav-dropdown" id="nav-submenu-kurumsal" role="menu">
-                <li className="nav-dropdown-item" role="none"><a href="#" className="nav-dropdown-link" role="menuitem">Hakkımızda</a></li>
+                <li className="nav-dropdown-item" role="none">
+                  <Link href="/about" className="nav-dropdown-link" role="menuitem">
+                    Hakkımızda
+                  </Link>
+                </li>
                 <li className="nav-dropdown-item" role="none"><a href="#" className="nav-dropdown-link" role="menuitem">Sertifikalar</a></li>
               </ul>
             </li>
