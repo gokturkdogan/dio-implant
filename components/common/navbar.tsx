@@ -16,6 +16,11 @@ export function Navbar() {
   const corporateActive = pathMatches(pathname, "/about");
   const dioNaviActive = pathMatches(pathname, "/digital-solutions/dio-navi");
   const fullArchActive = pathMatches(pathname, "/digital-solutions/full-arch");
+  const academyActive = pathMatches(pathname, "/dio-akademi");
+  const academyCalendarActive = pathMatches(
+    pathname,
+    "/dio-akademi/egitim-takvimi",
+  );
 
   return (
     <header className="header" id="header">
@@ -227,7 +232,9 @@ export function Navbar() {
                 </li>
               </ul>
             </li>
-            <li className="nav-item nav-item-dropdown">
+            <li
+              className={`nav-item nav-item-dropdown${academyActive ? " active" : ""}`}
+            >
               <div className="nav-dropdown-row">
                 <a href="#" className="nav-dropdown-trigger">
                   DIO Akademi
@@ -242,9 +249,25 @@ export function Navbar() {
                 </button>
               </div>
               <ul className="nav-dropdown" id="nav-submenu-akademi" role="menu">
-                <li className="nav-dropdown-item" role="none"><a href="#" className="nav-dropdown-link" role="menuitem">Eğitim Takvimi</a></li>
-                <li className="nav-dropdown-item" role="none"><a href="#" className="nav-dropdown-link" role="menuitem">Geçmiş Etkinlikler</a></li>
-                <li className="nav-dropdown-item" role="none"><a href="#" className="nav-dropdown-link" role="menuitem">Beni Bilgilendir</a></li>
+                <li className="nav-dropdown-item" role="none">
+                  <Link
+                    href="/dio-akademi/egitim-takvimi"
+                    className={`nav-dropdown-link${academyCalendarActive ? " active" : ""}`}
+                    role="menuitem"
+                  >
+                    Eğitim Takvimi
+                  </Link>
+                </li>
+                <li className="nav-dropdown-item" role="none">
+                  <a href="#" className="nav-dropdown-link" role="menuitem">
+                    Geçmiş Etkinlikler
+                  </a>
+                </li>
+                <li className="nav-dropdown-item" role="none">
+                  <a href="#" className="nav-dropdown-link" role="menuitem">
+                    Beni Bilgilendir
+                  </a>
+                </li>
               </ul>
             </li>
             <li

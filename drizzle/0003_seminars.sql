@@ -1,0 +1,25 @@
+CREATE TYPE "public"."seminar_format" AS ENUM('Hands-on', 'Seminer', 'Teorik + Uygulama');--> statement-breakpoint
+CREATE TABLE "seminars" (
+	"id" serial PRIMARY KEY NOT NULL,
+	"slug" text NOT NULL,
+	"title" text NOT NULL,
+	"cover_url" text,
+	"poster_url" text,
+	"date_iso" date NOT NULL,
+	"slot_start" text NOT NULL,
+	"slot_end" text NOT NULL,
+	"date_display" text NOT NULL,
+	"time_range" text,
+	"city" text NOT NULL,
+	"venue" text NOT NULL,
+	"venue_address" text,
+	"format" "seminar_format" NOT NULL,
+	"instructors" jsonb DEFAULT '[]'::jsonb NOT NULL,
+	"excerpt" text NOT NULL,
+	"highlights" jsonb,
+	"speakers" jsonb,
+	"curriculum" jsonb,
+	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
+	"updated_at" timestamp with time zone DEFAULT now() NOT NULL,
+	CONSTRAINT "seminars_slug_unique" UNIQUE("slug")
+);

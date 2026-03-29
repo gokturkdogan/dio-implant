@@ -4,10 +4,10 @@ import { cloudinary } from "../../../../../lib/cloudinary";
 import { ADMIN_COOKIE_NAME, verifyAdminToken } from "../../../../../lib/admin-auth";
 import { jsonError, jsonOk } from "../../../../../lib/http";
 import { AppError } from "../../../../../lib/errors";
+import { MAX_ADMIN_IMAGE_UPLOAD_BYTES } from "../../../../../lib/admin-image-upload";
 
 export const runtime = "nodejs";
 
-const MAX_FILE_BYTES = 10 * 1024 * 1024;
 const HOME_MODAL_FOLDER = "HomeModal";
 const HOME_MODAL_PUBLIC_ID = "modal-poster";
 
@@ -40,7 +40,7 @@ function uploadToCloudinary(buffer: Buffer): Promise<{
           return;
         }
         resolve(result as never);
-      }
+      },
     );
     stream.end(buffer);
   });
@@ -66,7 +66,7 @@ export async function POST(request: Request) {
       throw new AppError("Sadece görsel dosyası yüklenebilir", 400);
     }
 
-    if (file.size > MAX_FILE_BYTES) {
+    if (file.size > MAX_ADMIN_IMAGE_UPLOAD_BYTES) {
       throw new AppError("Dosya boyutu 10MB'dan büyük olamaz", 413);
     }
 
@@ -92,4 +92,3 @@ export async function POST(request: Request) {
     return jsonError(error);
   }
 }
-
