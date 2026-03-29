@@ -9,6 +9,16 @@ const nextConfig: NextConfig = {
         hostname: "res.cloudinary.com",
         pathname: "/drjz8v617/**",
       },
+      {
+        protocol: "https",
+        hostname: "www.dioimplant.com",
+        pathname: "/assets/**",
+      },
+      {
+        protocol: "https",
+        hostname: "www.dioimplant.com",
+        pathname: "/file/**",
+      },
     ],
   },
   async redirects() {

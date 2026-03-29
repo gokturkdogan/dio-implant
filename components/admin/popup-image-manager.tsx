@@ -2,6 +2,10 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import Cropper from "react-easy-crop";
+import {
+  MAX_ADMIN_IMAGE_UPLOAD_BYTES,
+  MAX_ADMIN_IMAGE_UPLOAD_MB,
+} from "@/lib/admin-image-upload";
 import { AdminToast, type AdminToastState, type AdminToastVariant } from "./admin-toast";
 
 type Area = {
@@ -133,6 +137,11 @@ export function PopupImageManager() {
 
     if (!file.type.startsWith("image/")) {
       showToast("Lütfen geçerli bir görsel seçin.", "error");
+      return;
+    }
+    if (file.size > MAX_ADMIN_IMAGE_UPLOAD_BYTES) {
+      showToast(`Dosya en fazla ${MAX_ADMIN_IMAGE_UPLOAD_MB} MB olabilir.`, "error");
+      if (inputRef.current) inputRef.current.value = "";
       return;
     }
 
@@ -270,7 +279,8 @@ export function PopupImageManager() {
             </button>
 
             <div className="admin-upload__hint">
-              Dosya seçimi sonrası kırpma ekranı açılır. Tamamla ile yüklenir.
+              Dosya seçimi sonrası kırpma ekranı açılır. Tamamla ile yüklenir. En fazla{" "}
+              {MAX_ADMIN_IMAGE_UPLOAD_MB} MB.
             </div>
           </div>
         </div>
