@@ -71,7 +71,8 @@ type Props = {
   help?: string;
   /** Mevcut (https) URL veya yerel blob önizleme */
   value: string;
-  aspect: number;
+  /** Sabit oran. Verilmezse kaynak görselin doğal oranı kullanılır (serbest kırpma). */
+  aspect?: number;
   thumbClass: ThumbClass;
   /** Önizleme URL'i değiştiğinde (blob URL veya boş) */
   onChange: (previewUrl: string) => void;
@@ -97,6 +98,7 @@ export function AdminCropImageField({
   const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [mounted, setMounted] = useState(false);
+  const [naturalAspect, setNaturalAspect] = useState<number>(4 / 3);
 
   useEffect(() => {
     setMounted(true);
@@ -121,11 +123,26 @@ export function AdminCropImageField({
     setError(null);
     const reader = new FileReader();
     reader.onload = () => {
-      setSourceImage(String(reader.result));
+      const dataUrl = String(reader.result);
+      setSourceImage(dataUrl);
       setSourceBaseName(file.name.replace(/\.[^/.]+$/, "") || "gorsel");
       setCrop({ x: 0, y: 0 });
       setZoom(1);
-      setCropModalOpen(true);
+
+      if (aspect == null) {
+        const img = new window.Image();
+        img.onload = () => {
+          setNaturalAspect(img.width / img.height || 4 / 3);
+          setCropModalOpen(true);
+        };
+        img.onerror = () => {
+          setNaturalAspect(4 / 3);
+          setCropModalOpen(true);
+        };
+        img.src = dataUrl;
+      } else {
+        setCropModalOpen(true);
+      }
     };
     reader.readAsDataURL(file);
   };
@@ -185,7 +202,7 @@ export function AdminCropImageField({
               image={sourceImage}
               crop={crop}
               zoom={zoom}
-              aspect={aspect}
+              aspect={aspect ?? naturalAspect}
               onCropChange={setCrop}
               onZoomChange={setZoom}
               onCropComplete={onCropComplete}

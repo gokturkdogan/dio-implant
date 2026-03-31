@@ -360,7 +360,7 @@ export default async function UrunDetayPage({
               <div className="pd-posters-header" data-pd-animate="fade-up">
                 <h2 className="pd-posters-title">
                   <span className="pd-posters-title-accent" />
-                  Afişler
+                  Teknik Bilgiler
                 </h2>
               </div>
               <div className="pd-posters-list">

@@ -710,9 +710,8 @@ export function AdminProductsManager({ initialProducts, initialCategories }: Pro
                     <div className="admin-field admin-field--full">
                       <AdminCropImageField
                         label="Ana görsel (opsiyonel)"
-                        help={`Products/{slug}/main.webp — kırpma + WebP, en fazla ${MAX_ADMIN_IMAGE_UPLOAD_MB} MB.`}
+                        help={`Products/{slug}/main.webp — serbest kırpma + WebP, en fazla ${MAX_ADMIN_IMAGE_UPLOAD_MB} MB.`}
                         value={mainPreview}
-                        aspect={1}
                         thumbClass="admin-training-image-field__thumb--category"
                         onChange={(url) =>
                           setMainPreview((prev) => {
@@ -813,9 +812,8 @@ export function AdminProductsManager({ initialProducts, initialCategories }: Pro
                             </label>
                             <AdminCropImageField
                               label=""
-                              help={`Dikey (2:3). En fazla ${MAX_ADMIN_IMAGE_UPLOAD_MB} MB.`}
+                              help={`Serbest kırpma. En fazla ${MAX_ADMIN_IMAGE_UPLOAD_MB} MB.`}
                               value={slot.preview}
-                              aspect={2 / 3}
                               thumbClass="admin-training-image-field__thumb--poster"
                               onChange={(url) => {
                                 setPosterSlots((rows) =>
