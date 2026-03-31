@@ -10,6 +10,7 @@ import "./styles/about.css";
 import "./styles/about-timeline.css";
 import "./styles/academy-calendar.css";
 import "./styles/product-page.css";
+import "./styles/catalog-page.css";
 import "./styles/admin-panel.css";
 import { NavbarShell } from "../components/common/navbar-shell";
 import { NavbarEnhancements } from "../components/common/navbar-enhancements";

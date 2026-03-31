@@ -2,7 +2,8 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import Cropper from "react-easy-crop";
+import ReactCrop, { type Crop, type PixelCrop } from "react-image-crop";
+import "react-image-crop/dist/ReactCrop.css";
 import {
   MAX_ADMIN_IMAGE_UPLOAD_BYTES,
   MAX_ADMIN_IMAGE_UPLOAD_MB,
@@ -90,22 +91,33 @@ export function AdminCropImageField({
   onFileChange,
 }: Props) {
   const inputRef = useRef<HTMLInputElement | null>(null);
+  const imageRef = useRef<HTMLImageElement | null>(null);
   const [cropModalOpen, setCropModalOpen] = useState(false);
   const [sourceImage, setSourceImage] = useState<string | null>(null);
   const [sourceBaseName, setSourceBaseName] = useState("gorsel");
-  const [crop, setCrop] = useState({ x: 0, y: 0 });
-  const [zoom, setZoom] = useState(1);
+  const [crop, setCrop] = useState<Crop>({
+    unit: "%",
+    x: 10,
+    y: 10,
+    width: 80,
+    height: 80,
+  });
   const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [mounted, setMounted] = useState(false);
-  const [naturalAspect, setNaturalAspect] = useState<number>(4 / 3);
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  const onCropComplete = useCallback((_: Area, areaPixels: Area) => {
-    setCroppedAreaPixels(areaPixels);
+  const onCropComplete = useCallback((pixelCrop: PixelCrop) => {
+    if (pixelCrop.width <= 0 || pixelCrop.height <= 0) return;
+    setCroppedAreaPixels({
+      x: pixelCrop.x,
+      y: pixelCrop.y,
+      width: pixelCrop.width,
+      height: pixelCrop.height,
+    });
   }, []);
 
   const onSelectFile = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -126,23 +138,9 @@ export function AdminCropImageField({
       const dataUrl = String(reader.result);
       setSourceImage(dataUrl);
       setSourceBaseName(file.name.replace(/\.[^/.]+$/, "") || "gorsel");
-      setCrop({ x: 0, y: 0 });
-      setZoom(1);
-
-      if (aspect == null) {
-        const img = new window.Image();
-        img.onload = () => {
-          setNaturalAspect(img.width / img.height || 4 / 3);
-          setCropModalOpen(true);
-        };
-        img.onerror = () => {
-          setNaturalAspect(4 / 3);
-          setCropModalOpen(true);
-        };
-        img.src = dataUrl;
-      } else {
-        setCropModalOpen(true);
-      }
+      setCrop({ unit: "%", x: 10, y: 10, width: 80, height: 80 });
+      setCroppedAreaPixels(null);
+      setCropModalOpen(true);
     };
     reader.readAsDataURL(file);
   };
@@ -157,7 +155,19 @@ export function AdminCropImageField({
     if (!sourceImage || !croppedAreaPixels) return;
     setError(null);
     try {
-      const croppedBlob = await getCroppedBlob(sourceImage, croppedAreaPixels);
+      const img = imageRef.current;
+      let scaledArea = croppedAreaPixels;
+      if (img && img.naturalWidth > 0 && img.width > 0) {
+        const scaleX = img.naturalWidth / img.width;
+        const scaleY = img.naturalHeight / img.height;
+        scaledArea = {
+          x: Math.round(croppedAreaPixels.x * scaleX),
+          y: Math.round(croppedAreaPixels.y * scaleY),
+          width: Math.round(croppedAreaPixels.width * scaleX),
+          height: Math.round(croppedAreaPixels.height * scaleY),
+        };
+      }
+      const croppedBlob = await getCroppedBlob(sourceImage, scaledArea);
       const file = new File([croppedBlob], `${sourceBaseName}.webp`, {
         type: "image/webp",
       });
@@ -190,7 +200,7 @@ export function AdminCropImageField({
             <h3>Görseli kırp</h3>
             <button
               type="button"
-              className="admin-btn"
+              className="admin-btn admin-btn--ghost"
               onClick={closeModal}
             >
               Vazgeç
@@ -198,30 +208,30 @@ export function AdminCropImageField({
           </div>
 
           <div className="admin-crop-modal__cropper">
-            <Cropper
-              image={sourceImage}
+            <ReactCrop
               crop={crop}
-              zoom={zoom}
-              aspect={aspect ?? naturalAspect}
-              onCropChange={setCrop}
-              onZoomChange={setZoom}
-              onCropComplete={onCropComplete}
-              showGrid
-            />
+              onChange={(next) => setCrop(next)}
+              onComplete={onCropComplete}
+              aspect={aspect}
+              minWidth={32}
+              minHeight={32}
+              keepSelection
+              ruleOfThirds
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                ref={imageRef}
+                src={sourceImage}
+                alt="Kırpılacak görsel"
+                className="admin-crop-modal__image"
+              />
+            </ReactCrop>
           </div>
 
           <div className="admin-crop-modal__controls">
-            <label className="admin-crop-modal__zoom">
-              <span>Zoom</span>
-              <input
-                type="range"
-                min={1}
-                max={3}
-                step={0.01}
-                value={zoom}
-                onChange={(e) => setZoom(Number(e.target.value))}
-              />
-            </label>
+            <p className="admin-crop-modal__freehint">
+              Kırpma kutusunu kenarlardan veya köşelerden sürükleyerek serbestçe boyutlandırın.
+            </p>
 
             <button
               type="button"
@@ -229,7 +239,7 @@ export function AdminCropImageField({
               onClick={onConfirmCrop}
               disabled={!croppedAreaPixels}
             >
-              Onayla
+              Kırp ve kullan
             </button>
           </div>
         </div>
@@ -276,16 +286,15 @@ export function AdminCropImageField({
           {value ? (
             <button
               type="button"
-              className="admin-btn admin-btn--secondary"
+              className="admin-icon-btn admin-icon-btn--danger"
               onClick={onRemove}
             >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"><path d="M18 6 6 18M6 6l12 12"/></svg>
               Kaldır
             </button>
           ) : null}
         </div>
-        <p className="admin-upload__hint admin-training-image-field__hint">
-          Seçim sonrası kırpma ekranı açılır. En fazla {MAX_ADMIN_IMAGE_UPLOAD_MB} MB.
-        </p>
+        <p className="admin-upload__hint admin-training-image-field__hint">En fazla {MAX_ADMIN_IMAGE_UPLOAD_MB} MB.</p>
       </div>
 
       {mounted && cropModal ? createPortal(cropModal, document.body) : null}

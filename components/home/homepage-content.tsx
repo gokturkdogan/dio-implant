@@ -104,7 +104,7 @@ export function HomepageContent() {
               <span>Ürünleri Gör</span>
             </a>
             <a href="#" className="btn btn-outline">
-              <span>Katalog İndir</span>
+              <span>Katalog Görüntüle</span>
             </a>
           </div>
         </div>

@@ -151,9 +151,11 @@
   position: relative;
   width: clamp(240px, 50vw, 440px);
   aspect-ratio: 1;
+  box-sizing: border-box;
+  padding: clamp(10px, 1.8vw, 16px);
   border-radius: var(--radius-xl, 32px);
   overflow: hidden;
-  background: rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.12);
   box-shadow:
@@ -164,13 +166,14 @@
 .pd-hero-cat-img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
+  object-position: center;
   display: block;
   transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .pd-hero-img-frame:hover .pd-hero-cat-img {
-  transform: scale(1.04);
+  transform: scale(1.02);
 }
 
 .pd-hero-img-glow {
@@ -490,28 +493,73 @@
   z-index: 1;
 }
 
-.pd-desc-visual-thumb {
+/* Orbit track — contains all orbit children */
+.pd-desc-orbit-track {
   position: absolute;
-  bottom: 10px;
-  right: 10px;
-  width: 56px;
-  height: 56px;
-  border-radius: var(--radius-md, 12px);
-  overflow: hidden;
-  border: 2px solid var(--light-100, #fff);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  inset: 0;
   z-index: 2;
 }
 
-.pd-desc-visual-thumb-img {
+/* Each orbit image revolves around the center, staying upright */
+.pd-desc-orbit {
+  position: absolute;
+  width: 72px;
+  height: 72px;
+  border-radius: var(--radius-md, 12px);
+  overflow: visible;
+  background: transparent;
+  top: 50%;
+  left: 50%;
+  cursor: pointer;
+  z-index: 2;
+  animation: pd-orbit-revolve 60s linear infinite;
+  animation-delay: calc(-60s / var(--n) * var(--i));
+}
+
+/* Pause all orbits when any orbit is hovered */
+.pd-desc-orbit-track:hover .pd-desc-orbit {
+  animation-play-state: paused;
+}
+
+/* Hovered orbit gets higher z-index */
+.pd-desc-orbit:hover {
+  z-index: 10;
+}
+
+@keyframes pd-orbit-revolve {
+  from {
+    transform: translate(-50%, -50%) rotate(0deg)   translateY(-110px) rotate(0deg);
+  }
+  to {
+    transform: translate(-50%, -50%) rotate(360deg) translateY(-110px) rotate(-360deg);
+  }
+}
+
+.pd-desc-orbit-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
+  border-radius: var(--radius-md, 12px);
+  border: 2px solid var(--light-100, #fff);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+  background: var(--section-light-alt, #f8f7fc);
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+              box-shadow 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+              border-color 0.4s ease,
+              filter 0.4s ease;
+}
+
+.pd-desc-orbit:hover .pd-desc-orbit-img {
+  transform: scale(1.85);
+  box-shadow: 0 14px 40px rgba(78, 76, 176, 0.35), 0 0 0 4px rgba(157, 141, 241, 0.25);
+  border-color: var(--accent, #9D8DF1);
+  filter: brightness(1.08);
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .pd-desc-ring {
+  .pd-desc-ring,
+  .pd-desc-orbit {
     animation: none;
   }
 }
@@ -584,6 +632,21 @@
   .pd-desc-visual-inner {
     width: 200px;
     height: 200px;
+  }
+
+  .pd-desc-orbit {
+    width: 56px;
+    height: 56px;
+    animation-name: pd-orbit-revolve-sm;
+  }
+
+  @keyframes pd-orbit-revolve-sm {
+    from {
+      transform: translate(-50%, -50%) rotate(0deg)   translateY(-82px) rotate(0deg);
+    }
+    to {
+      transform: translate(-50%, -50%) rotate(360deg) translateY(-82px) rotate(-360deg);
+    }
   }
 
   .pd-desc-body {

@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import Link from "next/link";
 import type { Category } from "@/db/schema/category";
 import type { Product } from "@/db/schema/product";
 import { MAX_ADMIN_IMAGE_UPLOAD_MB } from "@/lib/admin-image-upload";
@@ -16,6 +17,13 @@ type Props = {
 type PosterSlot = {
   id: string;
   title: string;
+  preview: string;
+  file: File | null;
+  remoteUrl: string | null;
+};
+
+type CarouselSlot = {
+  id: string;
   preview: string;
   file: File | null;
   remoteUrl: string | null;
@@ -70,14 +78,14 @@ function truncate(s: string, max: number): string {
 async function uploadProductImage(
   file: File,
   slug: string,
-  kind: "main" | "poster",
+  kind: "main" | "poster" | "carousel",
   posterIndex?: number,
 ): Promise<string> {
   const fd = new FormData();
   fd.append("file", file);
   fd.append("slug", slug);
   fd.append("kind", kind);
-  if (kind === "poster" && posterIndex !== undefined) {
+  if ((kind === "poster" || kind === "carousel") && posterIndex !== undefined) {
     fd.append("index", String(posterIndex));
   }
   const res = await fetch("/api/admin/products/upload-image", {
@@ -97,6 +105,15 @@ function newPosterSlot(): PosterSlot {
   return {
     id: crypto.randomUUID(),
     title: "",
+    preview: "",
+    file: null,
+    remoteUrl: null,
+  };
+}
+
+function newCarouselSlot(): CarouselSlot {
+  return {
+    id: crypto.randomUUID(),
     preview: "",
     file: null,
     remoteUrl: null,
@@ -143,6 +160,7 @@ export function AdminProductsManager({ initialProducts, initialCategories }: Pro
   const [categoryIdDraft, setCategoryIdDraft] = useState("");
   const [excerptDraft, setExcerptDraft] = useState("");
   const [descriptionDraft, setDescriptionDraft] = useState("");
+  const [carouselSlots, setCarouselSlots] = useState<CarouselSlot[]>([]);
   const [mainPreview, setMainPreview] = useState("");
   const [mainFile, setMainFile] = useState<File | null>(null);
   const initialMainRef = useRef<string | null>(null);
@@ -202,6 +220,7 @@ export function AdminProductsManager({ initialProducts, initialCategories }: Pro
     setCategoryIdDraft(defaultCategoryId != null ? String(defaultCategoryId) : "");
     setExcerptDraft("");
     setDescriptionDraft("");
+    setCarouselSlots([]);
     resetImageState();
     setModalOpen(true);
   };
@@ -213,6 +232,19 @@ export function AdminProductsManager({ initialProducts, initialCategories }: Pro
     setCategoryIdDraft(String(p.categoryId));
     setExcerptDraft(p.excerpt ?? "");
     setDescriptionDraft(p.description ?? "");
+    setCarouselSlots(
+      Array.isArray(p.carouselImages)
+        ? p.carouselImages
+            .slice(0, 3)
+            .map((url) => ({
+              id: crypto.randomUUID(),
+              preview: String(url ?? "").trim(),
+              file: null,
+              remoteUrl: String(url ?? "").trim() || null,
+            }))
+            .filter((s) => s.preview.length > 0)
+        : [],
+    );
     setMainPreview((prev) => {
       if (prev.startsWith("blob:")) URL.revokeObjectURL(prev);
       return p.imageUrl?.trim() ?? "";
@@ -235,6 +267,13 @@ export function AdminProductsManager({ initialProducts, initialCategories }: Pro
       return "";
     });
     setMainFile(null);
+    setCarouselSlots((slots) => {
+      slots.forEach((s) => {
+        const pv = s.preview ?? "";
+        if (pv.startsWith("blob:")) URL.revokeObjectURL(pv);
+      });
+      return [];
+    });
     setPosterSlots((slots) => {
       slots.forEach((s) => {
         const pv = s.preview ?? "";
@@ -279,6 +318,22 @@ export function AdminProductsManager({ initialProducts, initialCategories }: Pro
     return out;
   };
 
+  const buildCarouselUrlsAfterUploads = async (
+    slug: string,
+    slots: CarouselSlot[],
+  ): Promise<string[]> => {
+    const out: string[] = [];
+    for (let i = 0; i < slots.length; i++) {
+      const s = slots[i];
+      if (s.file) {
+        out.push(await uploadProductImage(s.file, slug, "carousel", i));
+      } else if (s.remoteUrl) {
+        out.push(s.remoteUrl);
+      }
+    }
+    return out.slice(0, 3);
+  };
+
   const handleSave = async () => {
     const name = nameDraft.trim();
     if (!name) {
@@ -296,6 +351,7 @@ export function AdminProductsManager({ initialProducts, initialCategories }: Pro
     const mainTouched = Boolean(mainFile) || mainCleared;
     const currentEditing = products.find((x) => x.id === editingId);
     const existingPosters = currentEditing?.posterUrls ?? [];
+    const existingCarousel = currentEditing?.carouselImages ?? [];
 
     const posterTouched =
       modalMode === "create"
@@ -310,6 +366,17 @@ export function AdminProductsManager({ initialProducts, initialCategories }: Pro
             return old.title !== newTitle || old.url !== newUrl;
           });
 
+    const carouselTouched =
+      modalMode === "create"
+        ? carouselSlots.some((s) => s.file)
+        : carouselSlots.some((s) => s.file) ||
+          carouselSlots.length !== existingCarousel.length ||
+          carouselSlots.some((slot, idx) => {
+            const old = String(existingCarousel[idx] ?? "");
+            const next = slot.remoteUrl ?? "";
+            return old !== next;
+          });
+
     setSaving(true);
     try {
       if (modalMode === "create") {
@@ -322,6 +389,7 @@ export function AdminProductsManager({ initialProducts, initialCategories }: Pro
             categoryId: catId,
             excerpt: excerptDraft.trim() || undefined,
             description: descriptionDraft.trim() || undefined,
+            carouselImages: [],
             posterUrls: [],
           }),
         });
@@ -377,6 +445,26 @@ export function AdminProductsManager({ initialProducts, initialCategories }: Pro
               return;
             }
           }
+
+          const carouselImages = await buildCarouselUrlsAfterUploads(slug, carouselSlots);
+          if (carouselImages.length > 0) {
+            const putRes = await fetch(`/api/admin/products/${created.id}`, {
+              method: "PUT",
+              headers: { "Content-Type": "application/json" },
+              credentials: "include",
+              body: JSON.stringify({ carouselImages }),
+            });
+            const putData = await putRes.json();
+            if (!putRes.ok) {
+              showToast(
+                formatApiError(putData, "Carousel görselleri kaydedilemedi."),
+                "error",
+              );
+              await syncList();
+              closeModal();
+              return;
+            }
+          }
         } catch (e) {
           showToast(e instanceof Error ? e.message : "Görsel yüklenemedi.", "error");
           await syncList();
@@ -386,13 +474,17 @@ export function AdminProductsManager({ initialProducts, initialCategories }: Pro
 
         showToast("Ürün eklendi.", "success");
       } else if (editingId != null) {
-        const hasDeferredImage = mainTouched || posterTouched;
+        const hasDeferredImage = mainTouched || posterTouched || carouselTouched;
 
         const coreBody = {
           name,
           categoryId: catId,
           excerpt: excerptDraft.trim() || null,
           description: descriptionDraft.trim() || null,
+          carouselImages: carouselSlots
+            .map((s) => (s.remoteUrl ?? "").trim())
+            .filter(Boolean)
+            .slice(0, 3),
         };
 
         const imagePosterPayload: {
@@ -481,6 +573,27 @@ export function AdminProductsManager({ initialProducts, initialCategories }: Pro
               }
               updated = (putData as { product?: Product }).product ?? updated;
             }
+
+            if (carouselTouched) {
+              const carouselImages = await buildCarouselUrlsAfterUploads(slug, carouselSlots);
+              const putRes = await fetch(`/api/admin/products/${editingId}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                credentials: "include",
+                body: JSON.stringify({ carouselImages }),
+              });
+              const putData = await putRes.json();
+              if (!putRes.ok) {
+                showToast(
+                  formatApiError(putData, "Carousel görselleri güncellenemedi."),
+                  "error",
+                );
+                await syncList();
+                closeModal();
+                return;
+              }
+              updated = (putData as { product?: Product }).product ?? updated;
+            }
           } catch (e) {
             showToast(e instanceof Error ? e.message : "Görsel yüklenemedi.", "error");
             await syncList();
@@ -521,9 +634,9 @@ export function AdminProductsManager({ initialProducts, initialCategories }: Pro
       <AdminToast toast={toast} onClose={() => setToast(null)} />
 
       <div className="admin-egitimler-toolbar">
-        <button type="button" className="admin-btn admin-btn--primary" onClick={openCreate}>
+        <Link href="/admin-panel/urunler/yeni" className="admin-btn admin-btn--primary">
           Yeni ürün
-        </button>
+        </Link>
         <button type="button" className="admin-btn admin-btn--ghost" onClick={() => void syncList()}>
           Listeyi yenile
         </button>
@@ -592,13 +705,12 @@ export function AdminProductsManager({ initialProducts, initialCategories }: Pro
                     })}
                   </td>
                   <td className="admin-table-actions">
-                    <button
-                      type="button"
+                    <Link
+                      href={`/admin-panel/urunler/duzenle/${p.id}`}
                       className="admin-table-action-btn"
-                      onClick={() => openEdit(p)}
                     >
                       Düzenle
-                    </button>
+                    </Link>
                     <button
                       type="button"
                       className="admin-table-action-btn admin-table-action-btn--danger"
@@ -706,6 +818,113 @@ export function AdminProductsManager({ initialProducts, initialCategories }: Pro
                         rows={6}
                       />
                     </label>
+
+                    <div className="admin-field admin-field--full">
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "space-between",
+                          gap: 8,
+                          marginBottom: 8,
+                        }}
+                      >
+                        <span style={{ fontWeight: 600, fontSize: 13 }}>
+                          Carousel görselleri (opsiyonel, en fazla 3)
+                        </span>
+                        <button
+                          type="button"
+                          className="admin-btn admin-btn--ghost"
+                          onClick={() =>
+                            setCarouselSlots((prev) =>
+                              prev.length >= 3 ? prev : [...prev, newCarouselSlot()],
+                            )
+                          }
+                          disabled={carouselSlots.length >= 3}
+                        >
+                          + Carousel satırı
+                        </button>
+                      </div>
+                      <p className="admin-field__help" style={{ marginTop: 0 }}>
+                        Kırpma + WebP. CDN: <code className="admin-code">Products/{"{slug}"}/carusel-1.webp</code> …
+                      </p>
+                      <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                        {carouselSlots.length === 0 ? (
+                          <p className="admin-muted" style={{ fontSize: 13, margin: 0 }}>
+                            Henüz carousel görseli yok.
+                          </p>
+                        ) : null}
+                        {carouselSlots.map((slot, idx) => (
+                          <div
+                            key={slot.id}
+                            style={{
+                              border: "1px solid var(--admin-stroke)",
+                              borderRadius: "var(--admin-radius-md)",
+                              padding: 12,
+                            }}
+                          >
+                            <div
+                              style={{
+                                display: "flex",
+                                justifyContent: "space-between",
+                                alignItems: "center",
+                                marginBottom: 8,
+                              }}
+                            >
+                              <span className="admin-muted" style={{ fontSize: 12 }}>
+                                Carousel {idx + 1}
+                              </span>
+                            </div>
+                            <AdminCropImageField
+                              label=""
+                              help={`Serbest kırpma. En fazla ${MAX_ADMIN_IMAGE_UPLOAD_MB} MB.`}
+                              value={slot.preview}
+                              thumbClass="admin-training-image-field__thumb--cover"
+                              onChange={(url) => {
+                                setCarouselSlots((rows) =>
+                                  rows.map((r) => {
+                                    if (r.id !== slot.id) return r;
+                                    const prevPv = r.preview ?? "";
+                                    if (prevPv.startsWith("blob:") && prevPv !== url) {
+                                      URL.revokeObjectURL(prevPv);
+                                    }
+                                    return {
+                                      ...r,
+                                      preview: url,
+                                      remoteUrl: url.startsWith("https://") ? url : null,
+                                    };
+                                  }),
+                                );
+                              }}
+                              onFileChange={(file) => {
+                                setCarouselSlots((rows) =>
+                                  rows.map((r) =>
+                                    r.id === slot.id
+                                      ? { ...r, file, remoteUrl: file ? null : r.remoteUrl }
+                                      : r,
+                                  ),
+                                );
+                              }}
+                            />
+                            <button
+                              type="button"
+                              className="admin-btn admin-btn--ghost"
+                              style={{ whiteSpace: "nowrap" }}
+                              onClick={() =>
+                                setCarouselSlots((rows) => {
+                                  const row = rows.find((r) => r.id === slot.id);
+                                  const pv = row?.preview ?? "";
+                                  if (pv.startsWith("blob:")) URL.revokeObjectURL(pv);
+                                  return rows.filter((r) => r.id !== slot.id);
+                                })
+                              }
+                            >
+                              Kaldır
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
 
                     <div className="admin-field admin-field--full">
                       <AdminCropImageField
