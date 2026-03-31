@@ -1,5 +1,13 @@
 import { and, eq, ne } from "drizzle-orm";
-import { categories, products } from "../db/schema";
+import { categories, products, type ProductPosterItem } from "../db/schema";
+import {
+  deleteCloudinaryFolderPath,
+  downloadUrlToBuffer,
+  processBufferToCloudinaryWebp,
+  productFolder,
+  PRODUCTS_ROOT,
+  tryDestroyPublicId,
+} from "../lib/cloudinary-media";
 import { db } from "../lib/drizzle";
 import { AppError } from "../lib/errors";
 import { slugify } from "../lib/slug";
@@ -8,6 +16,29 @@ import type {
   ProductQueryInput,
   UpdateProductInput,
 } from "../validations/product.validation";
+
+function normalizePosterItems(
+  items: Array<string | ProductPosterItem> | undefined | null,
+): ProductPosterItem[] {
+  if (!items?.length) return [];
+  return items
+    .map((item, idx) => {
+      if (typeof item === "string") {
+        const url = item.trim();
+        if (!url) return null;
+        return { title: `Afiş ${idx + 1}`, url };
+      }
+      const title = item.title.trim();
+      const url = item.url.trim();
+      if (!title || !url) return null;
+      return { title, url };
+    })
+    .filter((x): x is ProductPosterItem => x !== null);
+}
+
+function assetHostedUnderProductSlug(url: string, slug: string): boolean {
+  return url.includes(`/${PRODUCTS_ROOT}/${slug}/`);
+}
 
 const ensureCategoryExists = async (categoryId: number): Promise<void> => {
   const existingCategory = await db.query.categories.findFirst({
@@ -57,7 +88,10 @@ export const productService = {
           id: products.id,
           name: products.name,
           slug: products.slug,
+          excerpt: products.excerpt,
           description: products.description,
+          posterUrls: products.posterUrls,
+          imageUrl: products.imageUrl,
           categoryId: products.categoryId,
           createdAt: products.createdAt,
         })
@@ -84,6 +118,18 @@ export const productService = {
     return product;
   },
 
+  async getBySlug(slug: string) {
+    const product = await db.query.products.findFirst({
+      where: eq(products.slug, slug),
+    });
+
+    if (!product) {
+      throw new AppError("Product not found", 404);
+    }
+
+    return product;
+  },
+
   async create(input: CreateProductInput) {
     await ensureCategoryExists(input.categoryId);
 
@@ -94,7 +140,10 @@ export const productService = {
       .values({
         name: input.name,
         slug,
-        description: input.description,
+        excerpt: input.excerpt ?? null,
+        description: input.description ?? null,
+        posterUrls: normalizePosterItems(input.posterUrls),
+        imageUrl: input.imageUrl ?? null,
         categoryId: input.categoryId,
       })
       .returning();
@@ -104,37 +153,127 @@ export const productService = {
 
   async update(id: number, input: UpdateProductInput) {
     const existing = await this.getById(id);
+    const oldSlug = existing.slug;
 
     if (input.categoryId) {
       await ensureCategoryExists(input.categoryId);
     }
 
     const nextName = input.name ?? existing.name;
-    const slug =
+    const newSlug =
       input.name !== undefined
         ? await buildUniqueProductSlug(nextName, id)
         : existing.slug;
 
+    let imageForRow =
+      input.imageUrl !== undefined ? input.imageUrl : existing.imageUrl ?? null;
+    let postersForRow =
+      input.posterUrls !== undefined
+        ? input.posterUrls === null
+          ? []
+          : normalizePosterItems(input.posterUrls)
+        : normalizePosterItems(existing.posterUrls);
+
+    if (newSlug !== oldSlug) {
+      let mainOk = !imageForRow;
+      if (imageForRow) {
+        mainOk = false;
+        try {
+          const buf = await downloadUrlToBuffer(imageForRow);
+          imageForRow = await processBufferToCloudinaryWebp(
+            buf,
+            productFolder(newSlug),
+            "main",
+          );
+          mainOk = true;
+        } catch {
+          imageForRow = existing.imageUrl ?? null;
+        }
+      }
+
+      const migratedPosters: ProductPosterItem[] = [];
+      let postersMigrateOk = true;
+      const sourcePosters = normalizePosterItems(
+        input.posterUrls !== undefined
+          ? postersForRow
+          : existing.posterUrls,
+      );
+
+      for (let i = 0; i < sourcePosters.length; i++) {
+        const currentPoster = sourcePosters[i]!;
+        try {
+          const buf = await downloadUrlToBuffer(currentPoster.url);
+          migratedPosters.push(
+            {
+              title: currentPoster.title,
+              url: await processBufferToCloudinaryWebp(
+                buf,
+                productFolder(newSlug),
+                `poster-${i + 1}`,
+              ),
+            },
+          );
+        } catch {
+          migratedPosters.push(currentPoster);
+          if (assetHostedUnderProductSlug(currentPoster.url, oldSlug)) {
+            postersMigrateOk = false;
+          }
+        }
+      }
+      postersForRow = migratedPosters;
+
+      const stillOnOld =
+        (imageForRow && assetHostedUnderProductSlug(imageForRow, oldSlug)) ||
+        postersForRow.some((u) => assetHostedUnderProductSlug(u.url, oldSlug));
+
+      if (mainOk && postersMigrateOk && !stillOnOld) {
+        await deleteCloudinaryFolderPath(productFolder(oldSlug));
+      }
+    }
+
+    if (newSlug === oldSlug && input.imageUrl === null) {
+      await tryDestroyPublicId(`${productFolder(newSlug)}/main`);
+    }
+
+    const oldPosterLen = (existing.posterUrls ?? []).length;
+    const newPosterLen = postersForRow.length;
+    if (
+      newSlug === oldSlug &&
+      input.posterUrls !== undefined &&
+      newPosterLen < oldPosterLen
+    ) {
+      for (let k = newPosterLen + 1; k <= oldPosterLen; k++) {
+        await tryDestroyPublicId(`${productFolder(newSlug)}/poster-${k}`);
+      }
+    }
+
+    const setFields: Record<string, unknown> = { slug: newSlug };
+
+    if (input.name !== undefined) setFields.name = input.name;
+    if (input.excerpt !== undefined) setFields.excerpt = input.excerpt;
+    if (input.description !== undefined) setFields.description = input.description;
+    if (input.categoryId !== undefined) setFields.categoryId = input.categoryId;
+
+    if (newSlug !== oldSlug) {
+      setFields.imageUrl = imageForRow;
+      setFields.posterUrls = postersForRow;
+    } else {
+      if (input.imageUrl !== undefined) setFields.imageUrl = imageForRow;
+      if (input.posterUrls !== undefined) setFields.posterUrls = postersForRow;
+    }
+
     const updated = await db
       .update(products)
-      .set({
-        ...(input.name !== undefined ? { name: input.name } : {}),
-        ...(input.description !== undefined
-          ? { description: input.description }
-          : {}),
-        ...(input.categoryId !== undefined
-          ? { categoryId: input.categoryId }
-          : {}),
-        slug,
-      })
+      .set(setFields as never)
       .where(eq(products.id, id))
       .returning();
 
-    return updated[0];
+    return updated[0]!;
   },
 
   async remove(id: number) {
-    await this.getById(id);
+    const row = await this.getById(id);
     await db.delete(products).where(eq(products.id, id));
+    await deleteCloudinaryFolderPath(productFolder(row.slug));
   },
 };

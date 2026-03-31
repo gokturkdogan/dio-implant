@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { NavbarProductsMenu } from "./navbar-products-menu";
 
 function pathMatches(pathname: string, base: string) {
   if (base === "/") return pathname === "/";
@@ -88,110 +89,7 @@ export function Navbar() {
               </div>
 
               <ul className="nav-dropdown" id="nav-submenu-urunler" role="menu">
-                <li className="nav-dropdown-item nav-dropdown-item-has-children" role="none">
-                  <div className="nav-dropdown-item-row">
-                    <a href="#" className="nav-dropdown-link nav-dropdown-link-parent" role="menuitem">
-                      İmplantlar
-                      <svg className="nav-parent-has-children-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                        <path d="m9 18 6-6-6-6" />
-                      </svg>
-                    </a>
-                    <button type="button" className="nav-submenu-expand" aria-expanded="false" aria-controls="nav-sub-implant" aria-label="İmplantlar alt menüsü">
-                      <svg className="nav-submenu-expand-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                        <path d="M6 9l6 6 6-6" />
-                      </svg>
-                    </button>
-                  </div>
-                  <ul className="nav-submenu" id="nav-sub-implant" role="menu">
-                    <li role="none">
-                      <a href="#" className="nav-dropdown-link" role="menuitem">Unicon</a>
-                    </li>
-                    <li role="none">
-                      <a href="#" className="nav-dropdown-link" role="menuitem">VUV</a>
-                    </li>
-                    <li role="none">
-                      <a href="#" className="nav-dropdown-link" role="menuitem">UFIII</a>
-                    </li>
-                    <li role="none">
-                      <a href="#" className="nav-dropdown-link" role="menuitem">UFIII</a>
-                    </li>
-                  </ul>
-                </li>
-                <li className="nav-dropdown-item" role="none">
-                  <a href="#" className="nav-dropdown-link" role="menuitem">
-                    UV Aktif
-                  </a>
-                </li>
-                <li className="nav-dropdown-item nav-dropdown-item-has-children" role="none">
-                  <div className="nav-dropdown-item-row">
-                    <a href="#" className="nav-dropdown-link nav-dropdown-link-parent" role="menuitem">
-                      Tarayıcılar
-                      <svg className="nav-parent-has-children-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                        <path d="m9 18 6-6-6-6" />
-                      </svg>
-                    </a>
-                    <button type="button" className="nav-submenu-expand" aria-expanded="false" aria-controls="nav-sub-scanner" aria-label="Tarayıcılar alt menüsü">
-                      <svg className="nav-submenu-expand-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                        <path d="M6 9l6 6 6-6" />
-                      </svg>
-                    </button>
-                  </div>
-                  <ul className="nav-submenu" id="nav-sub-scanner" role="menu">
-                    <li role="none">
-                      <a href="#" className="nav-dropdown-link" role="menuitem">DIO iOS</a>
-                    </li>
-                    <li role="none">
-                      <a href="#" className="nav-dropdown-link" role="menuitem">Medit i900</a>
-                    </li>
-                    <li role="none">
-                      <a href="#" className="nav-dropdown-link" role="menuitem">Medit i700</a>
-                    </li>
-                  </ul>
-                </li>
-                <li className="nav-dropdown-item nav-dropdown-item-has-children" role="none">
-                  <div className="nav-dropdown-item-row">
-                    <a href="#" className="nav-dropdown-link nav-dropdown-link-parent" role="menuitem">
-                      Cerrahi Kitler
-                      <svg className="nav-parent-has-children-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                        <path d="m9 18 6-6-6-6" />
-                      </svg>
-                    </a>
-                    <button type="button" className="nav-submenu-expand" aria-expanded="false" aria-controls="nav-sub-cerrahi-kits" aria-label="Cerrahi Kitler alt menüsü">
-                      <svg className="nav-submenu-expand-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                        <path d="M6 9l6 6 6-6" />
-                      </svg>
-                    </button>
-                  </div>
-                  <ul className="nav-submenu" id="nav-sub-cerrahi-kits" role="menu">
-                    <li role="none"><a href="#" className="nav-dropdown-link" role="menuitem">Union Kit</a></li>
-                    <li role="none"><a href="#" className="nav-dropdown-link" role="menuitem">Surgical Kit</a></li>
-                    <li role="none"><a href="#" className="nav-dropdown-link" role="menuitem">Master Kit</a></li>
-                    <li role="none"><a href="#" className="nav-dropdown-link" role="menuitem">Special Kit</a></li>
-                    <li role="none"><a href="#" className="nav-dropdown-link" role="menuitem">Narrow Kit</a></li>
-                    <li role="none"><a href="#" className="nav-dropdown-link" role="menuitem">Sinus Kit</a></li>
-                    <li role="none"><a href="#" className="nav-dropdown-link" role="menuitem">Sas Kit</a></li>
-                    <li role="none"><a href="#" className="nav-dropdown-link" role="menuitem">Osteotomi Kit</a></li>
-                  </ul>
-                </li>
-                <li className="nav-dropdown-item nav-dropdown-item-has-children" role="none">
-                  <div className="nav-dropdown-item-row">
-                    <a href="#" className="nav-dropdown-link nav-dropdown-link-parent" role="menuitem">
-                      Görüntüleme Sistemleri
-                      <svg className="nav-parent-has-children-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                        <path d="m9 18 6-6-6-6" />
-                      </svg>
-                    </a>
-                    <button type="button" className="nav-submenu-expand" aria-expanded="false" aria-controls="nav-sub-goruntuleme" aria-label="Görüntüleme Sistemleri alt menüsü">
-                      <svg className="nav-submenu-expand-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                        <path d="M6 9l6 6 6-6" />
-                      </svg>
-                    </button>
-                  </div>
-                  <ul className="nav-submenu" id="nav-sub-goruntuleme" role="menu">
-                    <li role="none"><a href="#" className="nav-dropdown-link" role="menuitem">HDX</a></li>
-                    <li role="none"><a href="#" className="nav-dropdown-link" role="menuitem">RAY</a></li>
-                  </ul>
-                </li>
+                <NavbarProductsMenu />
               </ul>
             </li>
 

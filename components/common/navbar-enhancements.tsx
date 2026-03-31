@@ -64,10 +64,7 @@ export function NavbarEnhancements() {
       if (mainNav.classList.contains("open")) closeMobileNav();
     };
 
-    const dropdownExpandButtons = Array.from(
-      document.querySelectorAll(".nav-dropdown-expand")
-    );
-    const onDropdownExpand = (btn: Element) => (e: Event) => {
+    const onDropdownExpand = (btn: Element, e: Event) => {
       e.preventDefault();
       e.stopPropagation();
       const li = btn.closest(".nav-item-dropdown");
@@ -84,10 +81,7 @@ export function NavbarEnhancements() {
       btn.setAttribute("aria-expanded", willOpen ? "true" : "false");
     };
 
-    const submenuExpandButtons = Array.from(
-      document.querySelectorAll(".nav-submenu-expand")
-    );
-    const onSubmenuExpand = (btn: Element) => (e: Event) => {
+    const onSubmenuExpand = (btn: Element, e: Event) => {
       e.preventDefault();
       e.stopPropagation();
       const item = btn.closest(".nav-dropdown-item-has-children");
@@ -109,33 +103,30 @@ export function NavbarEnhancements() {
       btn.setAttribute("aria-expanded", willOpen ? "true" : "false");
     };
 
+    const onMainNavDelegatedClick = (e: Event) => {
+      const target = e.target as HTMLElement | null;
+      const subBtn = target?.closest?.(".nav-submenu-expand");
+      if (subBtn) {
+        onSubmenuExpand(subBtn, e);
+        return;
+      }
+      const dropBtn = target?.closest?.(".nav-dropdown-expand");
+      if (dropBtn) {
+        onDropdownExpand(dropBtn, e);
+      }
+    };
+
     window.addEventListener("scroll", handleScroll, { passive: true });
     handleScroll();
     hamburger.addEventListener("click", onHamburger);
     mainNav.addEventListener("click", onNavClick);
-
-    const dropdownListeners = dropdownExpandButtons.map((btn) => {
-      const handler = onDropdownExpand(btn);
-      btn.addEventListener("click", handler);
-      return { btn, handler };
-    });
-
-    const submenuListeners = submenuExpandButtons.map((btn) => {
-      const handler = onSubmenuExpand(btn);
-      btn.addEventListener("click", handler);
-      return { btn, handler };
-    });
+    mainNav.addEventListener("click", onMainNavDelegatedClick);
 
     return () => {
       window.removeEventListener("scroll", handleScroll);
       hamburger.removeEventListener("click", onHamburger);
       mainNav.removeEventListener("click", onNavClick);
-      dropdownListeners.forEach(({ btn, handler }) =>
-        btn.removeEventListener("click", handler)
-      );
-      submenuListeners.forEach(({ btn, handler }) =>
-        btn.removeEventListener("click", handler)
-      );
+      mainNav.removeEventListener("click", onMainNavDelegatedClick);
     };
   }, []);
 

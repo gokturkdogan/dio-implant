@@ -63,7 +63,8 @@ async function getCroppedBlob(imageSrc: string, area: Area): Promise<Blob> {
 type ThumbClass =
   | "admin-training-image-field__thumb--cover"
   | "admin-training-image-field__thumb--poster"
-  | "admin-training-image-field__thumb--speaker";
+  | "admin-training-image-field__thumb--speaker"
+  | "admin-training-image-field__thumb--category";
 
 type Props = {
   label: string;
