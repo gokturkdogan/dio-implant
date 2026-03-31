@@ -27,6 +27,13 @@ export const products = pgTable("products", {
     .$type<ProductPosterItem[]>()
     .notNull()
     .default(sql`'[]'::jsonb`),
+  /** Hero/ürün slider görselleri (HTTPS URL, en fazla 3) */
+  carouselImages: jsonb("carousel_images")
+    .$type<string[]>()
+    .notNull()
+    .default(sql`'[]'::jsonb`),
+  /** Ürün katalog PDF URL */
+  catalogUrl: text("catalog_url"),
   /** Ana ürün görseli (tam URL) */
   imageUrl: text("image_url"),
   categoryId: integer("category_id")

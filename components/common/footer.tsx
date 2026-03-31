@@ -81,7 +81,7 @@ export function Footer() {
                   <a href="#">Bayi Ağı</a>
                 </li>
                 <li>
-                  <a href="#">Katalog İndir</a>
+                  <a href="#">Katalog Görüntüle</a>
                 </li>
                 <li>
                   <a href="#">SSS</a>

@@ -367,13 +367,47 @@
 }
 
 .admin-btn--ghost {
-  background: transparent;
-  border-color: transparent;
+  background: var(--admin-panel-soft);
+  border-color: var(--admin-stroke);
 }
 
 .admin-btn--ghost:hover {
   background: var(--admin-panel-hover);
-  border-color: var(--admin-stroke);
+  border-color: var(--admin-stroke-strong);
+}
+
+.admin-media-card {
+  border: 1px solid var(--admin-stroke-strong);
+  border-radius: var(--admin-radius-md);
+  background: var(--admin-panel-soft);
+  padding: 12px;
+}
+
+.admin-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 34px;
+  padding: 0 10px;
+  border-radius: var(--admin-radius-sm);
+  border: 1px solid var(--admin-stroke);
+  background: var(--admin-panel);
+  color: var(--admin-text-secondary);
+  cursor: pointer;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.admin-icon-btn--danger {
+  color: var(--admin-danger);
+  border-color: color-mix(in srgb, var(--admin-danger) 35%, var(--admin-stroke));
+  background: var(--admin-danger-soft);
+}
+
+.admin-icon-btn--danger:hover {
+  border-color: var(--admin-danger);
+  background: color-mix(in srgb, var(--admin-danger-soft) 75%, var(--admin-panel) 25%);
 }
 
 .admin-btn--small {
@@ -1334,6 +1368,11 @@ a.admin-table-action-btn {
   box-shadow: var(--admin-shadow-lg);
 }
 
+:root[data-admin-theme="light"] .admin-crop-modal__panel {
+  background: #ffffff;
+  border-color: rgba(15, 23, 42, 0.18);
+}
+
 .admin-crop-modal__header {
   display: flex;
   justify-content: space-between;
@@ -1353,6 +1392,23 @@ a.admin-table-action-btn {
   width: 100%;
   height: min(62dvh, 520px);
   background: #000;
+  display: grid;
+  place-items: center;
+  overflow: auto;
+}
+
+.admin-crop-modal__cropper .ReactCrop {
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.admin-crop-modal__image {
+  display: block;
+  max-width: 100%;
+  max-height: min(62dvh, 520px);
+  width: auto;
+  height: auto;
+  user-select: none;
 }
 
 .admin-crop-modal__controls {
@@ -1362,6 +1418,12 @@ a.admin-table-action-btn {
   gap: 12px;
   padding: 14px 16px;
   border-top: 1px solid var(--admin-stroke);
+}
+
+.admin-crop-modal__freehint {
+  margin: 0;
+  font-size: 12px;
+  color: var(--admin-muted);
 }
 
 .admin-crop-modal__zoom {

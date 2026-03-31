@@ -3,6 +3,7 @@ import { categories, products, type ProductPosterItem } from "../db/schema";
 import {
   deleteCloudinaryFolderPath,
   downloadUrlToBuffer,
+  processBufferToCloudinaryRawPdf,
   processBufferToCloudinaryWebp,
   productFolder,
   PRODUCTS_ROOT,
@@ -34,6 +35,16 @@ function normalizePosterItems(
       return { title, url };
     })
     .filter((x): x is ProductPosterItem => x !== null);
+}
+
+function normalizeCarouselImages(
+  items: string[] | undefined | null,
+): string[] {
+  if (!items?.length) return [];
+  return items
+    .map((u) => String(u ?? "").trim())
+    .filter((u) => u.length > 0)
+    .slice(0, 3);
 }
 
 function assetHostedUnderProductSlug(url: string, slug: string): boolean {
@@ -91,6 +102,8 @@ export const productService = {
           excerpt: products.excerpt,
           description: products.description,
           posterUrls: products.posterUrls,
+          carouselImages: products.carouselImages,
+          catalogUrl: products.catalogUrl,
           imageUrl: products.imageUrl,
           categoryId: products.categoryId,
           createdAt: products.createdAt,
@@ -143,6 +156,8 @@ export const productService = {
         excerpt: input.excerpt ?? null,
         description: input.description ?? null,
         posterUrls: normalizePosterItems(input.posterUrls),
+        carouselImages: normalizeCarouselImages(input.carouselImages),
+        catalogUrl: input.catalogUrl ?? null,
         imageUrl: input.imageUrl ?? null,
         categoryId: input.categoryId,
       })
@@ -173,6 +188,16 @@ export const productService = {
           ? []
           : normalizePosterItems(input.posterUrls)
         : normalizePosterItems(existing.posterUrls);
+    let carouselForRow =
+      input.carouselImages !== undefined
+        ? input.carouselImages === null
+          ? []
+          : normalizeCarouselImages(input.carouselImages)
+        : normalizeCarouselImages(existing.carouselImages);
+    let catalogForRow =
+      input.catalogUrl !== undefined
+        ? input.catalogUrl
+        : existing.catalogUrl ?? null;
 
     if (newSlug !== oldSlug) {
       let mainOk = !imageForRow;
@@ -222,17 +247,64 @@ export const productService = {
       }
       postersForRow = migratedPosters;
 
+      const migratedCarousel: string[] = [];
+      let carouselMigrateOk = true;
+      const sourceCarousel = normalizeCarouselImages(
+        input.carouselImages !== undefined ? carouselForRow : existing.carouselImages,
+      );
+
+      for (let i = 0; i < sourceCarousel.length; i++) {
+        const current = sourceCarousel[i]!;
+        try {
+          const buf = await downloadUrlToBuffer(current);
+          migratedCarousel.push(
+            await processBufferToCloudinaryWebp(
+              buf,
+              productFolder(newSlug),
+              `carusel-${i + 1}`,
+            ),
+          );
+        } catch {
+          migratedCarousel.push(current);
+          if (assetHostedUnderProductSlug(current, oldSlug)) {
+            carouselMigrateOk = false;
+          }
+        }
+      }
+      carouselForRow = migratedCarousel;
+
+      let catalogMigrateOk = true;
+      if (catalogForRow) {
+        try {
+          const buf = await downloadUrlToBuffer(catalogForRow);
+          catalogForRow = await processBufferToCloudinaryRawPdf(
+            buf,
+            productFolder(newSlug),
+            "catalog",
+          );
+        } catch {
+          if (assetHostedUnderProductSlug(catalogForRow, oldSlug)) {
+            catalogMigrateOk = false;
+          }
+        }
+      }
+
       const stillOnOld =
         (imageForRow && assetHostedUnderProductSlug(imageForRow, oldSlug)) ||
-        postersForRow.some((u) => assetHostedUnderProductSlug(u.url, oldSlug));
+        postersForRow.some((u) => assetHostedUnderProductSlug(u.url, oldSlug)) ||
+        carouselForRow.some((u) => assetHostedUnderProductSlug(u, oldSlug)) ||
+        (catalogForRow && assetHostedUnderProductSlug(catalogForRow, oldSlug));
 
-      if (mainOk && postersMigrateOk && !stillOnOld) {
+      if (mainOk && postersMigrateOk && carouselMigrateOk && catalogMigrateOk && !stillOnOld) {
         await deleteCloudinaryFolderPath(productFolder(oldSlug));
       }
     }
 
     if (newSlug === oldSlug && input.imageUrl === null) {
       await tryDestroyPublicId(`${productFolder(newSlug)}/main`);
+    }
+    if (newSlug === oldSlug && input.catalogUrl === null) {
+      await tryDestroyPublicId(`${productFolder(newSlug)}/catalog`, "raw");
     }
 
     const oldPosterLen = (existing.posterUrls ?? []).length;
@@ -246,6 +318,17 @@ export const productService = {
         await tryDestroyPublicId(`${productFolder(newSlug)}/poster-${k}`);
       }
     }
+    const oldCarouselLen = (existing.carouselImages ?? []).length;
+    const newCarouselLen = carouselForRow.length;
+    if (
+      newSlug === oldSlug &&
+      input.carouselImages !== undefined &&
+      newCarouselLen < oldCarouselLen
+    ) {
+      for (let k = newCarouselLen + 1; k <= oldCarouselLen; k++) {
+        await tryDestroyPublicId(`${productFolder(newSlug)}/carusel-${k}`);
+      }
+    }
 
     const setFields: Record<string, unknown> = { slug: newSlug };
 
@@ -253,6 +336,16 @@ export const productService = {
     if (input.excerpt !== undefined) setFields.excerpt = input.excerpt;
     if (input.description !== undefined) setFields.description = input.description;
     if (input.categoryId !== undefined) setFields.categoryId = input.categoryId;
+    if (newSlug !== oldSlug) {
+      setFields.carouselImages = carouselForRow;
+    } else if (input.carouselImages !== undefined) {
+      setFields.carouselImages = carouselForRow;
+    }
+    if (newSlug !== oldSlug) {
+      setFields.catalogUrl = catalogForRow;
+    } else if (input.catalogUrl !== undefined) {
+      setFields.catalogUrl = catalogForRow;
+    }
 
     if (newSlug !== oldSlug) {
       setFields.imageUrl = imageForRow;

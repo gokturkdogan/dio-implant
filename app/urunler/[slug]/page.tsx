@@ -29,6 +29,14 @@ function normalizePosters(raw: unknown): Array<{ title: string; url: string }> {
   return out;
 }
 
+function normalizeCarousel(raw: unknown): string[] {
+  if (!Array.isArray(raw)) return [];
+  return raw
+    .map((u) => String(u ?? "").trim())
+    .filter((u) => u.length > 0)
+    .slice(0, 3);
+}
+
 interface Breadcrumb {
   label: string;
   href?: string;
@@ -97,7 +105,17 @@ export default async function UrunDetayPage({
   }
 
   const posters = normalizePosters(product.posterUrls);
+  const carouselImages = normalizeCarousel(product.carouselImages);
+  const orbitImages = [
+    ...(product.imageUrl ? [product.imageUrl] : []),
+    ...carouselImages.slice(0, 3),
+  ]
+    .map((u) => String(u ?? "").trim())
+    .filter((u) => u.startsWith("http://") || u.startsWith("https://"))
+    .slice(0, 4);
   const breadcrumbs = await buildBreadcrumbs(product, category, parentCategory);
+  const catalogUrl = String(product.catalogUrl ?? "").trim();
+  const hasCatalog = catalogUrl.startsWith("http://") || catalogUrl.startsWith("https://");
 
   const categoryImageUrl = category?.imageUrl ?? parentCategory?.imageUrl ?? null;
 
@@ -200,14 +218,16 @@ export default async function UrunDetayPage({
                     </svg>
                     Bilgi Al
                   </Link>
-                  <a href="#" className="pd-btn pd-btn--outline">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
-                      <polyline points="7 10 12 15 17 10" />
-                      <line x1="12" y1="15" x2="12" y2="3" />
-                    </svg>
-                    Katalog İndir
-                  </a>
+                  {hasCatalog ? (
+                    <Link href={`/katalog?urun=${encodeURIComponent(product.slug)}`} className="pd-btn pd-btn--outline">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+                        <polyline points="7 10 12 15 17 10" />
+                        <line x1="12" y1="15" x2="12" y2="3" />
+                      </svg>
+                      Katalog Görüntüle
+                    </Link>
+                  ) : null}
                 </div>
               </div>
             </div>
@@ -241,20 +261,21 @@ export default async function UrunDetayPage({
                       </svg>
                     </div>
 
+                    <div className="pd-desc-orbit-track" style={{ "--orbit-count": orbitImages.length } as React.CSSProperties}>
+                      {orbitImages.map((url, idx) => (
+                        <div
+                          key={`${url}-${idx}`}
+                          className="pd-desc-orbit"
+                          style={{ "--i": idx, "--n": orbitImages.length } as React.CSSProperties}
+                        >
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img src={url} alt="" className="pd-desc-orbit-img" />
+                        </div>
+                      ))}
+                    </div>
+
                     <span className="pd-desc-visual-label">Ürün Detayı</span>
 
-                    {product.imageUrl && (
-                      <div className="pd-desc-visual-thumb">
-                        <Image
-                          src={product.imageUrl}
-                          alt=""
-                          width={120}
-                          height={120}
-                          className="pd-desc-visual-thumb-img"
-                          sizes="120px"
-                        />
-                      </div>
-                    )}
                   </div>
                 </div>
 
@@ -319,14 +340,16 @@ export default async function UrunDetayPage({
                   Tüm teknik detaylar, ölçüler ve klinik verilere tek bir dokümandan ulaşın.
                 </p>
                 <div className="pd-cta-actions">
-                  <a href="#" className="pd-btn pd-btn--primary pd-btn--lg">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
-                      <polyline points="7 10 12 15 17 10" />
-                      <line x1="12" y1="15" x2="12" y2="3" />
-                    </svg>
-                    Katalog İndir
-                  </a>
+                  {hasCatalog ? (
+                    <Link href={`/katalog?urun=${encodeURIComponent(product.slug)}`} className="pd-btn pd-btn--primary pd-btn--lg">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+                        <polyline points="7 10 12 15 17 10" />
+                        <line x1="12" y1="15" x2="12" y2="3" />
+                      </svg>
+                      Katalog Görüntüle
+                    </Link>
+                  ) : null}
                   <Link href="/iletisim" className="pd-btn pd-btn--ghost pd-btn--lg">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />

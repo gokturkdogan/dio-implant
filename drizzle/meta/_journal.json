@@ -57,6 +57,20 @@
       "when": 1775100000000,
       "tag": "0007_category_image_url",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1775200000000,
+      "tag": "0008_product_carousel_images",
+      "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1775300000000,
+      "tag": "0009_product_catalog_url",
+      "breakpoints": true
     }
   ]
 }

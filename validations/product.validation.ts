@@ -62,6 +62,30 @@ const posterUrlsUpdateSchema = z.preprocess(
   z.union([z.array(posterItemSchema).max(40), z.null()]).optional(),
 );
 
+const carouselImagesField = z.preprocess(
+  (v) => {
+    if (v == null) return undefined;
+    if (!Array.isArray(v)) return undefined;
+    return v
+      .map((item) => String(item ?? "").trim())
+      .filter((u) => u.length > 0);
+  },
+  z.array(z.string().url()).max(3).optional(),
+);
+
+/** PUT: null -> boş dizi; dizi -> değiştir */
+const carouselImagesUpdateSchema = z.preprocess(
+  (v) => {
+    if (v === null) return null;
+    if (v === undefined) return undefined;
+    if (!Array.isArray(v)) return undefined;
+    return v
+      .map((item) => String(item ?? "").trim())
+      .filter((u) => u.length > 0);
+  },
+  z.union([z.array(z.string().url()).max(3), z.null()]).optional(),
+);
+
 export const productIdSchema = z.coerce.number().int().positive();
 
 export const createProductSchema = z.object({
@@ -69,6 +93,8 @@ export const createProductSchema = z.object({
   excerpt: z.string().trim().max(800).optional().nullable(),
   description: z.string().trim().max(50_000).optional().nullable(),
   posterUrls: posterUrlsField,
+  carouselImages: carouselImagesField,
+  catalogUrl: optionalHttpsUrl,
   imageUrl: optionalHttpsUrl,
   categoryId: z.coerce.number().int().positive(),
 });
@@ -79,6 +105,8 @@ export const updateProductSchema = z
     excerpt: z.string().trim().max(800).optional().nullable(),
     description: z.string().trim().max(50_000).optional().nullable(),
     posterUrls: posterUrlsUpdateSchema,
+    carouselImages: carouselImagesUpdateSchema,
+    catalogUrl: optionalHttpsUrlNullable,
     imageUrl: optionalHttpsUrlNullable,
     categoryId: z.coerce.number().int().positive().optional(),
   })
@@ -88,6 +116,8 @@ export const updateProductSchema = z
       data.excerpt !== undefined ||
       data.description !== undefined ||
       data.posterUrls !== undefined ||
+      data.carouselImages !== undefined ||
+      data.catalogUrl !== undefined ||
       data.imageUrl !== undefined ||
       data.categoryId !== undefined,
     { message: "Güncelleme için en az bir alan gerekli" },

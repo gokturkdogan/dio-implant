@@ -156,16 +156,6 @@ export function Navbar() {
                     Eğitim Takvimi
                   </Link>
                 </li>
-                <li className="nav-dropdown-item" role="none">
-                  <a href="#" className="nav-dropdown-link" role="menuitem">
-                    Geçmiş Etkinlikler
-                  </a>
-                </li>
-                <li className="nav-dropdown-item" role="none">
-                  <a href="#" className="nav-dropdown-link" role="menuitem">
-                    Beni Bilgilendir
-                  </a>
-                </li>
               </ul>
             </li>
             <li
