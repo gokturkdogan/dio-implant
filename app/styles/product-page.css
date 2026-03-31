@@ -965,6 +965,9 @@
 
 .pd-poster-item {
   transition-delay: var(--pd-delay, 0s);
+  width: min(100%, 1000px);
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .pd-poster-label {
@@ -995,19 +998,7 @@
 .pd-poster-frame {
   border-radius: var(--radius-lg, 20px);
   overflow: hidden;
-  border: 1px solid var(--light-300, #EEEDF6);
   background: var(--section-light-alt, #F8F7FC);
-  box-shadow:
-    0 4px 24px rgba(0, 0, 0, 0.04),
-    0 1px 0 rgba(255, 255, 255, 0.8) inset;
-  transition: box-shadow var(--transition-base, 0.35s), transform var(--transition-base, 0.35s);
-}
-
-.pd-poster-frame:hover {
-  box-shadow:
-    0 8px 40px rgba(78, 76, 176, 0.10),
-    0 1px 0 rgba(255, 255, 255, 0.8) inset;
-  transform: translateY(-3px);
 }
 
 .pd-poster-img {
