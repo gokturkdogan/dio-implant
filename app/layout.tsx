@@ -14,6 +14,7 @@ import "./styles/products-index.css";
 import "./styles/product-carousel.css";
 import "./styles/catalog-page.css";
 import "./styles/admin-panel.css";
+import "./styles/contact.css";
 import { NavbarShell } from "../components/common/navbar-shell";
 import { NavbarEnhancements } from "../components/common/navbar-enhancements";
 

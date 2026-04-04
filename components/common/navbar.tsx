@@ -23,6 +23,7 @@ export function Navbar() {
     pathname,
     "/dio-akademi/egitim-takvimi",
   );
+  const contactActive = pathMatches(pathname, "/iletisim");
 
   return (
     <header className="header" id="header">
@@ -190,8 +191,8 @@ export function Navbar() {
                 <li className="nav-dropdown-item" role="none"><a href="#" className="nav-dropdown-link" role="menuitem">Sertifikalar</a></li>
               </ul>
             </li>
-            <li className="nav-item">
-              <a href="#">İletişim / Bayi Ağı</a>
+            <li className={`nav-item${contactActive ? " active" : ""}`}>
+              <Link href="/iletisim">İletişim / Bayi Ağı</Link>
             </li>
           </ul>
         </nav>

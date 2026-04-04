@@ -1,0 +1,452 @@
+/* İletişim & Bayi Ağı (homepage.css değişkenleri) */
+
+/* ===================== Page shell ===================== */
+
+.ct-page {
+  padding-top: 0;
+  overflow-x: hidden;
+}
+
+.ct-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding-left: max(var(--page-gutter), env(safe-area-inset-left, 0px));
+  padding-right: max(var(--page-gutter), env(safe-area-inset-right, 0px));
+  box-sizing: border-box;
+}
+
+/* ===================== Hero (katalog banner stili) ===================== */
+
+.ct-hero {
+  position: relative;
+  width: 100%;
+  margin: 0 0 1.25rem;
+  padding: clamp(3rem, 6vw, 4rem) max(var(--page-gutter), 1rem);
+  min-height: min(48vh, 420px);
+  display: grid;
+  align-items: center;
+  background-image: url("https://res.cloudinary.com/drjz8v617/image/upload/dowland-banner.webp");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  color: #fff;
+  overflow: hidden;
+  box-shadow: 0 24px 50px rgba(49, 47, 114, 0.25);
+}
+
+.ct-hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    120deg,
+    rgba(12, 11, 26, 0.8) 0%,
+    rgba(19, 18, 37, 0.62) 42%,
+    rgba(78, 76, 176, 0.48) 100%
+  );
+}
+
+.ct-hero-inner {
+  position: relative;
+  z-index: 1;
+  width: min(1200px, 100%);
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.45rem 0.7rem;
+}
+
+.ct-hero-copy {
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.ct-hero-copy h1 {
+  margin: 0.2rem 0 0.55rem;
+  font-size: clamp(1.6rem, 3vw, 2.3rem);
+}
+
+.ct-hero-copy h1 em {
+  font-style: normal;
+  background: var(--gradient-text);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.ct-hero-copy p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.ct-eyebrow {
+  margin: 0;
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-weight: 700;
+  opacity: 0.9;
+}
+
+.ct-hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  justify-content: flex-end;
+  align-items: center;
+  flex: 0 0 auto;
+}
+
+.ct-hero-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  text-decoration: none;
+  border-radius: 999px;
+  padding: 0.72rem 1.15rem;
+  font-weight: 600;
+  font-size: 0.88rem;
+  border: 1px solid transparent;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+  cursor: pointer;
+}
+
+.ct-hero-btn:hover {
+  transform: translateY(-1px);
+}
+
+.ct-hero-btn--primary {
+  background: #fff;
+  color: #33306f;
+  box-shadow: 0 10px 24px rgba(34, 31, 93, 0.2);
+}
+
+.ct-hero-btn--ghost {
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(255, 255, 255, 0.35);
+  color: #fff;
+}
+
+@media (max-width: 900px) {
+  .ct-hero-inner {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .ct-hero-actions {
+    justify-content: flex-start;
+  }
+}
+
+/* ===================== Sections ===================== */
+
+.ct-section {
+  padding: clamp(2.5rem, 6vw, 4rem) 0;
+}
+
+.ct-section--alt {
+  background: var(--section-light-alt);
+}
+
+.ct-section-head {
+  margin-bottom: clamp(1.5rem, 3.5vw, 2.25rem);
+}
+
+.ct-section-head .section-tag {
+  margin-bottom: 0.75rem;
+}
+
+.ct-section-title {
+  font-family: var(--font-primary);
+  font-size: clamp(1.35rem, 2.8vw, 1.75rem);
+  font-weight: 700;
+  color: var(--text-dark);
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  margin-bottom: 0.5rem;
+}
+
+.ct-section-title em {
+  font-style: normal;
+  color: var(--primary);
+}
+
+.ct-section-lead {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+  max-width: 40rem;
+}
+
+/* ===================== Shared: icons & detail list ===================== */
+
+.ct-icon {
+  flex-shrink: 0;
+  color: var(--primary);
+}
+
+.ct-detail-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.ct-detail-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  font-size: 0.95rem;
+  color: var(--text-body);
+  line-height: 1.5;
+}
+
+.ct-detail-list a {
+  color: var(--primary-dark);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color var(--transition-fast);
+}
+
+.ct-detail-list a:hover {
+  color: var(--primary);
+  text-decoration: underline;
+}
+
+.ct-detail-list--compact {
+  gap: 0.6rem;
+}
+
+.ct-detail-list--compact li {
+  font-size: 0.88rem;
+}
+
+/* ===================== Map button ===================== */
+
+.ct-map-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin-top: 1.25rem;
+  padding: 0.6rem 1.15rem;
+  border-radius: var(--radius-full);
+  font-family: var(--font-primary);
+  font-size: 0.84rem;
+  font-weight: 600;
+  text-decoration: none;
+  color: var(--light-100);
+  background: var(--gradient-accent);
+  box-shadow: 0 4px 16px rgba(78, 76, 176, 0.25);
+  transition: transform var(--transition-base), box-shadow var(--transition-base);
+}
+
+.ct-map-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 28px rgba(78, 76, 176, 0.35);
+}
+
+.ct-map-btn--sm {
+  margin-top: 0.85rem;
+  padding: 0.5rem 0.95rem;
+  font-size: 0.8rem;
+}
+
+/* ===================== KATMAN 1: HQ ===================== */
+
+.ct-hq-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(1.5rem, 3.5vw, 2.5rem);
+}
+
+@media (min-width: 860px) {
+  .ct-hq-grid {
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+  }
+}
+
+.ct-hq-info {
+  min-width: 0;
+}
+
+.ct-hq-map-shell {
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  border: 1px solid rgba(78, 76, 176, 0.12);
+  box-shadow: 0 8px 32px rgba(12, 11, 26, 0.06);
+  background: var(--light-300);
+}
+
+.ct-hq-map {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  border: 0;
+}
+
+/* ===================== KATMAN 2: Bölge Ofisleri ===================== */
+
+.ct-offices-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+}
+
+@media (min-width: 640px) {
+  .ct-offices-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.ct-office-card {
+  border-radius: var(--radius-lg);
+  background: var(--light-100);
+  border: 1px solid rgba(78, 76, 176, 0.1);
+  padding: clamp(1.15rem, 2.5vw, 1.5rem);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  transition: border-color var(--transition-base), box-shadow var(--transition-base), transform var(--transition-base);
+}
+
+.ct-office-card:hover {
+  border-color: rgba(78, 76, 176, 0.25);
+  box-shadow: 0 12px 40px rgba(12, 11, 26, 0.08);
+  transform: translateY(-2px);
+}
+
+.ct-office-name {
+  font-family: var(--font-primary);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-dark);
+  margin: 0;
+}
+
+.ct-office-coverage {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.55rem;
+  font-size: 0.84rem;
+  color: var(--text-muted);
+  line-height: 1.45;
+  padding: 0.55rem 0.75rem;
+  border-radius: var(--radius-md);
+  background: linear-gradient(135deg, rgba(78, 76, 176, 0.06) 0%, rgba(157, 141, 241, 0.04) 100%);
+  border: 1px solid rgba(78, 76, 176, 0.08);
+}
+
+.ct-office-coverage .ct-icon {
+  margin-top: 1px;
+  color: var(--accent);
+}
+
+/* ===================== KATMAN 3: Bayiler ===================== */
+
+.ct-dealers-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+@media (min-width: 560px) {
+  .ct-dealers-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 960px) {
+  .ct-dealers-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.ct-dealer-card {
+  border-radius: var(--radius-lg);
+  background: var(--light-100);
+  border: 1px solid rgba(78, 76, 176, 0.1);
+  padding: clamp(1rem, 2vw, 1.25rem);
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  transition: border-color var(--transition-base), box-shadow var(--transition-base), transform var(--transition-base);
+}
+
+.ct-dealer-card:hover {
+  border-color: rgba(78, 76, 176, 0.25);
+  box-shadow: 0 8px 28px rgba(12, 11, 26, 0.07);
+  transform: translateY(-2px);
+}
+
+.ct-dealer-name {
+  font-family: var(--font-primary);
+  font-size: 0.98rem;
+  font-weight: 700;
+  color: var(--text-dark);
+  margin: 0;
+}
+
+.ct-dealer-region {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  line-height: 1.45;
+}
+
+.ct-dealer-region .ct-icon {
+  color: var(--accent);
+  margin-top: 1px;
+}
+
+.ct-dealer-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding-top: 0.35rem;
+  border-top: 1px solid rgba(78, 76, 176, 0.08);
+}
+
+.ct-dealer-meta-item {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.84rem;
+  color: var(--text-body);
+}
+
+.ct-dealer-meta-item .ct-icon {
+  width: 16px;
+  height: 16px;
+}
+
+.ct-dealer-meta-item a {
+  color: var(--primary-dark);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color var(--transition-fast);
+}
+
+.ct-dealer-meta-item a:hover {
+  color: var(--primary);
+  text-decoration: underline;
+}
+
+/* ===================== Responsive polish ===================== */
+
+@media (max-width: 639px) {
+  .ct-offices-grid {
+    gap: 1rem;
+  }
+
+  .ct-office-card,
+  .ct-dealer-card {
+    padding: 1rem;
+  }
+}
