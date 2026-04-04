@@ -1,0 +1,440 @@
+/* Ürünler index — katalog hero + ürün kartları */
+
+/* ===================== Keyframes ===================== */
+
+@keyframes pi-orb-drift {
+  0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.5; }
+  33%  { transform: translate(12px, -20px) scale(1.08); opacity: 0.8; }
+  66%  { transform: translate(-8px, 10px) scale(0.96); opacity: 0.6; }
+}
+
+@keyframes pi-fade-up {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pi-fade-up-sm {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pi-hex-float {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-14px) rotate(12deg); }
+}
+
+@keyframes pi-ring-spin {
+  to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+@keyframes pi-glow-spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes pi-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(157, 141, 241, 0.35); }
+  50% { box-shadow: 0 0 0 8px rgba(157, 141, 241, 0); }
+}
+
+/* ===================== Page shell ===================== */
+
+.products-index-page {
+  padding-top: 0;
+  overflow-x: hidden;
+}
+
+.pi-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding-left: max(var(--page-gutter), env(safe-area-inset-left, 0px));
+  padding-right: max(var(--page-gutter), env(safe-area-inset-right, 0px));
+  box-sizing: border-box;
+}
+
+/* ===================== Hero ===================== */
+
+.pi-hero {
+  position: relative;
+  background: var(--gradient-hero);
+  overflow: hidden;
+  min-height: min(100svh, 58rem);
+  display: flex;
+  flex-direction: column;
+}
+
+.pi-hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 90% 80% at 80% 15%, rgba(78, 76, 176, 0.4) 0%, transparent 55%),
+    radial-gradient(ellipse 55% 45% at 8% 85%, rgba(157, 141, 241, 0.15) 0%, transparent 48%);
+  pointer-events: none;
+}
+
+/* --- Ambient layer --- */
+
+.pi-hero-ambient {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.pi-hero-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(56px);
+  animation: pi-orb-drift 16s ease-in-out infinite;
+}
+
+.pi-hero-orb--a {
+  width: min(480px, 60vw);
+  height: min(480px, 60vw);
+  top: -15%;
+  right: -10%;
+  background: radial-gradient(circle, rgba(157, 141, 241, 0.5) 0%, rgba(78, 76, 176, 0.12) 50%, transparent 72%);
+}
+
+.pi-hero-orb--b {
+  width: min(360px, 48vw);
+  height: min(360px, 48vw);
+  bottom: -8%;
+  left: -6%;
+  background: radial-gradient(circle, rgba(78, 76, 176, 0.45) 0%, rgba(54, 52, 148, 0.1) 50%, transparent 68%);
+  animation-delay: -5s;
+  animation-duration: 20s;
+}
+
+.pi-hero-orb--c {
+  width: min(240px, 32vw);
+  height: min(240px, 32vw);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(157, 141, 241, 0.2);
+  animation-delay: -8s;
+  animation-duration: 13s;
+}
+
+.pi-hero-grid-lines {
+  position: absolute;
+  inset: 0;
+  opacity: 0.06;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.4) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.35) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: radial-gradient(ellipse 70% 65% at 50% 45%, black 20%, transparent 68%);
+}
+
+/* Floating hexagons */
+.pi-hero-hex {
+  position: absolute;
+  width: 48px;
+  height: 48px;
+  border: 1.5px solid rgba(157, 141, 241, 0.22);
+  border-radius: 12px;
+  transform-origin: center;
+  animation: pi-hex-float 10s ease-in-out infinite;
+}
+
+.pi-hero-hex--1 {
+  top: 18%;
+  right: 12%;
+  width: 56px;
+  height: 56px;
+  border-color: rgba(157, 141, 241, 0.3);
+  animation-delay: 0s;
+  transform: rotate(30deg);
+}
+
+.pi-hero-hex--2 {
+  bottom: 22%;
+  left: 8%;
+  width: 40px;
+  height: 40px;
+  animation-delay: -3s;
+  animation-duration: 14s;
+  transform: rotate(-15deg);
+}
+
+.pi-hero-hex--3 {
+  top: 55%;
+  right: 22%;
+  width: 32px;
+  height: 32px;
+  border-color: rgba(78, 76, 176, 0.25);
+  animation-delay: -6s;
+  animation-duration: 12s;
+  transform: rotate(45deg);
+}
+
+/* Decorative ring */
+.pi-hero-ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: min(620px, 80vw);
+  height: min(620px, 80vw);
+  border-radius: 50%;
+  border: 1px dashed rgba(157, 141, 241, 0.15);
+  animation: pi-ring-spin 90s linear infinite;
+}
+
+.pi-hero-ring::before {
+  content: "";
+  position: absolute;
+  top: -5px;
+  left: 50%;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 16px var(--accent-glow);
+  animation: pi-pulse 2.5s ease-in-out infinite;
+}
+
+/* --- Hero content --- */
+
+.pi-hero-inner {
+  position: relative;
+  z-index: 2;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 100%;
+  box-sizing: border-box;
+  padding-top: clamp(5.5rem, 12vw, 7.5rem);
+  padding-bottom: clamp(4rem, 8vw, 6rem);
+}
+
+.pi-hero-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+/* Badge */
+.pi-hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: fit-content;
+  padding: 0.3rem 0.8rem;
+  border-radius: var(--radius-full);
+  background: rgba(157, 141, 241, 0.13);
+  border: 1px solid rgba(157, 141, 241, 0.32);
+  color: var(--accent);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 1.15rem;
+  animation: pi-fade-up 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.05s backwards;
+}
+
+.pi-hero-badge-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 12px var(--accent-glow);
+}
+
+/* Title */
+.pi-hero-title {
+  font-family: var(--font-primary);
+  font-size: clamp(2.2rem, 5.5vw, 3.75rem);
+  font-weight: 800;
+  color: var(--light-100);
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+  margin: 0 auto 1rem;
+  max-width: 18ch;
+  animation: pi-fade-up 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.12s backwards;
+}
+
+.pi-hero-title em {
+  font-style: normal;
+  background: var(--gradient-text);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Lead */
+.pi-hero-lead {
+  font-size: clamp(0.95rem, 2.2vw, 1.1rem);
+  color: rgba(255, 255, 255, 0.72);
+  max-width: 38rem;
+  line-height: 1.7;
+  margin: 0 auto 1.75rem;
+  animation: pi-fade-up 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.2s backwards;
+}
+
+/* Action buttons */
+.pi-hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1rem;
+  justify-content: center;
+  animation: pi-fade-up 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.36s backwards;
+}
+
+.pi-hero-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--radius-full);
+  text-decoration: none;
+  font-family: var(--font-primary);
+  font-size: 0.88rem;
+  font-weight: 700;
+  overflow: hidden;
+  transition: transform var(--transition-base), box-shadow var(--transition-base);
+}
+
+.pi-hero-btn:hover {
+  transform: translateY(-2px);
+}
+
+.pi-hero-btn:active {
+  transform: translateY(0);
+}
+
+.pi-hero-btn--primary {
+  color: var(--dark-900);
+  background: linear-gradient(135deg, var(--light-100) 0%, rgba(248, 247, 252, 0.97) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow:
+    0 8px 32px rgba(12, 11, 26, 0.3),
+    0 0 0 1px rgba(157, 141, 241, 0.15);
+}
+
+.pi-hero-btn--primary:hover {
+  box-shadow:
+    0 16px 48px rgba(78, 76, 176, 0.35),
+    0 0 0 1px rgba(157, 141, 241, 0.3);
+}
+
+.pi-hero-btn-glow {
+  position: absolute;
+  inset: -50%;
+  background: conic-gradient(from 200deg, transparent, rgba(157, 141, 241, 0.3), transparent 40%);
+  animation: pi-glow-spin 12s linear infinite;
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+.pi-hero-btn-label,
+.pi-hero-btn svg {
+  position: relative;
+  z-index: 1;
+}
+
+.pi-hero-btn--primary svg {
+  opacity: 0.75;
+  transition: transform var(--transition-base);
+}
+
+.pi-hero-btn--primary:hover svg {
+  transform: translateY(3px);
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .pi-hero-orb,
+  .pi-hero-hex,
+  .pi-hero-ring,
+  .pi-hero-ring::before,
+  .pi-hero-btn-glow {
+    animation: none;
+  }
+  .pi-hero-badge,
+  .pi-hero-title,
+  .pi-hero-lead,
+  .pi-hero-actions {
+    animation: none;
+  }
+  .pi-hero-btn:hover {
+    transform: none;
+  }
+}
+
+/* ===================== Catalog blocks ===================== */
+
+.pi-catalog {
+  scroll-margin-top: 6.5rem;
+  padding: clamp(2rem, 5vw, 3.5rem) 0 clamp(3.5rem, 8vw, 5rem);
+  background: var(--section-light);
+}
+
+.pi-block {
+  scroll-margin-top: 6rem;
+  margin-bottom: clamp(2.5rem, 6vw, 3.75rem);
+}
+
+.pi-block:last-child {
+  margin-bottom: 0;
+}
+
+.pi-block-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.5rem 1rem;
+  margin-bottom: 1.35rem;
+  padding-bottom: 0.85rem;
+  border-bottom: 2px solid rgba(78, 76, 176, 0.12);
+}
+
+.pi-block-title {
+  font-family: var(--font-primary);
+  font-size: clamp(1.2rem, 2.5vw, 1.5rem);
+  font-weight: 700;
+  color: var(--text-dark);
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+.pi-block-meta {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.pi-subsection {
+  margin-bottom: 2rem;
+}
+
+.pi-subsection:last-child {
+  margin-bottom: 0;
+}
+
+.pi-subtitle {
+  font-family: var(--font-primary);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--primary-dark);
+  margin: 0 0 1rem;
+}
+
+/* ===================== Empty ===================== */
+
+.pi-empty {
+  text-align: center;
+  padding: clamp(3rem, 10vw, 5rem) var(--page-gutter);
+  color: var(--text-muted);
+}
+
+.pi-empty h1 {
+  font-family: var(--font-primary);
+  color: var(--text-dark);
+  font-size: 1.35rem;
+  margin-bottom: 0.5rem;
+}

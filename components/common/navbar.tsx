@@ -13,6 +13,7 @@ export function Navbar() {
   const pathname = usePathname() ?? "";
 
   const homeActive = pathname === "/";
+  const productsActive = pathMatches(pathname, "/urunler");
   const digitalActive = pathMatches(pathname, "/digital-solutions");
   const corporateActive = pathMatches(pathname, "/about");
   const dioNaviActive = pathMatches(pathname, "/digital-solutions/dio-navi");
@@ -45,9 +46,11 @@ export function Navbar() {
               <Link href="/">Anasayfa</Link>
             </li>
 
-            <li className="nav-item nav-item-dropdown">
+            <li
+              className={`nav-item nav-item-dropdown${productsActive ? " active" : ""}`}
+            >
               <div className="nav-dropdown-row">
-                <a href="#" className="nav-dropdown-trigger">
+                <Link href="/urunler" className="nav-dropdown-trigger">
                   Ürünler
                   <svg
                     className="nav-dropdown-caret"
@@ -63,7 +66,7 @@ export function Navbar() {
                   >
                     <path d="M6 9l6 6 6-6" />
                   </svg>
-                </a>
+                </Link>
                 <button
                   type="button"
                   className="nav-dropdown-expand"
@@ -189,9 +192,6 @@ export function Navbar() {
             </li>
             <li className="nav-item">
               <a href="#">İletişim / Bayi Ağı</a>
-            </li>
-            <li className="nav-item">
-              <a href="#">İndirme</a>
             </li>
           </ul>
         </nav>

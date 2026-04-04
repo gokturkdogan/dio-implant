@@ -4,20 +4,10 @@ import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import type { Category } from "@/db/schema/category";
 import type { Product } from "@/db/schema/product";
-
-type MenuNested = {
-  kind: "nested";
-  root: Category;
-  subBlocks: Array<{ sub: Category; products: Product[] }>;
-};
-
-type MenuFlat = { kind: "flat"; root: Category; products: Product[] };
-
-type MenuNode = MenuNested | MenuFlat;
-
-function sortByName<T extends { name: string }>(items: T[]): T[] {
-  return [...items].sort((a, b) => a.name.localeCompare(b.name, "tr"));
-}
+import {
+  buildProductCatalogTree,
+  type ProductCatalogNode,
+} from "@/lib/product-catalog-tree";
 
 function ParentChevron() {
   return (
@@ -86,45 +76,9 @@ export function NavbarProductsMenu() {
     };
   }, []);
 
-  const menuNodes = useMemo((): MenuNode[] => {
+  const menuNodes = useMemo((): ProductCatalogNode[] => {
     if (!categories?.length || !products) return [];
-
-    const roots = sortByName(categories.filter((c) => c.parentId == null));
-
-    const childrenByRoot = new Map<number, Category[]>();
-    for (const c of categories) {
-      if (c.parentId == null) continue;
-      const list = childrenByRoot.get(c.parentId) ?? [];
-      list.push(c);
-      childrenByRoot.set(c.parentId, list);
-    }
-    for (const [, list] of childrenByRoot) sortByName(list);
-
-    const productsByCategory = new Map<number, Product[]>();
-    for (const p of products) {
-      const list = productsByCategory.get(p.categoryId) ?? [];
-      list.push(p);
-      productsByCategory.set(p.categoryId, list);
-    }
-    for (const [, list] of productsByCategory) sortByName(list);
-
-    const out: MenuNode[] = [];
-    for (const root of roots) {
-      const subs = childrenByRoot.get(root.id) ?? [];
-      if (subs.length) {
-        const subBlocks = subs
-          .map((sub) => ({
-            sub,
-            products: productsByCategory.get(sub.id) ?? [],
-          }))
-          .filter((b) => b.products.length > 0);
-        if (subBlocks.length) out.push({ kind: "nested", root, subBlocks });
-        continue;
-      }
-      const direct = productsByCategory.get(root.id) ?? [];
-      if (direct.length) out.push({ kind: "flat", root, products: direct });
-    }
-    return out;
+    return buildProductCatalogTree(categories, products);
   }, [categories, products]);
 
   if (categories === null || products === null) {
