@@ -3,3 +3,6 @@ export * from "./product";
 export * from "./site-popup";
 export * from "./admin-settings";
 export * from "./seminars";
+export * from "./site-contact";
+export * from "./regional-office";
+export * from "./authorized-dealer";

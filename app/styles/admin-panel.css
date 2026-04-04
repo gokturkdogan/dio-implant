@@ -1570,6 +1570,10 @@ a.admin-table-action-btn {
   box-shadow: var(--admin-shadow-lg);
 }
 
+.admin-mini-modal--wide {
+  width: min(640px, 100%);
+}
+
 .admin-mini-modal__head {
   display: flex;
   align-items: center;
@@ -1603,6 +1607,47 @@ a.admin-table-action-btn {
   margin-top: 4px;
   border-top: 1px solid var(--admin-stroke);
   flex-shrink: 0;
+}
+
+.admin-contact-form .admin-field textarea {
+  width: 100%;
+  min-height: 72px;
+  resize: vertical;
+  border-radius: var(--admin-radius-md);
+  border: 1px solid var(--admin-stroke);
+  background: var(--admin-input-bg);
+  color: var(--admin-text);
+  padding: 10px 12px;
+  font: inherit;
+  box-sizing: border-box;
+}
+
+.admin-contact-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px 16px;
+}
+
+.admin-contact-grid .admin-field--full {
+  grid-column: 1 / -1;
+}
+
+@media (max-width: 720px) {
+  .admin-contact-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.admin-contact-form__actions {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--admin-stroke);
+}
+
+.admin-table-ellipsis {
+  display: inline-block;
+  max-width: 220px;
+  vertical-align: bottom;
 }
 
 /* ── Repeatable rows ── */

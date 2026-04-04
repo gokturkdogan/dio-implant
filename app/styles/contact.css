@@ -255,6 +255,10 @@
   font-size: 0.8rem;
 }
 
+.ct-map-btn .ct-icon {
+  color: #fff;
+}
+
 /* ===================== KATMAN 1: HQ ===================== */
 
 .ct-hq-grid {
@@ -289,6 +293,31 @@
   border: 0;
 }
 
+.ct-hq-map--placeholder {
+  background: linear-gradient(135deg, rgba(78, 76, 176, 0.08) 0%, rgba(157, 141, 241, 0.06) 100%);
+  min-height: 200px;
+}
+
+.ct-hq-center-label {
+  margin: -0.25rem 0 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--primary-dark);
+}
+
+.ct-empty-inline {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.ct-empty-block {
+  margin: 0;
+  padding: 1.5rem 0;
+  font-size: 0.95rem;
+  color: var(--text-muted);
+}
+
 /* ===================== KATMAN 2: Bölge Ofisleri ===================== */
 
 .ct-offices-grid {
@@ -318,6 +347,11 @@
   border-color: rgba(78, 76, 176, 0.25);
   box-shadow: 0 12px 40px rgba(12, 11, 26, 0.08);
   transform: translateY(-2px);
+}
+
+.ct-office-card .ct-map-btn {
+  width: fit-content;
+  align-self: flex-start;
 }
 
 .ct-office-name {

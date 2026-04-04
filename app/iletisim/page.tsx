@@ -1,6 +1,10 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { Footer } from "@/components/common/footer";
+import { authorizedDealerService } from "@/services/authorized-dealer.service";
+import { regionalOfficeService } from "@/services/regional-office.service";
+import { siteContactService } from "@/services/site-contact.service";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "İletişim & Bayi Ağı | DIO Implant",
@@ -8,97 +12,14 @@ export const metadata: Metadata = {
     "DIO Implant Türkiye genel merkez, bölge müdürlükleri ve yetkili bayi iletişim bilgileri.",
 };
 
-/* ───────── Mock Data ───────── */
+function isDirectionsUrl(s: string) {
+  const t = s.trim();
+  return t.startsWith("http://") || t.startsWith("https://");
+}
 
-const HQ = {
-  name: "DIO Implant Türkiye Genel Merkez",
-  address: "Esentepe Mah. Büyükdere Cad. No:201 Kat:8, Şişli / İstanbul",
-  phone: "+90 212 555 00 00",
-  email: "info@dioimplant.com.tr",
-  hours: "Pazartesi – Cuma: 09:00 – 18:00 · Cumartesi: 09:00 – 13:00",
-  mapUrl:
-    "https://www.google.com/maps/dir/?api=1&destination=41.0766,29.0114",
-};
-
-const REGIONAL_OFFICES = [
-  {
-    name: "Marmara Bölge Müdürlüğü",
-    coverage: ["İstanbul", "Kocaeli", "Bursa", "Tekirdağ", "Edirne", "Balıkesir"],
-    phone: "+90 212 555 01 01",
-    email: "marmara@dioimplant.com.tr",
-    address: "Ataşehir Finans Merkezi, Kat:3, Ataşehir / İstanbul",
-    mapUrl: "https://www.google.com/maps/dir/?api=1&destination=40.9923,29.1244",
-  },
-  {
-    name: "İç Anadolu Bölge Müdürlüğü",
-    coverage: ["Ankara", "Konya", "Eskişehir", "Kayseri", "Sivas"],
-    phone: "+90 312 444 02 02",
-    email: "icanadolu@dioimplant.com.tr",
-    address: "Çankaya İş Merkezi, B Blok No:12, Çankaya / Ankara",
-    mapUrl: "https://www.google.com/maps/dir/?api=1&destination=39.9208,32.8541",
-  },
-  {
-    name: "Ege Bölge Müdürlüğü",
-    coverage: ["İzmir", "Aydın", "Muğla", "Denizli", "Manisa"],
-    phone: "+90 232 555 03 03",
-    email: "ege@dioimplant.com.tr",
-    address: "Alsancak İş Kuleleri, Kat:5, Konak / İzmir",
-    mapUrl: "https://www.google.com/maps/dir/?api=1&destination=38.4347,27.1428",
-  },
-  {
-    name: "Karadeniz Bölge Müdürlüğü",
-    coverage: ["Trabzon", "Rize", "Artvin", "Ordu", "Samsun", "Giresun"],
-    phone: "+90 462 555 04 04",
-    email: "karadeniz@dioimplant.com.tr",
-    address: "Forum Trabzon, Kat:2, Ortahisar / Trabzon",
-    mapUrl: "https://www.google.com/maps/dir/?api=1&destination=41.0015,39.7178",
-  },
-];
-
-const DEALERS = [
-  {
-    name: "Dental Medikal A.Ş.",
-    region: "Antalya, Isparta, Burdur",
-    contact: "Dr. Ahmet Yılmaz",
-    phone: "+90 242 555 10 10",
-    web: "https://dentalmedikal.com.tr",
-  },
-  {
-    name: "Çukurova İmplant Ltd.",
-    region: "Adana, Mersin, Hatay, Osmaniye",
-    contact: "Mehmet Kara",
-    phone: "+90 322 555 20 20",
-    web: null,
-  },
-  {
-    name: "Güneydoğu Dental",
-    region: "Gaziantep, Şanlıurfa, Diyarbakır, Mardin",
-    contact: "Fatma Demir",
-    phone: "+90 342 555 30 30",
-    web: "https://guneydogudental.com",
-  },
-  {
-    name: "Trakya Medikal",
-    region: "Edirne, Kırklareli, Tekirdağ",
-    contact: "Burak Özkan",
-    phone: "+90 284 555 40 40",
-    web: null,
-  },
-  {
-    name: "Doğu Dental Çözümleri",
-    region: "Erzurum, Kars, Ağrı, Van",
-    contact: "Elif Aydın",
-    phone: "+90 442 555 50 50",
-    web: "https://dogudental.com.tr",
-  },
-  {
-    name: "Batı Akdeniz Dental",
-    region: "Muğla, Burdur, Denizli",
-    contact: "Serkan Kılıç",
-    phone: "+90 252 555 60 60",
-    web: null,
-  },
-];
+function isEmbedUrl(s: string) {
+  return s.trim().startsWith("https://");
+}
 
 /* ───────── Icons ───────── */
 
@@ -171,13 +92,25 @@ function IconRegion() {
   );
 }
 
-/* ───────── Page ───────── */
+export default async function IletisimPage() {
+  const [contact, offices, dealers] = await Promise.all([
+    siteContactService.get(),
+    regionalOfficeService.listAll(),
+    authorizedDealerService.listAll(),
+  ]);
 
-export default function IletisimPage() {
+  const hqTitle = contact?.companyName?.trim() || "Genel merkez";
+  const centerLabel = contact?.centerLabel?.trim() ?? "";
+  const hqAddress = contact?.address?.trim() ?? "";
+  const hqPhone = contact?.phone?.trim() ?? "";
+  const hqEmail = contact?.email?.trim() ?? "";
+  const hqHours = contact?.hours?.trim() ?? "";
+  const mapDirections = contact?.mapDirectionsUrl?.trim() ?? "";
+  const mapEmbed = contact?.mapEmbedUrl?.trim() ?? "";
+
   return (
     <>
       <main className="ct-page">
-        {/* Hero — katalog sayfası ile aynı banner yapı */}
         <section className="ct-hero">
           <div className="ct-hero-inner">
             <div className="ct-hero-copy">
@@ -193,74 +126,98 @@ export default function IletisimPage() {
           </div>
         </section>
 
-        {/* ────── KATMAN 1: Genel Merkez ────── */}
         <section className="ct-section ct-hq" id="genel-merkez" aria-labelledby="ct-hq-title">
           <div className="ct-inner">
             <div className="ct-section-head">
               <div className="section-tag"><span className="tag-line" /><span className="tag-text">Genel Merkez</span></div>
-              <h2 id="ct-hq-title" className="ct-section-title">{HQ.name}</h2>
+              <h2 id="ct-hq-title" className="ct-section-title">{hqTitle}</h2>
+              {centerLabel ? <p className="ct-hq-center-label">{centerLabel}</p> : null}
             </div>
 
             <div className="ct-hq-grid">
               <div className="ct-hq-info">
                 <ul className="ct-detail-list">
-                  <li><IconPin /><span>{HQ.address}</span></li>
-                  <li><IconPhone /><a href={`tel:${HQ.phone.replace(/\s/g, "")}`}>{HQ.phone}</a></li>
-                  <li><IconMail /><a href={`mailto:${HQ.email}`}>{HQ.email}</a></li>
-                  <li><IconClock /><span>{HQ.hours}</span></li>
+                  {hqAddress ? (
+                    <li><IconPin /><span>{hqAddress}</span></li>
+                  ) : null}
+                  {hqPhone ? (
+                    <li><IconPhone /><a href={`tel:${hqPhone.replace(/\s/g, "")}`}>{hqPhone}</a></li>
+                  ) : null}
+                  {hqEmail ? (
+                    <li><IconMail /><a href={`mailto:${hqEmail}`}>{hqEmail}</a></li>
+                  ) : null}
+                  {hqHours ? (
+                    <li><IconClock /><span>{hqHours}</span></li>
+                  ) : null}
                 </ul>
 
-                <a href={HQ.mapUrl} target="_blank" rel="noopener noreferrer" className="ct-map-btn">
-                  <IconMap /> Yol tarifi al
-                </a>
+                {!hqAddress && !hqPhone && !hqEmail && !hqHours ? (
+                  <p className="ct-empty-inline">İletişim bilgileri yönetim panelinden eklenebilir.</p>
+                ) : null}
+
+                {isDirectionsUrl(mapDirections) ? (
+                  <a href={mapDirections} target="_blank" rel="noopener noreferrer" className="ct-map-btn">
+                    <IconMap /> Yol tarifi al
+                  </a>
+                ) : null}
               </div>
 
               <div className="ct-hq-map-shell">
-                <iframe
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3007.123!2d29.0114!3d41.0766!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNDHCsDA0JzM1LjgiTiAyOcKwMDAnNDEuMCJF!5e0!3m2!1str!2str!4v1"
-                  className="ct-hq-map"
-                  title="DIO Implant Genel Merkez Harita"
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                  allowFullScreen
-                />
+                {isEmbedUrl(mapEmbed) ? (
+                  <iframe
+                    src={mapEmbed}
+                    className="ct-hq-map"
+                    title="Genel merkez haritası"
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                    allowFullScreen
+                  />
+                ) : (
+                  <div className="ct-hq-map ct-hq-map--placeholder" role="img" aria-label="Harita önizlemesi yok" />
+                )}
               </div>
             </div>
           </div>
         </section>
 
-        {/* ────── KATMAN 2: Bölge Müdürlükleri ────── */}
         <section className="ct-section ct-section--alt ct-offices" id="bolge-mudurlukler" aria-labelledby="ct-offices-title">
           <div className="ct-inner">
             <div className="ct-section-head">
               <div className="section-tag"><span className="tag-line" /><span className="tag-text">Bölge Müdürlükleri</span></div>
-              <h2 id="ct-offices-title" className="ct-section-title">Türkiye genelinde <em>4 bölge ofisi</em></h2>
+              <h2 id="ct-offices-title" className="ct-section-title">
+                Türkiye genelinde <em>{offices.length} bölge ofisi</em>
+              </h2>
               <p className="ct-section-lead">Her bölge müdürlüğü kendi sorumluluk alanındaki illere satış ve teknik destek sağlar.</p>
             </div>
 
-            <div className="ct-offices-grid">
-              {REGIONAL_OFFICES.map((office) => (
-                <article key={office.name} className="ct-office-card">
-                  <h3 className="ct-office-name">{office.name}</h3>
-                  <div className="ct-office-coverage">
-                    <IconRegion />
-                    <span>{office.coverage.join(", ")}</span>
-                  </div>
-                  <ul className="ct-detail-list ct-detail-list--compact">
-                    <li><IconPin /><span>{office.address}</span></li>
-                    <li><IconPhone /><a href={`tel:${office.phone.replace(/\s/g, "")}`}>{office.phone}</a></li>
-                    <li><IconMail /><a href={`mailto:${office.email}`}>{office.email}</a></li>
-                  </ul>
-                  <a href={office.mapUrl} target="_blank" rel="noopener noreferrer" className="ct-map-btn ct-map-btn--sm">
-                    <IconMap /> Yol tarifi
-                  </a>
-                </article>
-              ))}
-            </div>
+            {offices.length === 0 ? (
+              <p className="ct-empty-block">Henüz kayıtlı bölge ofisi yok.</p>
+            ) : (
+              <div className="ct-offices-grid">
+                {offices.map((office) => (
+                  <article key={office.id} className="ct-office-card">
+                    <h3 className="ct-office-name">{office.name}</h3>
+                    <div className="ct-office-coverage">
+                      <IconRegion />
+                      <span>{office.coverage}</span>
+                    </div>
+                    <ul className="ct-detail-list ct-detail-list--compact">
+                      <li><IconPin /><span>{office.address}</span></li>
+                      <li><IconPhone /><a href={`tel:${office.phone.replace(/\s/g, "")}`}>{office.phone}</a></li>
+                      <li><IconMail /><a href={`mailto:${office.email}`}>{office.email}</a></li>
+                    </ul>
+                    {isDirectionsUrl(office.mapDirectionsUrl) ? (
+                      <a href={office.mapDirectionsUrl} target="_blank" rel="noopener noreferrer" className="ct-map-btn ct-map-btn--sm">
+                        <IconMap /> Yol tarifi
+                      </a>
+                    ) : null}
+                  </article>
+                ))}
+              </div>
+            )}
           </div>
         </section>
 
-        {/* ────── KATMAN 3: Yetkili Bayiler ────── */}
         <section className="ct-section ct-dealers" id="yetkili-bayiler" aria-labelledby="ct-dealers-title">
           <div className="ct-inner">
             <div className="ct-section-head">
@@ -269,30 +226,38 @@ export default function IletisimPage() {
               <p className="ct-section-lead">Yetkili bayilerimiz aracılığıyla ürün temini, teknik destek ve eğitim hizmetlerine ulaşabilirsiniz.</p>
             </div>
 
-            <div className="ct-dealers-grid">
-              {DEALERS.map((d) => (
-                <article key={d.name} className="ct-dealer-card">
-                  <h3 className="ct-dealer-name">{d.name}</h3>
-                  <div className="ct-dealer-region">
-                    <IconRegion />
-                    <span>{d.region}</span>
-                  </div>
-                  <div className="ct-dealer-meta">
-                    {d.contact ? <span className="ct-dealer-meta-item"><IconUser /> {d.contact}</span> : null}
-                    <span className="ct-dealer-meta-item">
-                      <IconPhone />
-                      <a href={`tel:${d.phone.replace(/\s/g, "")}`}>{d.phone}</a>
-                    </span>
-                    {d.web ? (
+            {dealers.length === 0 ? (
+              <p className="ct-empty-block">Henüz kayıtlı yetkili bayi yok.</p>
+            ) : (
+              <div className="ct-dealers-grid">
+                {dealers.map((d) => (
+                  <article key={d.id} className="ct-dealer-card">
+                    <h3 className="ct-dealer-name">{d.name}</h3>
+                    <div className="ct-dealer-region">
+                      <IconRegion />
+                      <span>{d.serviceRegion}</span>
+                    </div>
+                    <div className="ct-dealer-meta">
+                      {d.contactPerson ? (
+                        <span className="ct-dealer-meta-item"><IconUser /> {d.contactPerson}</span>
+                      ) : null}
                       <span className="ct-dealer-meta-item">
-                        <IconGlobe />
-                        <a href={d.web} target="_blank" rel="noopener noreferrer">{d.web.replace(/^https?:\/\//, "")}</a>
+                        <IconPhone />
+                        <a href={`tel:${d.phone.replace(/\s/g, "")}`}>{d.phone}</a>
                       </span>
-                    ) : null}
-                  </div>
-                </article>
-              ))}
-            </div>
+                      {d.website && isDirectionsUrl(d.website) ? (
+                        <span className="ct-dealer-meta-item">
+                          <IconGlobe />
+                          <a href={d.website} target="_blank" rel="noopener noreferrer">
+                            {d.website.replace(/^https?:\/\//, "")}
+                          </a>
+                        </span>
+                      ) : null}
+                    </div>
+                  </article>
+                ))}
+              </div>
+            )}
           </div>
         </section>
       </main>
