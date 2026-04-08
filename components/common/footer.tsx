@@ -41,16 +41,13 @@ export function Footer() {
               <h4 className="footer-col-title">Ürünler</h4>
               <ul>
                 <li>
-                  <a href="#">İmplant Sistemleri</a>
+                  <a href="/katalog">Katalog Görüntüle</a>
                 </li>
                 <li>
-                  <a href="#">Dijital Çözümler</a>
+                  <a href="digital-solutions/dio-navi">DIO NAVI</a>
                 </li>
                 <li>
-                  <a href="#">Cerrahi Setler</a>
-                </li>
-                <li>
-                  <a href="#">Protez Komponentleri</a>
+                  <a href="digital-solutions/full-arch">DIO NAVI Full Arch</a>
                 </li>
               </ul>
             </div>
@@ -61,13 +58,10 @@ export function Footer() {
                   <Link href="/about">Hakkımızda</Link>
                 </li>
                 <li>
-                  <a href="#">DIO Akademi</a>
+                  <a href="/egitim-takvimi">DIO Akademi</a>
                 </li>
                 <li>
-                  <a href="#">Ar-Ge & İnovasyon</a>
-                </li>
-                <li>
-                  <a href="#">Kariyer</a>
+                  <a href="#">Sertifikalar</a>
                 </li>
               </ul>
             </div>
@@ -75,16 +69,13 @@ export function Footer() {
               <h4 className="footer-col-title">Destek</h4>
               <ul>
                 <li>
-                  <a href="#">İletişim</a>
+                  <a href="/iletisim">İletişim</a>
                 </li>
                 <li>
-                  <a href="#">Bayi Ağı</a>
+                  <a href="/iletisim#yetkili-bayiler">Bayi Ağı</a>
                 </li>
                 <li>
-                  <a href="#">Katalog Görüntüle</a>
-                </li>
-                <li>
-                  <a href="#">SSS</a>
+                  <a href="/iletisim#bolge-mudurlukler">Bölge Müdürlükleri</a>
                 </li>
               </ul>
             </div>
