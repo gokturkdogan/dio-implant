@@ -9,6 +9,7 @@ const NAV = [
   { href: "/admin-panel/iletisim-bilgileri", label: "İletişim bilgileri" },
   { href: "/admin-panel/ofisler", label: "Bölge ofisleri" },
   { href: "/admin-panel/bayiler", label: "Yetkili bayiler" },
+  { href: "/admin-panel/bakim-modu", label: "Bakım modu" },
 ] as const;
 
 type Props = {
