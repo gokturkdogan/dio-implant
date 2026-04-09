@@ -1878,20 +1878,32 @@ img {
   word-break: break-word;
 }
 
-/* Responsive */
+/* Responsive — mobilde bloklar tek sütun, alt alta */
 @media (max-width: 900px) {
   .core-tech-inner {
     gap: 1.5rem;
+    align-items: stretch;
+  }
+
+  .core-tech-row--title {
+    text-align: center;
+  }
+
+  .core-tech-row--title .section-tag {
+    justify-content: center;
+    width: 100%;
   }
 
   .core-tech-row--desc-pin {
     flex-direction: column;
-    gap: 1.25rem;
+    align-items: center;
+    gap: 1.5rem;
   }
 
   .core-tech-row--desc-pin > .core-tech-desc {
     flex: none;
     width: 100%;
+    max-width: 100%;
     text-align: center;
   }
 
@@ -1900,19 +1912,38 @@ img {
   }
 
   .core-tech-row--desc-pin > .ct-pin {
+    flex: none;
     width: 100%;
+    max-width: 100%;
+    display: flex;
+    justify-content: center;
   }
 
   .core-tech-row--pins {
     width: 100%;
     display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 1rem;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
   }
 
-  .ct-pin {
-    flex: 1 1 min(260px, 100%);
+  /* Masaüstü negatif margin üst üste binmeyi mobilde kaldırır */
+  .core-tech-row--pins.-mid,
+  .core-tech-row--pins.-start {
+    margin-top: 0;
+    justify-content: center;
+  }
+
+  .core-tech-row--pins > .ct-pin {
+    flex: none;
+    width: 100%;
+    max-width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+
+  .core-tech .ct-pin {
+    flex: none;
     left: auto !important;
     right: auto !important;
     top: auto !important;
