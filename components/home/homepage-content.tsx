@@ -378,62 +378,93 @@ export function HomepageContent() {
 
       <section className="core-tech" id="coreTech">
         <div className="core-tech-inner">
-          <div className="core-tech-text">
+          <div className="core-tech-row core-tech-row--title">
             <div className="section-tag">
               <span className="tag-line" />
               <span className="tag-text">Neden DIO Implant</span>
             </div>
             <h2 className="core-tech-title">
-              ÇEKİRDEK
-              <br />
-              <em>TEKNOLOJİ</em>
+              Diş Hekimliğinde Dijital <em>Paradigma Değişimi</em>
             </h2>
-            <p className="core-tech-desc">
-              DIO&apos;nun teknolojik uzmanlığı, sürdürülebilir Ar-Ge yatırımı ve
-              küresel pazar anlayışıyla diş hekimliğinin paradigmasını yeniden
-              tanımlar.
-            </p>
           </div>
 
-          <div className="core-tech-pins">
-            <div className="ct-pin ct-pin-1" data-animate>
-              <div className="pin-shape pin-lg">
-                <img
-                  src="https://res.cloudinary.com/drjz8v617/image/upload/tech-bg-1.webp"
-                  alt=""
-                />
-                <div className="pin-content">
-                  <p className="pin-subtitle">DIO Implant Çift Yüzey İşlemi</p>
-                  <h3 className="pin-title">Hibrit Yüzey Teknolojisi</h3>
-                </div>
+          <div className="core-tech-row core-tech-row--desc-pin">
+            <p className="core-tech-desc">
+              DIO Implant, sürdürülebilir Ar-Ge yatırımları ve küresel pazar
+              tecrübesiyle, geleneksel yöntemleri geride bırakarak dijital diş
+              hekimliğinin standartlarını belirler. Teknolojimiz, cerrahi
+              hassasiyeti biyolojik uyumla birleştirir.
+            </p>
+            <div
+              className="ct-pin ct-pin-3 pin-shape pin-md"
+              data-animate
+            >
+              <img
+                src="https://res.cloudinary.com/drjz8v617/image/upload/tech-bg-2.webp"
+                alt=""
+              />
+              <div className="pin-content -modify">
+                <h3 className="pin-title">
+                  ⁠DIOnavi: Tam Dijital Cerrahi <br />Rehber Sistem
+                </h3>
+                <p className="pin-subtitle">
+                  DIOnavi, hastadan alınan dijital verilerin <br /> AI destekli
+                  yazılımlarla işlendiği tam kapalı döngü bir cerrahi sistemdir.
+                  Kişiye özel üretilen cerrahi kılavuzlar, implantın açısını,
+                  derinliğini ve konumunu 0.9 mm&apos;nin altındaki sapma payıyla
+                  belirler. Kesisiz operasyon imkanı sunan bu sistem, cerrahi
+                  travmayı minimize ederken protez aşamasında <br /> mükemmel pasif uyum
+                  sağlar.
+                </p>
               </div>
             </div>
-            <div className="ct-pin ct-pin-2" data-animate>
-              <div className="pin-shape pin-md">
-                <img
-                  src="https://res.cloudinary.com/drjz8v617/image/upload/tech-bg-3.webp"
-                  alt=""
-                />
-                <div className="pin-content">
-                  <p className="pin-subtitle">
-                    DIO Vakum UV Aktivasyon Teknolojisi
-                  </p>
-                  <h3 className="pin-title">UV Implant</h3>
-                </div>
+          </div>
+
+          <div className="core-tech-row core-tech-row--pins -mid">
+
+            <div
+              className="ct-pin ct-pin-2 pin-shape pin-md"
+              data-animate
+            >
+              <img
+                src="https://res.cloudinary.com/drjz8v617/image/upload/tech-bg-3.webp"
+                alt=""
+              />
+              <div className="pin-content">
+                <h3 className="pin-title">
+                  ⁠UV Active: Vakum UV <br /> Aktivasyon Teknolojisi
+                </h3>
+                <p className="pin-subtitle">
+                  DIO Vakum UV teknolojisi, implant yüzeyinde<br />  zamanla oluşan
+                  hidrokarbon tabakasını 20 saniye <br /> içinde temizleyerek yüzeyi
+                  biyolojik olarak yeniden aktive eder. Vakumlu ortamda uygulanan
+                  UV ışınları, implantı &quot;süper hidrofilik&quot; hale getirerek
+                  kanın ve proteinlerin yüzeye anında yayılmasını sağlar.<br />  Bu
+                  teknoloji, osseointegrasyon başarısını en zorlu vakalarda bile
+                  garanti altına alan bir <br /> güvenlik katmanıdır
+                </p>
               </div>
             </div>
-            <div className="ct-pin ct-pin-3" data-animate>
-              <div className="pin-shape pin-md">
-                <img
-                  src="https://res.cloudinary.com/drjz8v617/image/upload/tech-bg-2.webp"
-                  alt=""
-                />
-                <div className="pin-content">
-                  <p className="pin-subtitle">
-                    Tam dijital implant cerrahi sistemi.
-                  </p>
-                  <h3 className="pin-title">DIO NAVI Kılavuz Sistemi</h3>
-                </div>
+          </div>
+          <div className="core-tech-row core-tech-row--pins -start">
+            <div
+              className="ct-pin ct-pin-1 pin-shape pin-lg"
+              data-animate
+            >
+              <img
+                src="https://res.cloudinary.com/drjz8v617/image/upload/tech-bg-1.webp"
+                alt=""
+              />
+              <div className="pin-content -modify">
+                <h3 className="pin-title">⁠HSA: Hibrit Yüzey Teknolojisi</h3>
+                <p className="pin-subtitle">
+                  DIO&apos;nun geliştirdiği HSA yüzey teknolojisi,<br /> implantın makro
+                  ve mikro yapısını optimize<br /> eder. Kumlama ve asitli aşındırma
+                  işlemlerinin<br /> hibrit kombinasyonu, kemik hücrelerinin yüzeye
+                  tutunma hızını artırırken, uzun dönemli <br />kemik korunumu sağlar. Bu
+                  çift yüzey işlemi, <br />her türlü kemik   yoğunluğunda güvenilir ve<br />
+                  hızlı bir iyileşme süreci sunar.
+                </p>
               </div>
             </div>
           </div>

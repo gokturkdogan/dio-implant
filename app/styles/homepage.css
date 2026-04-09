@@ -98,6 +98,7 @@ button {
 }
 
 img {
+  width: 100%;
   max-width: 100%;
   display: block;
 }
@@ -1630,18 +1631,38 @@ img {
   margin: 0 auto;
   padding: 0 clamp(1.5rem, 4vw, 3rem);
   display: flex;
-  align-items: center;
-  gap: 60px;
-  min-height: 560px;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 2rem;
   position: relative;
   z-index: 1;
 }
 
-/* Left text block */
-.core-tech-text {
-  flex: 0 0 340px;
+/* Üç satır: başlık | desc + pin3 | pin1 + pin2 */
+.core-tech-row {
+  width: 100%;
+}
+
+.core-tech-row--title {
   position: relative;
   z-index: 2;
+}
+
+.core-tech-row--desc-pin {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.core-tech-row--desc-pin > .core-tech-desc {
+  flex: 0 0 clamp(280px, 36%, 460px);
+  min-width: 0;
+  position: relative;
+  z-index: 2;
+}
+
+.core-tech-row--desc-pin > .ct-pin {
+  min-width: 0;
 }
 
 .section-tag {
@@ -1669,12 +1690,13 @@ img {
 
 .core-tech-title {
   font-family: var(--font-primary);
-  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-size: clamp(1rem, 3vw, 3rem);
   font-weight: 900;
-  line-height: 1.05;
+  line-height: 1.1;
   letter-spacing: -0.03em;
   color: var(--text-dark);
-  margin-bottom: 24px;
+  margin-bottom: 0;
+  width: 100%;
 }
 
 .core-tech-title em {
@@ -1689,8 +1711,8 @@ img {
   font-size: 0.95rem;
   color: var(--text-body);
   line-height: 1.7;
-  margin-bottom: 36px;
-  max-width: 340px;
+  margin: 0;
+  max-width: 100%;
 }
 
 .core-tech-btn {
@@ -1710,23 +1732,36 @@ img {
   color: var(--primary-dark);
 }
 
-/* Right: Staggered pins area */
-.core-tech-pins {
-  flex: 1;
-  position: relative;
-  height: 560px;
+.core-tech-row--pins {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  align-items: stretch;
+}
+
+.core-tech-row--pins.-mid {
+  display: flex;
+  justify-content: center;
+  margin-top: -450px;
+}
+
+.core-tech-row--pins.-start {
+  display: flex;
+  justify-content: flex-start;
+  margin-top: -450px;
 }
 
 .ct-pin {
-  position: absolute;
-  transition: transform var(--transition-slow);
-  opacity: 0;
-  transform: translateY(30px);
+  position: relative;
+  min-width: 0;
+  transition: transform var(--transition-slow), opacity var(--transition-base);
+  opacity: 1;
+  transform: none;
 }
 
 .ct-pin.in-view {
   opacity: 1;
-  transform: translateY(0);
+  transform: none;
 }
 
 .ct-pin:hover {
@@ -1734,31 +1769,31 @@ img {
 }
 
 .ct-pin-1 {
-  left: 0;
-  bottom: 0;
+  left: auto;
+  bottom: auto;
   z-index: 1;
   transition-delay: 0.15s;
 }
 
 .ct-pin-2 {
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
+  left: auto;
+  top: auto;
+  transform: none;
   z-index: 2;
   transition-delay: 0.3s;
 }
 
 .ct-pin-2.in-view {
-  transform: translate(-50%, -50%);
+  transform: none;
 }
 
 .ct-pin-2:hover {
-  transform: translate(-50%, calc(-50% - 8px)) !important;
+  transform: translateY(-8px) !important;
 }
 
 .ct-pin-3 {
-  right: 0;
-  top: -10px;
+  right: auto;
+  top: auto;
   z-index: 3;
   transition-delay: 0.45s;
 }
@@ -1775,14 +1810,25 @@ img {
   filter: drop-shadow(0 20px 50px rgba(78, 76, 176, 0.3));
 }
 
-.pin-lg {
-  width: 280px;
-  height: 400px;
+/* Baloncuk boyutu; contain ile görsel üst/alt kesilmez */
+.pin-lg,
+.pin-md {
+  width: min(440px, 100%);
+  max-width: 100%;
+  height: min(520px, 88vh);
+  height: min(520px, 88dvh);
 }
 
-.pin-md {
-  width: 220px;
-  height: 320px;
+.core-tech .ct-pin.pin-shape > img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center center;
+  display: block;
+  z-index: 0;
+  filter: brightness(0.52) contrast(1.06);
 }
 
 .pin-shape svg.pin-mask {
@@ -1793,38 +1839,57 @@ img {
 
 .pin-content {
   position: absolute;
-  top: 38%;
+  top: 50%;
+  transform: translateY(-50%);
   left: 0;
   right: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
   text-align: center;
   padding: 0 28px;
+  max-height: calc(100% - 72px);
+  overflow: auto;
   z-index: 1;
 }
 
+.pin-content.-modify {
+  top:40%;
+}
+
 .pin-subtitle {
-  font-size: 0.68rem;
+  font-size: clamp(0.75rem, 1.85vw, 0.9rem);
   color: var(--light-300);
-  line-height: 1.5;
-  margin-bottom: 6px;
+  line-height: 1.6;
+  margin-bottom: 0;
+  font-weight: 500;
+  word-break: break-word;
 }
 
 .pin-title {
   font-family: var(--font-primary);
-  font-size: 1.2rem;
+  font-size: 1.06rem;
   font-weight: 800;
   color: var(--light-100);
   line-height: 1.2;
+  margin: 0;
+  word-break: break-word;
 }
 
 /* Responsive */
 @media (max-width: 900px) {
   .core-tech-inner {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 40px;
+    gap: 1.5rem;
   }
 
-  .core-tech-text {
+  .core-tech-row--desc-pin {
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .core-tech-row--desc-pin > .core-tech-desc {
     flex: none;
     width: 100%;
     text-align: center;
@@ -1834,31 +1899,24 @@ img {
     max-width: 100%;
   }
 
-  .core-tech-pins {
+  .core-tech-row--desc-pin > .ct-pin {
     width: 100%;
-    height: auto;
+  }
+
+  .core-tech-row--pins {
+    width: 100%;
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 24px;
+    gap: 1rem;
   }
 
   .ct-pin {
-    position: relative;
+    flex: 1 1 min(260px, 100%);
     left: auto !important;
     right: auto !important;
     top: auto !important;
     bottom: auto !important;
-  }
-
-  .pin-lg {
-    width: 200px;
-    height: 290px;
-  }
-
-  .pin-md {
-    width: 180px;
-    height: 260px;
   }
 
   .core-tech {
