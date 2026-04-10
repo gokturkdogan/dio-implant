@@ -65,7 +65,8 @@ type ThumbClass =
   | "admin-training-image-field__thumb--cover"
   | "admin-training-image-field__thumb--poster"
   | "admin-training-image-field__thumb--speaker"
-  | "admin-training-image-field__thumb--category";
+  | "admin-training-image-field__thumb--category"
+  | "admin-training-image-field__thumb--catalog-a4";
 
 type Props = {
   label: string;

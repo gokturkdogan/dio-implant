@@ -15,14 +15,6 @@ export type {
 export const ACADEMY_EVENT_GRID_COVER_URL =
   "https://www.dioimplant.com/file/images/dd665ea6-868b-46ba-b4f9-5a1b4730a469";
 
-/** Detay sayfası varsayılan poster görseli */
-export const ACADEMY_EVENT_POSTER_URL =
-  "https://www.dioimplant.com/file/tempImages/23dd084f-c4b6-48aa-93a0-b964fcbc7f6d";
-
-/** Konuşmacılarda varsayılan fotoğraf */
-export const ACADEMY_SPEAKER_PHOTO_URL =
-  "https://www.dioimplant.com/file/images/9cf9b75b-2c74-4327-833d-9d52cd32c2c2";
-
 export async function getTrainingEventsSorted() {
   return seminarService.listAll();
 }

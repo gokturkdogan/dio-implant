@@ -1163,6 +1163,11 @@ a.admin-table-action-btn {
   aspect-ratio: 1;
 }
 
+.admin-training-image-field__thumb--catalog-a4 {
+  width: 52px;
+  aspect-ratio: 210 / 297;
+}
+
 .admin-training-image-field__img {
   width: 100%;
   height: 100%;
@@ -1342,6 +1347,7 @@ a.admin-table-action-btn {
 /* ── Crop modal ── */
 
 .admin-crop-modal {
+  --admin-crop-image-cap: max(120px, min(68dvh, calc(100dvh - 260px)));
   position: fixed;
   inset: 0;
   z-index: 2100;
@@ -1361,6 +1367,9 @@ a.admin-table-action-btn {
 .admin-crop-modal__panel {
   position: relative;
   width: min(920px, 100%);
+  max-height: calc(100dvh - 40px);
+  display: flex;
+  flex-direction: column;
   border-radius: var(--admin-radius-lg);
   border: 1px solid var(--admin-stroke-strong);
   background: var(--admin-panel);
@@ -1374,6 +1383,7 @@ a.admin-table-action-btn {
 }
 
 .admin-crop-modal__header {
+  flex: 0 0 auto;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -1389,29 +1399,39 @@ a.admin-table-action-btn {
 
 .admin-crop-modal__cropper {
   position: relative;
+  flex: 0 1 auto;
+  min-height: 0;
   width: 100%;
-  height: min(62dvh, 520px);
-  background: #000;
-  display: grid;
-  place-items: center;
-  overflow: auto;
+  background: #0f0f12;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  overflow: hidden;
 }
 
 .admin-crop-modal__cropper .ReactCrop {
   max-width: 100%;
-  max-height: 100%;
+  max-height: var(--admin-crop-image-cap);
+}
+
+.admin-crop-modal__cropper .ReactCrop__child-wrapper {
+  max-width: 100%;
+  max-height: var(--admin-crop-image-cap);
 }
 
 .admin-crop-modal__image {
   display: block;
   max-width: 100%;
-  max-height: min(62dvh, 520px);
+  max-height: var(--admin-crop-image-cap);
   width: auto;
   height: auto;
+  object-fit: contain;
   user-select: none;
 }
 
 .admin-crop-modal__controls {
+  flex: 0 0 auto;
   display: flex;
   justify-content: space-between;
   align-items: center;

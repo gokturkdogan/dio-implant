@@ -41,7 +41,7 @@ export function Footer() {
               <h4 className="footer-col-title">Ürünler</h4>
               <ul>
                 <li>
-                  <a href="/katalog">Katalog Görüntüle</a>
+                  <a href="/kataloglar">Katalog Görüntüle</a>
                 </li>
                 <li>
                   <a href="digital-solutions/dio-navi">DIO NAVI</a>

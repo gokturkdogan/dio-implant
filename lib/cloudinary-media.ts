@@ -8,6 +8,13 @@ import { AppError } from "./errors";
 
 export const CATEGORIES_ROOT = "Categories";
 export const PRODUCTS_ROOT = "Products";
+export const CATALOGS_ROOT = "Catalogs";
+
+/** Katalog kapak görselleri: Catalogs/{baslik-slug}-{id} */
+export function catalogImageFolder(titleSlug: string, catalogId: number): string {
+  const base = titleSlug.trim() ? titleSlug.trim() : "katalog";
+  return `${CATALOGS_ROOT}/${base}-${catalogId}`;
+}
 
 export function categoryFolder(slug: string): string {
   return `${CATEGORIES_ROOT}/${slug}`;

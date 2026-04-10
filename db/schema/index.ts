@@ -7,3 +7,4 @@ export * from "./site-contact";
 export * from "./regional-office";
 export * from "./authorized-dealer";
 export * from "./site-maintenance";
+export * from "./site-catalog";

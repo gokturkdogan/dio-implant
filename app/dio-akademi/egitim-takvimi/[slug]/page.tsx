@@ -3,11 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Footer } from "../../../../components/common/footer";
-import {
-  ACADEMY_EVENT_POSTER_URL,
-  ACADEMY_SPEAKER_PHOTO_URL,
-  getTrainingBySlug,
-} from "../../../../lib/academy-training-events";
+import { getTrainingBySlug } from "../../../../lib/academy-training-events";
 
 export const dynamic = "force-dynamic";
 export const dynamicParams = true;
@@ -35,6 +31,7 @@ export default async function AcademyTrainingDetailPage({ params }: Props) {
 
   const speakers = ev.speakers ?? [];
   const curriculum = ev.curriculum ?? [];
+  const hasPoster = hasValidPosterUrl(ev.posterUrl);
 
   return (
     <>
@@ -66,19 +63,23 @@ export default async function AcademyTrainingDetailPage({ params }: Props) {
 
         {/* ── Poster + bilgi kartları ── */}
         <section className="acd-content-section">
-          <div className="ac-inner acd-content-grid">
-            <div className="acd-poster-col">
-              <div className="acd-poster-frame">
-                <Image
-                  src={ev.posterUrl ?? ACADEMY_EVENT_POSTER_URL}
-                  alt={`${ev.title} poster`}
-                  width={520}
-                  height={720}
-                  className="acd-poster-img"
-                  sizes="(max-width: 900px) 100vw, 440px"
-                />
+          <div
+            className={`ac-inner acd-content-grid${hasPoster ? "" : " acd-content-grid--no-poster"}`}
+          >
+            {hasPoster ? (
+              <div className="acd-poster-col">
+                <div className="acd-poster-frame">
+                  <Image
+                    src={String(ev.posterUrl).trim()}
+                    alt={`${ev.title} poster`}
+                    width={520}
+                    height={720}
+                    className="acd-poster-img"
+                    sizes="(max-width: 900px) 100vw, 440px"
+                  />
+                </div>
               </div>
-            </div>
+            ) : null}
             <div className="acd-body-col">
               <span className="acd-hero-chip">{ev.format}</span>
               <h2 className="acd-body-title">{ev.title}</h2>
@@ -178,14 +179,23 @@ export default async function AcademyTrainingDetailPage({ params }: Props) {
                 {speakers.map((sp, idx) => (
                   <div key={idx} className="acd-speaker-card">
                     <div className="acd-speaker-photo-wrap">
-                      <Image
-                        src={sp.photoUrl ?? ACADEMY_SPEAKER_PHOTO_URL}
-                        alt={sp.name}
-                        width={220}
-                        height={220}
-                        className="acd-speaker-photo"
-                        unoptimized={Boolean(sp.photoUrl)}
-                      />
+                      {hasValidSpeakerPhoto(sp.photoUrl) ? (
+                        <Image
+                          src={String(sp.photoUrl).trim()}
+                          alt={sp.name}
+                          width={220}
+                          height={220}
+                          className="acd-speaker-photo"
+                        />
+                      ) : (
+                        <div
+                          className="acd-speaker-photo-placeholder"
+                          role="img"
+                          aria-label={`${sp.name} — fotoğraf yok`}
+                        >
+                          <IconSpeakerUser />
+                        </div>
+                      )}
                     </div>
                     <div className="acd-speaker-body">
                       <h3 className="acd-speaker-name">{sp.name}</h3>
@@ -296,6 +306,37 @@ function IconPin() {
 function IconUser() {
   return (
     <svg className="acd-detail-row-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+      <circle cx="12" cy="7" r="4" />
+    </svg>
+  );
+}
+
+function hasValidSpeakerPhoto(url: string | undefined | null): boolean {
+  const t = String(url ?? "").trim();
+  return t.startsWith("https://") || t.startsWith("http://");
+}
+
+function hasValidPosterUrl(url: string | undefined | null): boolean {
+  const t = String(url ?? "").trim();
+  return t.startsWith("https://") || t.startsWith("http://");
+}
+
+/** Konuşmacı fotoğrafı yokken daire içi kullanıcı silüeti */
+function IconSpeakerUser() {
+  return (
+    <svg
+      className="acd-speaker-photo-placeholder__icon"
+      width="48"
+      height="48"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
       <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
       <circle cx="12" cy="7" r="4" />
     </svg>

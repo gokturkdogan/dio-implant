@@ -5,6 +5,7 @@ const NAV = [
   { href: "/admin-panel", label: "Popup Yönetimi" },
   { href: "/admin-panel/kategoriler", label: "Kategoriler" },
   { href: "/admin-panel/urunler", label: "Ürünler" },
+  { href: "/admin-panel/kataloglar", label: "Kataloglar" },
   { href: "/admin-panel/egitimler", label: "Eğitimler" },
   { href: "/admin-panel/iletisim-bilgileri", label: "İletişim bilgileri" },
   { href: "/admin-panel/ofisler", label: "Bölge ofisleri" },

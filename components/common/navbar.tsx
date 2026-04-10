@@ -24,6 +24,7 @@ export function Navbar() {
     "/dio-akademi/egitim-takvimi",
   );
   const contactActive = pathMatches(pathname, "/iletisim");
+  const catalogsActive = pathMatches(pathname, "/kataloglar");
 
   return (
     <header className="header" id="header">
@@ -193,6 +194,9 @@ export function Navbar() {
             </li>
             <li className={`nav-item${contactActive ? " active" : ""}`}>
               <Link href="/iletisim">İletişim / Bayi Ağı</Link>
+            </li>
+            <li className={`nav-item${catalogsActive ? " active" : ""}`}>
+              <Link href="/kataloglar">Kataloglar</Link>
             </li>
           </ul>
         </nav>

@@ -85,6 +85,20 @@
       "when": 1775500000000,
       "tag": "0011_site_maintenance",
       "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "7",
+      "when": 1775600000000,
+      "tag": "0012_site_catalogs",
+      "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "7",
+      "when": 1775700000000,
+      "tag": "0013_site_catalog_cover",
+      "breakpoints": true
     }
   ]
 }

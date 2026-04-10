@@ -103,7 +103,7 @@ export function HomepageContent() {
             <a href="/urunler" className="btn btn-primary">
               <span>Ürünleri Gör</span>
             </a>
-            <a href="#" className="btn btn-outline">
+            <a href="/kataloglar" className="btn btn-outline">
               <span>Katalog Görüntüle</span>
             </a>
           </div>

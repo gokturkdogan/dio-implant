@@ -24,6 +24,12 @@ const nextConfig: NextConfig = {
   async redirects() {
     return [
       {
+        source: "/favicon.ico",
+        destination:
+          "https://res.cloudinary.com/drjz8v617/image/upload/w_32,h_32,c_pad,f_png,q_auto/dio-logo-dark.webp",
+        permanent: false,
+      },
+      {
         source: "/kurumsal/hakkimizda",
         destination: "/about",
         permanent: true,
@@ -31,6 +37,11 @@ const nextConfig: NextConfig = {
       {
         source: "/digital-solutions/dio-navi/full-arch",
         destination: "/digital-solutions/full-arch",
+        permanent: true,
+      },
+      {
+        source: "/katalog",
+        destination: "/kataloglar",
         permanent: true,
       },
     ];

@@ -90,7 +90,7 @@ function posterSlotFromStored(item: unknown, idx: number): PosterSlot {
 async function uploadProductImage(
   file: File,
   slug: string,
-  kind: "main" | "poster" | "carousel" | "catalog",
+  kind: "main" | "poster" | "carousel",
   index?: number,
 ): Promise<string> {
   const fd = new FormData();
@@ -185,7 +185,6 @@ export function AdminProductsEditor({ mode, categories, initialProduct }: Props)
       .map((u) => ({ id: crypto.randomUUID(), preview: String(u).trim(), file: null, remoteUrl: String(u).trim() || null }))
       .filter((s) => s.preview.length > 0),
   );
-  const [catalogUrlDraft, setCatalogUrlDraft] = useState(initialProduct?.catalogUrl ?? "");
   const [openSections, setOpenSections] = useState<Record<SectionKey, boolean>>({
     productInfo: true,
     images: false,
@@ -245,7 +244,6 @@ export function AdminProductsEditor({ mode, categories, initialProduct }: Props)
             description: descriptionDraft.trim() || undefined,
             posterUrls: [],
             carouselImages: [],
-            catalogUrl: catalogUrlDraft.trim() || undefined,
           }),
         });
         const data = (await res.json()) as { product?: Product; error?: string };
@@ -291,7 +289,6 @@ export function AdminProductsEditor({ mode, categories, initialProduct }: Props)
             categoryId: catId,
             excerpt: excerptDraft.trim() || null,
             description: descriptionDraft.trim() || null,
-            catalogUrl: catalogUrlDraft.trim() || null,
           }),
         });
         const coreData = await coreRes.json();
@@ -343,7 +340,6 @@ export function AdminProductsEditor({ mode, categories, initialProduct }: Props)
     }
   }, [
     mode, initialProduct, nameDraft, categoryIdDraft, excerptDraft, descriptionDraft, mainFile, mainPreview,
-    catalogUrlDraft,
     buildPosterUrlsAfterUploads, buildCarouselUrlsAfterUploads, showToast, router,
   ]);
 
@@ -438,44 +434,6 @@ export function AdminProductsEditor({ mode, categories, initialProduct }: Props)
           open={openSections.technical}
           onToggle={toggleSection}
         >
-          <div className="admin-field admin-field--full">
-            <span style={{ fontWeight: 600, fontSize: 13, display: "block", marginBottom: 8 }}>Ürün kataloğu (PDF)</span>
-            <div className="admin-media-card">
-              <label className="admin-field admin-field--full" style={{ marginBottom: 0 }}>
-                <span>Katalog URL</span>
-                <input
-                  type="url"
-                  inputMode="url"
-                  placeholder="https://..."
-                  value={catalogUrlDraft}
-                  onChange={(e) => setCatalogUrlDraft(e.target.value)}
-                />
-              </label>
-              {catalogUrlDraft.trim() ? (
-                <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-                  <a
-                    href={catalogUrlDraft.trim()}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="admin-btn admin-btn--ghost"
-                  >
-                    Linki aç
-                  </a>
-                  <button
-                    type="button"
-                    className="admin-icon-btn admin-icon-btn--danger"
-                    onClick={() => setCatalogUrlDraft("")}
-                  >
-                    <IconX /> Temizle
-                  </button>
-                </div>
-              ) : null}
-              <p className="admin-upload__hint" style={{ margin: 0 }}>
-                PDF upload yerine doğrudan katalog URL'i kaydedilir.
-              </p>
-            </div>
-          </div>
-
           <div className="admin-field admin-field--full">
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
               <span style={{ fontWeight: 600, fontSize: 13 }}>Afiş görselleri</span>
