@@ -118,6 +118,9 @@ export default async function UrunDetayPage({
   const hasCatalog = catalogUrl.startsWith("http://") || catalogUrl.startsWith("https://");
 
   const categoryImageUrl = category?.imageUrl ?? parentCategory?.imageUrl ?? null;
+  const heroImageUrl = product.imageUrl?.trim()
+    ? product.imageUrl
+    : categoryImageUrl;
 
   return (
     <>
@@ -142,26 +145,17 @@ export default async function UrunDetayPage({
 
           <div className="pd-hero-inner pd-inner">
             <div className="pd-hero-grid">
-              {/* Left — Category image */}
+              {/* Left — Product main image (fallback: category) */}
               <div className="pd-hero-media" data-pd-animate="fade-right">
-                {categoryImageUrl ? (
+                {heroImageUrl ? (
                   <div className="pd-hero-img-frame">
                     <Image
-                      src={categoryImageUrl}
-                      alt={category?.name ?? "Kategori"}
-                      width={520}
-                      height={520}
-                      className="pd-hero-cat-img"
-                      sizes="(max-width: 768px) 280px, 440px"
-                      priority
-                    />
-                    <div className="pd-hero-img-glow" />
-                  </div>
-                ) : product.imageUrl ? (
-                  <div className="pd-hero-img-frame">
-                    <Image
-                      src={product.imageUrl}
-                      alt={product.name}
+                      src={heroImageUrl}
+                      alt={
+                        product.imageUrl?.trim()
+                          ? product.name
+                          : category?.name ?? "Kategori"
+                      }
                       width={520}
                       height={520}
                       className="pd-hero-cat-img"
