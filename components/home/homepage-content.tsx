@@ -50,7 +50,7 @@ export function HomepageContent() {
             <div className="slide-floats">
               <div className="slide-product">
                 <img
-                  src="https://res.cloudinary.com/drjz8v617/image/upload/banner-carusel-2.webp"
+                  src="https://res.cloudinary.com/drjz8v617/image/upload/banner-carusel-3.webp"
                   alt="DIO Implant"
                 />
               </div>
@@ -76,8 +76,8 @@ export function HomepageContent() {
             <div className="slide-floats">
               <div className="slide-product">
                 <img
-                  src="https://res.cloudinary.com/drjz8v617/image/upload/banner-carusel-3.webp"
-                  alt="DIO UF Surgical Kit"
+                  src="https://res.cloudinary.com/drjz8v617/image/upload/banner-carusel-2.webp"
+                  alt="IMPLANT"
                 />
               </div>
             </div>
