@@ -26,7 +26,7 @@ const nextConfig: NextConfig = {
       {
         source: "/favicon.ico",
         destination:
-          "https://res.cloudinary.com/drjz8v617/image/upload/w_32,h_32,c_pad,f_png,q_auto/dio-logo-dark.webp",
+          "https://res.cloudinary.com/drjz8v617/image/upload/w_32,h_32,c_pad,f_png,q_auto/dio-logo-original.webp",
         permanent: false,
       },
       {
