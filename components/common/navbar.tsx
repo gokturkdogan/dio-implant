@@ -163,6 +163,9 @@ export function Navbar() {
                 </li>
               </ul>
             </li>
+            <li className={`nav-item${catalogsActive ? " active" : ""}`}>
+              <Link href="/kataloglar">Kataloglar</Link>
+            </li>
             <li
               className={`nav-item nav-item-dropdown${corporateActive ? " active" : ""}`}
             >
@@ -193,10 +196,7 @@ export function Navbar() {
               </ul>
             </li>
             <li className={`nav-item${contactActive ? " active" : ""}`}>
-              <Link href="/iletisim">İletişim / Bayi Ağı</Link>
-            </li>
-            <li className={`nav-item${catalogsActive ? " active" : ""}`}>
-              <Link href="/kataloglar">Kataloglar</Link>
+              <Link href="/iletisim#yetkili-bayiler">Bayi Ağı</Link>
             </li>
           </ul>
         </nav>

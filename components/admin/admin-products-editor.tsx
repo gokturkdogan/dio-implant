@@ -19,7 +19,6 @@ type Props = {
 
 type PosterSlot = {
   id: string;
-  title: string;
   preview: string;
   file: File | null;
   remoteUrl: string | null;
@@ -66,23 +65,22 @@ function formatApiError(data: unknown, fallback: string): string {
 }
 
 function newPosterSlot(): PosterSlot {
-  return { id: crypto.randomUUID(), title: "", preview: "", file: null, remoteUrl: null };
+  return { id: crypto.randomUUID(), preview: "", file: null, remoteUrl: null };
 }
 
 function newCarouselSlot(): CarouselSlot {
   return { id: crypto.randomUUID(), preview: "", file: null, remoteUrl: null };
 }
 
-function posterSlotFromStored(item: unknown, idx: number): PosterSlot {
+function posterSlotFromStored(item: unknown, _idx: number): PosterSlot {
   if (typeof item === "string") {
     const url = item.trim();
-    return { id: crypto.randomUUID(), title: `Afiş ${idx + 1}`, preview: url, file: null, remoteUrl: url || null };
+    return { id: crypto.randomUUID(), preview: url, file: null, remoteUrl: url || null };
   }
   if (item && typeof item === "object") {
-    const rec = item as { title?: unknown; url?: unknown };
+    const rec = item as { url?: unknown };
     const url = String(rec.url ?? "").trim();
-    const title = String(rec.title ?? "").trim() || `Afiş ${idx + 1}`;
-    return { id: crypto.randomUUID(), title, preview: url, file: null, remoteUrl: url || null };
+    return { id: crypto.randomUUID(), preview: url, file: null, remoteUrl: url || null };
   }
   return newPosterSlot();
 }
@@ -206,7 +204,7 @@ export function AdminProductsEditor({ mode, categories, initialProduct }: Props)
     const out: Array<{ title: string; url: string }> = [];
     for (let i = 0; i < posterSlots.length; i++) {
       const s = posterSlots[i]!;
-      const title = s.title.trim() || `Afiş ${i + 1}`;
+      const title = `Afiş ${i + 1}`;
       if (s.file) out.push({ title, url: await uploadProductImage(s.file, slug, "poster", i) });
       else if (s.remoteUrl) out.push({ title, url: s.remoteUrl });
     }
@@ -430,7 +428,7 @@ export function AdminProductsEditor({ mode, categories, initialProduct }: Props)
           id="technical"
           icon={<IconFile />}
           title="Teknik bilgiler"
-          subtitle="Afiş başlıkları"
+          subtitle="Afiş görselleri"
           open={openSections.technical}
           onToggle={toggleSection}
         >
@@ -444,10 +442,7 @@ export function AdminProductsEditor({ mode, categories, initialProduct }: Props)
             <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
               {posterSlots.map((slot, idx) => (
                 <div key={slot.id} className="admin-media-card">
-                  <label className="admin-field admin-field--full" style={{ marginBottom: 8 }}>
-                    <span>Afiş başlığı</span>
-                    <input value={slot.title} onChange={(e) => setPosterSlots((rows) => rows.map((r) => r.id === slot.id ? { ...r, title: e.target.value } : r))} />
-                  </label>
+                  <p className="admin-muted" style={{ margin: "0 0 8px", fontSize: 12 }}>Afiş {idx + 1}</p>
                   <AdminCropImageField
                     label=""
                     help=""

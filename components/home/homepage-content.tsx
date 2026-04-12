@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Footer } from "../common/footer";
 import { HomepagePopup } from "./homepage-popup";
 import { HomepageEnhancements } from "./homepage-enhancements";
@@ -180,9 +181,9 @@ export function HomepageContent() {
 
               <button className="pcat-tab" data-tab="cerrahi">
                 <div className="pcat-tab-info">
-                  <span className="pcat-tab-name">Cerrahi Setler</span>
+                  <span className="pcat-tab-name">Tarama Sistemleri</span>
                   <span className="pcat-tab-desc">
-                    Cerrahi kitler ve yardımcı ekipmanlar
+                    DIO IOS, Medit i700, Medit i900
                   </span>
                 </div>
                 <span className="pcat-tab-arrow">
@@ -210,7 +211,7 @@ export function HomepageContent() {
                 />
                 <div className="pcat-image-glow" />
               </div>
-              <a href="#" className="btn btn-primary pcat-btn">
+              <Link href="/urunler" className="btn btn-primary pcat-btn">
                 <span>Daha Fazla Görüntüle</span>
                 <svg
                   width="18"
@@ -222,7 +223,7 @@ export function HomepageContent() {
                 >
                   <path d="M5 12h14M12 5l7 7-7 7" />
                 </svg>
-              </a>
+              </Link>
             </div>
 
             <div className="pcat-panel" data-panel="dijital">
@@ -233,7 +234,7 @@ export function HomepageContent() {
                 />
                 <div className="pcat-image-glow" />
               </div>
-              <a href="#" className="btn btn-primary pcat-btn">
+              <Link href="/urunler" className="btn btn-primary pcat-btn">
                 <span>Daha Fazla Görüntüle</span>
                 <svg
                   width="18"
@@ -245,7 +246,7 @@ export function HomepageContent() {
                 >
                   <path d="M5 12h14M12 5l7 7-7 7" />
                 </svg>
-              </a>
+              </Link>
             </div>
 
             <div className="pcat-panel" data-panel="cerrahi">
@@ -256,7 +257,7 @@ export function HomepageContent() {
                 />
                 <div className="pcat-image-glow" />
               </div>
-              <a href="#" className="btn btn-primary pcat-btn">
+              <Link href="/urunler" className="btn btn-primary pcat-btn">
                 <span>Daha Fazla Görüntüle</span>
                 <svg
                   width="18"
@@ -268,7 +269,7 @@ export function HomepageContent() {
                 >
                   <path d="M5 12h14M12 5l7 7-7 7" />
                 </svg>
-              </a>
+              </Link>
             </div>
           </div>
         </div>

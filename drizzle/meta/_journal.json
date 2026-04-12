@@ -99,6 +99,13 @@
       "when": 1775700000000,
       "tag": "0013_site_catalog_cover",
       "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "7",
+      "when": 1775800000000,
+      "tag": "0014_category_sort_order",
+      "breakpoints": true
     }
   ]
 }

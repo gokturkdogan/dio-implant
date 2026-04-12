@@ -2,6 +2,7 @@ import Script from "next/script";
 import type { ReactNode } from "react";
 
 const NAV = [
+  { href: "/admin-panel/kullanim-klavuzu", label: "Kullanım kılavuzu" },
   { href: "/admin-panel", label: "Popup Yönetimi" },
   { href: "/admin-panel/kategoriler", label: "Kategoriler" },
   { href: "/admin-panel/urunler", label: "Ürünler" },
@@ -139,7 +140,7 @@ export function AdminPanelShell({ title, activeHref, children }: Props) {
               <div className="admin-session">
                 <span className="admin-session__label">Oturum</span>
                 <span className="admin-session__timer" id="adminSessionTimer">
-                  15:00
+                  —:——
                 </span>
               </div>
             </div>

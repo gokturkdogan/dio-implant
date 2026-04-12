@@ -1,14 +1,46 @@
 "use client";
 
-import { useState } from "react";
+import { useId, useState } from "react";
 import { useRouter } from "next/navigation";
 import Script from "next/script";
 
+function IconEye() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path
+        d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"
+        stroke="currentColor"
+        strokeWidth="1.75"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <circle cx="12" cy="12" r="3" stroke="currentColor" strokeWidth="1.75" />
+    </svg>
+  );
+}
+
+function IconEyeOff() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path
+        d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"
+        stroke="currentColor"
+        strokeWidth="1.75"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path d="M1 1l22 22" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" />
+    </svg>
+  );
+}
+
 export function AdminLoginClient({ nextPath }: { nextPath: string }) {
   const router = useRouter();
+  const pwdId = useId();
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -41,10 +73,14 @@ export function AdminLoginClient({ nextPath }: { nextPath: string }) {
   return (
     <main className="admin-shell">
       <div className="admin-auth">
+        <div className="admin-auth__glow" aria-hidden="true" />
         <div className="admin-auth__card">
           <div className="admin-auth__brand">
             <div className="admin-auth__mark">DIO</div>
-            <div className="admin-auth__title">Admin Panel</div>
+            <div className="admin-auth__brand-text">
+              <h1 className="admin-auth__title">Yönetim paneli</h1>
+              <p className="admin-auth__subtitle">Devam etmek için oturum açın</p>
+            </div>
           </div>
 
           <form className="admin-auth__form" onSubmit={submit}>
@@ -54,30 +90,42 @@ export function AdminLoginClient({ nextPath }: { nextPath: string }) {
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 autoComplete="username"
-                placeholder="admin"
+                placeholder="Kullanıcı adınız"
               />
             </label>
 
-            <label className="admin-field">
+            <label className="admin-field" htmlFor={pwdId}>
               <span>Parola</span>
-              <input
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                type="password"
-                autoComplete="current-password"
-                placeholder="••••••••"
-              />
+              <div className="admin-auth-password">
+                <input
+                  id={pwdId}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  type={showPassword ? "text" : "password"}
+                  autoComplete="current-password"
+                  placeholder="••••••••"
+                />
+                <button
+                  type="button"
+                  className="admin-auth-password__toggle"
+                  onClick={() => setShowPassword((v) => !v)}
+                  aria-label={showPassword ? "Parolayı gizle" : "Parolayı göster"}
+                  aria-pressed={showPassword}
+                >
+                  {showPassword ? <IconEyeOff /> : <IconEye />}
+                </button>
+              </div>
             </label>
 
             {error ? <div className="admin-auth__error">{error}</div> : null}
 
-            <button className="admin-btn admin-btn--primary" disabled={loading}>
-              {loading ? "Giriş yapılıyor..." : "Giriş yap"}
+            <button className="admin-btn admin-btn--primary admin-auth__submit" disabled={loading}>
+              {loading ? "Giriş yapılıyor…" : "Giriş yap"}
             </button>
 
-            <div className="admin-auth__hint">
-              Bu sayfa navigasyonda görünmez; sadece URL ile erişilir.
-            </div>
+            <p className="admin-auth__hint">
+              Bu sayfa menüde listelenmez; doğrudan adres ile açılır.
+            </p>
           </form>
         </div>
       </div>

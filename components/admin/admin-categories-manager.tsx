@@ -4,11 +4,14 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import type { Category } from "@/db/schema/category";
 import { MAX_ADMIN_IMAGE_UPLOAD_MB } from "@/lib/admin-image-upload";
+import { sortByOrderThenName } from "@/lib/category-sort";
 import { AdminCropImageField } from "./admin-crop-image-field";
 import { AdminToast, type AdminToastState, type AdminToastVariant } from "./admin-toast";
 
 type Props = {
   initialCategories: Category[];
+  /** `categoryId` string anahtar → ürün sayısı */
+  initialProductCounts?: Record<string, number>;
 };
 
 async function uploadCategoryImage(file: File, slug: string): Promise<string> {
@@ -30,6 +33,15 @@ async function uploadCategoryImage(file: File, slug: string): Promise<string> {
   return data.url;
 }
 
+function productCountFor(
+  map: Record<string, number> | null | undefined,
+  categoryId: number,
+): number {
+  if (map == null || typeof map !== "object") return 0;
+  const n = map[String(categoryId)];
+  return typeof n === "number" && Number.isFinite(n) ? n : 0;
+}
+
 function formatApiError(data: unknown, fallback: string): string {
   if (
     data &&
@@ -42,8 +54,14 @@ function formatApiError(data: unknown, fallback: string): string {
   return fallback;
 }
 
-export function AdminCategoriesManager({ initialCategories }: Props) {
+export function AdminCategoriesManager({
+  initialCategories,
+  initialProductCounts,
+}: Props) {
   const [categories, setCategories] = useState<Category[]>(initialCategories);
+  const [productCounts, setProductCounts] = useState<Record<string, number>>(
+    () => initialProductCounts ?? {},
+  );
   const [toast, setToast] = useState<AdminToastState>(null);
   const [mounted, setMounted] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
@@ -57,6 +75,7 @@ export function AdminCategoriesManager({ initialCategories }: Props) {
   const [imageFile, setImageFile] = useState<File | null>(null);
   const initialStoredImageRef = useRef<string | null>(null);
   const [saving, setSaving] = useState(false);
+  const [reordering, setReordering] = useState(false);
 
   const showToast = useCallback((message: string, variant: AdminToastVariant) => {
     setToast({ id: Date.now(), message, variant });
@@ -64,15 +83,19 @@ export function AdminCategoriesManager({ initialCategories }: Props) {
 
   const syncList = useCallback(async () => {
     const res = await fetch("/api/admin/categories", { credentials: "include" });
-    const data = (await res.json()) as { categories?: Category[]; error?: string };
-    if (res.ok && data.categories) setCategories(data.categories);
+    const data = (await res.json()) as {
+      categories?: Category[];
+      productCounts?: Record<string, number>;
+      error?: string;
+    };
+    if (res.ok && data.categories) {
+      setCategories(data.categories);
+      setProductCounts(data.productCounts ?? {});
+    }
   }, []);
 
   const roots = useMemo(
-    () =>
-      categories
-        .filter((c) => c.parentId == null)
-        .sort((a, b) => a.name.localeCompare(b.name, "tr")),
+    () => sortByOrderThenName(categories.filter((c) => c.parentId == null)),
     [categories],
   );
 
@@ -279,6 +302,62 @@ export function AdminCategoriesManager({ initialCategories }: Props) {
     }
   };
 
+  const sortedSiblings = useCallback((ref: Category): Category[] => {
+    return sortByOrderThenName(
+      categories.filter(
+        (x) =>
+          (ref.parentId == null && x.parentId == null) ||
+          (ref.parentId != null && x.parentId === ref.parentId),
+      ),
+    );
+  }, [categories]);
+
+  const moveCategoryInList = useCallback(
+    async (c: Category, delta: -1 | 1) => {
+      const siblings = sortedSiblings(c);
+      const ix = siblings.findIndex((x) => x.id === c.id);
+      const jx = ix + delta;
+      if (ix < 0 || jx < 0 || jx >= siblings.length) return;
+      const next = [...siblings];
+      const tmp = next[ix]!;
+      next[ix] = next[jx]!;
+      next[jx] = tmp;
+      setReordering(true);
+      try {
+        const res = await fetch("/api/admin/categories/reorder", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({
+            parentId: c.parentId ?? null,
+            orderedIds: next.map((x) => x.id),
+          }),
+        });
+        const data = (await res.json()) as {
+          categories?: Category[];
+          productCounts?: Record<string, number>;
+          error?: string;
+        };
+        if (!res.ok) {
+          showToast(formatApiError(data, "Sıra güncellenemedi."), "error");
+          return;
+        }
+        if (data.categories) {
+          setCategories(data.categories);
+          if (data.productCounts !== undefined) {
+            setProductCounts(data.productCounts ?? {});
+          }
+        } else {
+          await syncList();
+        }
+        showToast("Menü sırası güncellendi.", "success");
+      } finally {
+        setReordering(false);
+      }
+    },
+    [showToast, sortedSiblings, syncList],
+  );
+
   const handleDelete = async (c: Category) => {
     const hint =
       c.parentId == null
@@ -329,9 +408,11 @@ export function AdminCategoriesManager({ initialCategories }: Props) {
             <tr>
               <th aria-label="Önizleme" />
               <th>Tür</th>
+              <th>Menü sırası</th>
               <th>Üst kategori</th>
               <th>Ad</th>
               <th>Slug</th>
+              <th>Ürün</th>
               <th>Oluşturulma</th>
               <th aria-label="İşlemler" />
             </tr>
@@ -341,6 +422,10 @@ export function AdminCategoriesManager({ initialCategories }: Props) {
               const isChild = c.parentId != null;
               const parentName =
                 c.parentId != null ? byId.get(c.parentId)?.name ?? "—" : "—";
+              const siblings = sortedSiblings(c);
+              const sIdx = siblings.findIndex((x) => x.id === c.id);
+              const canUp = sIdx > 0;
+              const canDown = sIdx >= 0 && sIdx < siblings.length - 1;
               return (
                 <tr key={c.id}>
                   <td style={{ width: 56 }}>
@@ -371,6 +456,28 @@ export function AdminCategoriesManager({ initialCategories }: Props) {
                       <span className="admin-code">Üst kategori</span>
                     )}
                   </td>
+                  <td style={{ whiteSpace: "nowrap" }}>
+                    <button
+                      type="button"
+                      className="admin-table-action-btn"
+                      disabled={reordering || !canUp}
+                      title="Yukarı taşı"
+                      aria-label="Yukarı taşı"
+                      onClick={() => void moveCategoryInList(c, -1)}
+                    >
+                      ↑
+                    </button>
+                    <button
+                      type="button"
+                      className="admin-table-action-btn"
+                      disabled={reordering || !canDown}
+                      title="Aşağı taşı"
+                      aria-label="Aşağı taşı"
+                      onClick={() => void moveCategoryInList(c, 1)}
+                    >
+                      ↓
+                    </button>
+                  </td>
                   <td>{parentName}</td>
                   <td>
                     {isChild ? (
@@ -381,6 +488,9 @@ export function AdminCategoriesManager({ initialCategories }: Props) {
                   </td>
                   <td>
                     <code className="admin-code">{c.slug}</code>
+                  </td>
+                  <td>
+                    <strong>{productCountFor(productCounts, c.id)}</strong>
                   </td>
                   <td>
                     {new Date(c.createdAt).toLocaleString("tr-TR", {

@@ -2,6 +2,7 @@ import { cookies } from "next/headers";
 import { ADMIN_COOKIE_NAME, verifyAdminToken } from "../../../../lib/admin-auth";
 import { jsonError, jsonOk } from "../../../../lib/http";
 import { categoryService } from "../../../../services/category.service";
+import { productService } from "../../../../services/product.service";
 import { createCategorySchema } from "../../../../validations/category.validation";
 
 export const runtime = "nodejs";
@@ -21,8 +22,11 @@ async function requireAdmin(): Promise<boolean> {
 export async function GET() {
   try {
     if (!(await requireAdmin())) return jsonOk({ error: "Yetkisiz" }, 401);
-    const categories = await categoryService.listAll();
-    return jsonOk({ categories });
+    const [categories, productCounts] = await Promise.all([
+      categoryService.listAll(),
+      productService.countByCategoryId(),
+    ]);
+    return jsonOk({ categories, productCounts });
   } catch (e) {
     return jsonError(e);
   }

@@ -17,6 +17,8 @@ export const categories = pgTable("categories", {
   parentId: integer("parent_id"),
   name: text("name").notNull(),
   slug: text("slug").notNull().unique(),
+  /** Aynı üst kategori (veya kök) içinde menü ve katalog sırası; düşük önce */
+  sortOrder: integer("sort_order").notNull().default(0),
   /** Opsiyonel kategori görseli (tam HTTPS URL) */
   imageUrl: text("image_url"),
   createdAt: timestamp("created_at", { withTimezone: true })

@@ -41,16 +41,28 @@ export const updateCategorySchema = z
      */
     parentId: parentIdField,
     imageUrl: optionalHttpsUrlNullable,
+    /** Aynı üst (veya kök) içinde sıra; menü ve katalog */
+    sortOrder: z.number().int().min(0).optional(),
   })
   .refine(
     (data) =>
       data.name !== undefined ||
       data.parentId !== undefined ||
-      data.imageUrl !== undefined,
+      data.imageUrl !== undefined ||
+      data.sortOrder !== undefined,
     {
-      message: "Güncelleme için en az ad, üst kategori veya görsel alanından biri gerekli",
+      message:
+        "Güncelleme için en az ad, üst kategori, görsel veya sıra alanından biri gerekli",
     },
   );
+
+/** Navbar / ürünler: kardeş kategorilerin tam listesi, yeni sıra */
+export const reorderCategoriesSchema = z.object({
+  parentId: z.union([z.number().int().positive(), z.null()]),
+  orderedIds: z.array(z.number().int().positive()).min(1),
+});
+
+export type ReorderCategoriesInput = z.infer<typeof reorderCategoriesSchema>;
 
 export type CreateCategoryInput = z.infer<typeof createCategorySchema>;
 export type UpdateCategoryInput = z.infer<typeof updateCategorySchema>;

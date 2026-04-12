@@ -15,7 +15,8 @@ const secret = new TextEncoder().encode(
 );
 
 export const ADMIN_COOKIE_NAME = "dio_admin_token";
-export const ADMIN_SESSION_MINUTES = 15;
+/** Yönetici oturumu süresi (saniye). Şu an 20 dakika. */
+export const ADMIN_SESSION_SECONDS = 20 * 60;
 
 export type AdminTokenPayload = {
   sub: string;
@@ -24,7 +25,7 @@ export type AdminTokenPayload = {
 
 export async function signAdminToken(payload: AdminTokenPayload) {
   const iat = Math.floor(Date.now() / 1000);
-  const exp = iat + ADMIN_SESSION_MINUTES * 60;
+  const exp = iat + ADMIN_SESSION_SECONDS;
 
   const token = await new SignJWT(payload)
     .setProtectedHeader({ alg: "HS256" })
@@ -48,7 +49,7 @@ export async function setAdminCookie(token: string) {
     secure: process.env.NODE_ENV === "production",
     sameSite: "lax",
     path: "/",
-    maxAge: ADMIN_SESSION_MINUTES * 60,
+    maxAge: ADMIN_SESSION_SECONDS,
   });
 }
 

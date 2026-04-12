@@ -16,7 +16,6 @@ type Props = {
 
 type PosterSlot = {
   id: string;
-  title: string;
   preview: string;
   file: File | null;
   remoteUrl: string | null;
@@ -104,7 +103,6 @@ async function uploadProductImage(
 function newPosterSlot(): PosterSlot {
   return {
     id: crypto.randomUUID(),
-    title: "",
     preview: "",
     file: null,
     remoteUrl: null,
@@ -121,25 +119,21 @@ function newCarouselSlot(): CarouselSlot {
 }
 
 /** API / DB’de eski düz string[] veya eksik alanlı kayıtlar için */
-function posterSlotFromStored(item: unknown, idx: number): PosterSlot {
+function posterSlotFromStored(item: unknown, _idx: number): PosterSlot {
   if (typeof item === "string") {
     const url = item.trim();
     return {
       id: crypto.randomUUID(),
-      title: `Afiş ${idx + 1}`,
       preview: url,
       file: null,
       remoteUrl: url ? url : null,
     };
   }
   if (item && typeof item === "object") {
-    const rec = item as { title?: unknown; url?: unknown };
+    const rec = item as { url?: unknown };
     const url = String(rec.url ?? "").trim();
-    const titleRaw = String(rec.title ?? "").trim();
-    const title = titleRaw || `Afiş ${idx + 1}`;
     return {
       id: crypto.randomUUID(),
-      title,
       preview: url,
       file: null,
       remoteUrl: url ? url : null,
@@ -305,7 +299,7 @@ export function AdminProductsManager({ initialProducts, initialCategories }: Pro
     const out: Array<{ title: string; url: string }> = [];
     for (let i = 0; i < slots.length; i++) {
       const s = slots[i];
-      const title = s.title.trim() || `Afiş ${i + 1}`;
+      const title = `Afiş ${i + 1}`;
       if (s.file) {
         out.push({
           title,
@@ -361,9 +355,8 @@ export function AdminProductsManager({ initialProducts, initialCategories }: Pro
           posterSlots.some((slot, idx) => {
             const old = existingPosters[idx];
             if (!old) return true;
-            const newTitle = slot.title.trim() || `Afiş ${idx + 1}`;
             const newUrl = slot.remoteUrl ?? "";
-            return old.title !== newTitle || old.url !== newUrl;
+            return old.url !== newUrl;
           });
 
     const carouselTouched =
@@ -498,7 +491,7 @@ export function AdminProductsManager({ initialProducts, initialCategories }: Pro
           imagePosterPayload.posterUrls = posterSlots
             .map((s, idx) =>
               s.remoteUrl
-                ? { title: s.title.trim() || `Afiş ${idx + 1}`, url: s.remoteUrl }
+                ? { title: `Afiş ${idx + 1}`, url: s.remoteUrl }
                 : null,
             )
             .filter((u): u is { title: string; url: string } => Boolean(u));
@@ -1013,22 +1006,6 @@ export function AdminProductsManager({ initialProducts, initialCategories }: Pro
                                 Satırı kaldır
                               </button>
                             </div>
-                            <label className="admin-field admin-field--full" style={{ marginBottom: 8 }}>
-                              <span>Afiş başlığı</span>
-                              <input
-                                value={slot.title}
-                                onChange={(e) => {
-                                  const value = e.target.value;
-                                  setPosterSlots((rows) =>
-                                    rows.map((r) =>
-                                      r.id === slot.id ? { ...r, title: value } : r,
-                                    ),
-                                  );
-                                }}
-                                placeholder={`Afiş ${idx + 1}`}
-                                maxLength={120}
-                              />
-                            </label>
                             <AdminCropImageField
                               label=""
                               help={`Serbest kırpma. En fazla ${MAX_ADMIN_IMAGE_UPLOAD_MB} MB.`}

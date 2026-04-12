@@ -1,4 +1,4 @@
-import { and, eq, ne } from "drizzle-orm";
+import { and, count, eq, ne } from "drizzle-orm";
 import { categories, products, type ProductPosterItem } from "../db/schema";
 import {
   deleteCloudinaryFolderPath,
@@ -117,6 +117,22 @@ export const productService = {
     return db.query.products.findMany({
       orderBy: (table, { desc }) => [desc(table.createdAt)],
     });
+  },
+
+  /** Kategori → doğrudan `category_id` ile bağlı ürün adedi (admin liste) */
+  async countByCategoryId(): Promise<Record<string, number>> {
+    const rows = await db
+      .select({
+        categoryId: products.categoryId,
+        n: count(),
+      })
+      .from(products)
+      .groupBy(products.categoryId);
+    const out: Record<string, number> = {};
+    for (const r of rows) {
+      out[String(r.categoryId)] = Number(r.n);
+    }
+    return out;
   },
 
   async getById(id: number) {

@@ -1,6 +1,8 @@
 import type { Category } from "@/db/schema/category";
 import type { Product } from "@/db/schema/product";
 
+import { sortByOrderThenName } from "./category-sort";
+
 export type ProductCatalogNested = {
   kind: "nested";
   root: Category;
@@ -19,6 +21,8 @@ function sortByName<T extends { name: string }>(items: T[]): T[] {
   return [...items].sort((a, b) => a.name.localeCompare(b.name, "tr"));
 }
 
+export { sortByOrderThenName };
+
 /**
  * Navbar ve /urunler index ile aynı hiyerarşi: yalnızca kök + bir seviye alt kategori;
  * ürünler ilgili kategoriye bağlanır.
@@ -29,7 +33,7 @@ export function buildProductCatalogTree(
 ): ProductCatalogNode[] {
   if (!categories.length || !products.length) return [];
 
-  const roots = sortByName(categories.filter((c) => c.parentId == null));
+  const roots = sortByOrderThenName(categories.filter((c) => c.parentId == null));
 
   const childrenByRoot = new Map<number, Category[]>();
   for (const c of categories) {
@@ -38,7 +42,7 @@ export function buildProductCatalogTree(
     list.push(c);
     childrenByRoot.set(c.parentId, list);
   }
-  for (const [, list] of childrenByRoot) sortByName(list);
+  for (const [, list] of childrenByRoot) sortByOrderThenName(list);
 
   const productsByCategory = new Map<number, Product[]>();
   for (const p of products) {

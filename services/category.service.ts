@@ -1,4 +1,4 @@
-import { and, asc, eq, ne, sql } from "drizzle-orm";
+import { and, asc, desc, eq, isNull, ne } from "drizzle-orm";
 import { categories } from "../db/schema";
 import {
   CATEGORIES_ROOT,
@@ -54,6 +54,18 @@ async function hasChildCategories(id: number): Promise<boolean> {
 }
 
 /** Alt kategori yalnızca kök (parent_id null) kategoriye bağlanabilir — tek seviye hiyerarşi */
+async function nextSortOrderForParent(parentId: number | null): Promise<number> {
+  const row = await db.query.categories.findFirst({
+    where:
+      parentId == null
+        ? isNull(categories.parentId)
+        : eq(categories.parentId, parentId),
+    orderBy: [desc(categories.sortOrder)],
+    columns: { sortOrder: true },
+  });
+  return (row?.sortOrder ?? -1) + 1;
+}
+
 async function assertParentIsRootCategory(parentId: number): Promise<void> {
   const p = await db.query.categories.findFirst({
     where: eq(categories.id, parentId),
@@ -72,12 +84,49 @@ async function assertParentIsRootCategory(parentId: number): Promise<void> {
 
 export const categoryService = {
   async listAll() {
-    return db.query.categories.findMany({
-      orderBy: [
-        sql`CASE WHEN ${categories.parentId} IS NULL THEN 0 ELSE 1 END`,
-        asc(categories.name),
-      ],
+    const rows = await db.query.categories.findMany({
+      orderBy: [asc(categories.id)],
     });
+    const rootList = rows
+      .filter((c) => c.parentId == null)
+      .sort((a, b) => {
+        if (a.sortOrder !== b.sortOrder) return a.sortOrder - b.sortOrder;
+        return a.name.localeCompare(b.name, "tr");
+      });
+    const childrenByParent = new Map<number, typeof rows>();
+    for (const c of rows) {
+      if (c.parentId == null) continue;
+      const list = childrenByParent.get(c.parentId) ?? [];
+      list.push(c);
+      childrenByParent.set(c.parentId, list);
+    }
+    for (const [, list] of childrenByParent) {
+      list.sort((a, b) => {
+        if (a.sortOrder !== b.sortOrder) return a.sortOrder - b.sortOrder;
+        return a.name.localeCompare(b.name, "tr");
+      });
+    }
+    const out: typeof rows = [];
+    const seenChildIds = new Set<number>();
+    for (const r of rootList) {
+      out.push(r);
+      const kids = childrenByParent.get(r.id);
+      if (kids) {
+        for (const k of kids) {
+          out.push(k);
+          seenChildIds.add(k.id);
+        }
+      }
+    }
+    const orphans = rows.filter(
+      (c) => c.parentId != null && !seenChildIds.has(c.id),
+    );
+    orphans.sort((a, b) => {
+      if (a.sortOrder !== b.sortOrder) return a.sortOrder - b.sortOrder;
+      return a.name.localeCompare(b.name, "tr");
+    });
+    out.push(...orphans);
+    return out;
   },
 
   async getById(id: number) {
@@ -102,6 +151,7 @@ export const categoryService = {
     }
 
     const slug = await buildUniqueCategorySlug(input.name);
+    const sortOrder = await nextSortOrderForParent(parentId);
 
     const inserted = await db
       .insert(categories)
@@ -109,6 +159,7 @@ export const categoryService = {
         name: input.name,
         slug,
         parentId,
+        sortOrder,
         imageUrl: input.imageUrl ?? null,
       })
       .returning();
@@ -161,11 +212,16 @@ export const categoryService = {
       slug: string;
       parentId: number | null;
       imageUrl: string | null;
+      sortOrder: number;
     }> = {};
 
     if (nextName !== undefined) {
       patch.name = nextName;
       patch.slug = newSlug;
+    }
+
+    if (input.sortOrder !== undefined) {
+      patch.sortOrder = input.sortOrder;
     }
 
     if (input.parentId !== undefined) {
@@ -186,6 +242,17 @@ export const categoryService = {
           );
         }
         patch.parentId = input.parentId;
+      }
+    }
+
+    if (patch.parentId !== undefined) {
+      const moved =
+        (current.parentId == null) !== (patch.parentId == null) ||
+        (current.parentId != null &&
+          patch.parentId != null &&
+          current.parentId !== patch.parentId);
+      if (moved) {
+        patch.sortOrder = await nextSortOrderForParent(patch.parentId);
       }
     }
 
@@ -230,5 +297,35 @@ export const categoryService = {
     await tryDestroyPublicId(`${categoryFolder(row.slug)}/image`);
     await tryDestroyPublicId(`${CATEGORIES_ROOT}/${row.slug}`);
     await deleteCloudinaryFolderPath(categoryFolder(row.slug));
+  },
+
+  /**
+   * Aynı üst kategorideki (veya kökte) kardeşlerin sırasını günceller.
+   * `orderedIds` tam olarak o gruptaki tüm id’leri içermelidir.
+   */
+  async reorderSiblings(parentId: number | null, orderedIds: number[]) {
+    const siblings = await db.query.categories.findMany({
+      where:
+        parentId == null
+          ? isNull(categories.parentId)
+          : eq(categories.parentId, parentId),
+      columns: { id: true },
+    });
+    const expected = new Set(siblings.map((s) => s.id));
+    if (orderedIds.length !== expected.size) {
+      throw new AppError("Sıra listesi bu gruptaki tüm kategorileri içermelidir.", 400);
+    }
+    for (const id of orderedIds) {
+      if (!expected.has(id)) {
+        throw new AppError("Geçersiz kategori id’si veya farklı üst kategori.", 400);
+      }
+    }
+    /* neon-http: transaction yok; kısa ardışık update yeterli */
+    for (let i = 0; i < orderedIds.length; i++) {
+      await db
+        .update(categories)
+        .set({ sortOrder: i })
+        .where(eq(categories.id, orderedIds[i]!));
+    }
   },
 };
