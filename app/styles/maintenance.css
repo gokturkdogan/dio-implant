@@ -1,0 +1,218 @@
+/* Bakım sayfası — arka plan: NEXT_PUBLIC_MAINTENANCE_BG_URL veya public/maintenance-bg.webp */
+
+.maintenance-page {
+  --maint-brand: #4e4cb0;
+  --maint-brand-2: #5b8def;
+  --maint-ink: #1a1833;
+  --maint-muted: #5c5a78;
+  --maint-radius: 28px;
+  position: relative;
+  min-height: 100svh;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  padding: clamp(1.25rem, 4vw, 2.5rem) 1rem;
+  font-family: var(--font-body, system-ui, -apple-system, sans-serif);
+  color: var(--maint-ink);
+}
+
+.maintenance-page__backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background:
+    radial-gradient(ellipse 120% 90% at 85% -5%, rgba(157, 141, 241, 0.38), transparent 52%),
+    radial-gradient(ellipse 100% 80% at 0% 15%, rgba(91, 141, 239, 0.22), transparent 48%),
+    linear-gradient(168deg, #12102a 0%, #25224a 38%, #e8e6f4 72%, #f8f7fc 100%);
+}
+
+.maintenance-page--photo .maintenance-page__backdrop {
+  background:
+    linear-gradient(
+      168deg,
+      rgba(18, 16, 42, 0.88) 0%,
+      rgba(78, 76, 176, 0.5) 42%,
+      rgba(248, 247, 252, 0.82) 100%
+    ),
+    var(--maintenance-photo, none) center / cover no-repeat;
+}
+
+.maintenance-page__orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.45;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.maintenance-page__orb--a {
+  width: min(420px, 70vw);
+  height: min(420px, 70vw);
+  top: -12%;
+  right: -8%;
+  background: rgba(157, 141, 241, 0.55);
+}
+
+.maintenance-page__orb--b {
+  width: min(360px, 60vw);
+  height: min(360px, 60vw);
+  bottom: -15%;
+  left: -10%;
+  background: rgba(91, 141, 239, 0.4);
+}
+
+.maintenance-page__deco {
+  position: absolute;
+  z-index: 2;
+  pointer-events: none;
+  color: rgba(255, 255, 255, 0.14);
+}
+
+.maintenance-page__deco--tl {
+  top: 8%;
+  left: 6%;
+  width: 72px;
+  height: 72px;
+  animation: maint-float 7s ease-in-out infinite;
+}
+
+.maintenance-page__deco--tr {
+  top: 18%;
+  right: 8%;
+  width: 56px;
+  height: 56px;
+  animation: maint-float 9s ease-in-out infinite 0.5s;
+}
+
+.maintenance-page__deco--bl {
+  bottom: 12%;
+  left: 10%;
+  width: 64px;
+  height: 64px;
+  animation: maint-float 8s ease-in-out infinite 1s;
+}
+
+.maintenance-page__deco--br {
+  bottom: 22%;
+  right: 6%;
+  width: 48px;
+  height: 48px;
+  animation: maint-float 6.5s ease-in-out infinite 0.2s;
+}
+
+@keyframes maint-float {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-12px) rotate(4deg);
+  }
+}
+
+.maintenance-page__inner {
+  position: relative;
+  z-index: 3;
+  width: min(920px, 100%);
+}
+
+.maintenance-card {
+  border-radius: var(--maint-radius);
+  padding: clamp(2rem, 5vw, 2.75rem) clamp(1.5rem, 4vw, 2.5rem);
+  background: #0d001f80;
+  backdrop-filter: blur(20px) saturate(1.4);
+  -webkit-backdrop-filter: blur(20px) saturate(1.4);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow:
+    0 4px 32px rgba(0, 0, 0, 0.25),
+    0 24px 64px rgba(12, 10, 34, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  text-align: center;
+}
+
+.maintenance-card__logo {
+  display: block;
+  margin: 0 auto 1.5rem;
+  height: clamp(36px, 8vw, 48px);
+  width: auto;
+}
+
+.maintenance-card__eyebrow {
+  margin: 0 0 0.65rem;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #b8b5f0;
+}
+
+.maintenance-card__title {
+  margin: 0 0 1rem;
+  font-family: var(--font-primary, var(--font-body, system-ui), sans-serif);
+  font-size: clamp(1.45rem, 4.2vw, 2rem);
+  font-weight: 700;
+  line-height: 1.25;
+  color: #f4f3fb;
+}
+
+.maintenance-card__lead {
+  margin: 0 0 1.5rem;
+  font-size: 1.0625rem;
+  line-height: 1.65;
+  color: rgba(220, 218, 245, 0.88);
+}
+
+.maintenance-card__icons {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+  margin: 0;
+  padding: 1.25rem 0 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  list-style: none;
+  text-align: center;
+}
+
+.maintenance-card__icons li {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: rgba(236, 234, 255, 0.92);
+  line-height: 1.35;
+}
+
+.maintenance-card__icon-wrap {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  background: linear-gradient(
+    145deg,
+    rgba(255, 255, 255, 0.1),
+    rgba(157, 141, 241, 0.12)
+  );
+  color: #d4d2ff;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.maintenance-card__icon-wrap svg {
+  width: 22px;
+  height: 22px;
+}
+
+@media (max-width: 520px) {
+  .maintenance-card__icons {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .maintenance-page__deco--tl,
+  .maintenance-page__deco--br {
+    opacity: 0.08;
+  }
+}
