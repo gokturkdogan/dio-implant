@@ -25,6 +25,7 @@ export function Navbar() {
   );
   const contactActive = pathMatches(pathname, "/iletisim");
   const catalogsActive = pathMatches(pathname, "/kataloglar");
+  const digitalLibraryActive = pathMatches(pathname, "/dijital-kutuphane");
 
   return (
     <header className="header" id="header">
@@ -165,6 +166,11 @@ export function Navbar() {
             </li>
             <li className={`nav-item${catalogsActive ? " active" : ""}`}>
               <Link href="/kataloglar">Kataloglar</Link>
+            </li>
+            <li
+              className={`nav-item${digitalLibraryActive ? " active" : ""}`}
+            >
+              <Link href="/dijital-kutuphane">Dijital Kütüphane</Link>
             </li>
             <li
               className={`nav-item nav-item-dropdown${corporateActive ? " active" : ""}`}
