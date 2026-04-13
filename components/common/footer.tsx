@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { FooterLegalLinks } from "./legal-modals";
 
 export function Footer() {
   return (
@@ -88,11 +89,7 @@ export function Footer() {
           <span className="footer-copy">
             © {new Date().getFullYear()} DIO Implant. Tüm hakları saklıdır.
           </span>
-          <div className="footer-legal">
-            <a href="#">Gizlilik Politikası</a>
-            <a href="#">Kullanım Koşulları</a>
-            <a href="#">Çerez Politikası</a>
-          </div>
+          <FooterLegalLinks />
         </div>
       </div>
     </footer>

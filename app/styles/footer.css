@@ -148,6 +148,23 @@
   color: var(--accent);
 }
 
+.footer-legal__modal-trigger {
+  font: inherit;
+  font-size: 0.78rem;
+  background: none;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  color: var(--light-600);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.footer-legal__modal-trigger:hover {
+  color: var(--accent);
+}
+
 @media (max-width: 900px) {
   .footer-top .footer-inner {
     flex-direction: column;
