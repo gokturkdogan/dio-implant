@@ -202,7 +202,7 @@ export function Navbar() {
               </ul>
             </li>
             <li className={`nav-item${contactActive ? " active" : ""}`}>
-              <Link href="/iletisim#yetkili-bayiler">Bayi Ağı</Link>
+              <Link href="/iletisim">Bayi Ağı</Link>
             </li>
           </ul>
         </nav>
