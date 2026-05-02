@@ -2,7 +2,9 @@
 
 import {
   useCallback,
+  useLayoutEffect,
   useMemo,
+  useRef,
   useState,
   type CSSProperties,
   type MouseEvent,
@@ -147,6 +149,71 @@ function buildPlateMap(dealers: DealerMapEntry[]) {
   return m;
 }
 
+/**
+ * Path geometrisinden merkez ve yazı boyutu hesaplayarak il adını harita üzerine yazar.
+ */
+function ProvinceNameLabel({
+  pathD,
+  name,
+  assigned,
+}: {
+  pathD: string;
+  name: string;
+  assigned: boolean;
+}) {
+  const measureRef = useRef<SVGPathElement | null>(null);
+  const [layout, setLayout] = useState<{ cx: number; cy: number; fs: number } | null>(null);
+
+  const updateLayout = useCallback(() => {
+    const el = measureRef.current;
+    if (!el) return;
+    try {
+      const b = el.getBBox();
+      if (b.width <= 0 || b.height <= 0) return;
+      const cx = b.x + b.width / 2;
+      const cy = b.y + b.height / 2;
+      let fs = Math.max(3.45, Math.min(12.2, Math.min(b.width, b.height) * 0.118));
+      if (name.length >= 15) fs *= 0.74;
+      else if (name.length >= 12) fs *= 0.84;
+      else if (name.length >= 9) fs *= 0.92;
+      setLayout({ cx, cy, fs });
+    } catch {
+      /* ignore */
+    }
+  }, [name, pathD]);
+
+  useLayoutEffect(() => {
+    updateLayout();
+  }, [updateLayout]);
+
+  useLayoutEffect(() => {
+    const svg = measureRef.current?.ownerSVGElement;
+    if (!svg || typeof ResizeObserver === "undefined") return;
+    const ro = new ResizeObserver(() => updateLayout());
+    ro.observe(svg);
+    return () => ro.disconnect();
+  }, [updateLayout]);
+
+  return (
+    <>
+      <path ref={measureRef} d={pathD} className="td-province-measure" aria-hidden />
+      {layout ? (
+        <text
+          x={layout.cx}
+          y={layout.cy}
+          textAnchor="middle"
+          dominantBaseline="central"
+          className={assigned ? "td-province-label td-province-label--assigned" : "td-province-label"}
+          style={{ fontSize: layout.fs }}
+          aria-hidden
+        >
+          {name}
+        </text>
+      ) : null}
+    </>
+  );
+}
+
 export function TurkeyDealerMap({
   dealers,
   highlightDealerId = null,
@@ -222,6 +289,7 @@ export function TurkeyDealerMap({
           onClick={(e) => onProvinceActivate(e, city)}
         >
           {cityComponent}
+          <ProvinceNameLabel pathD={city.path} name={city.name} assigned={hit != null} />
         </g>
       );
     },

@@ -784,7 +784,7 @@
   padding-left: clamp(0.75rem, 2vw, 1.15rem);
   margin-left: -1px;
   border-left: 1px solid rgba(78, 76, 176, 0.12);
-  max-height: min(70vh, 640px);
+  max-height: min(78vh, 720px);
   overflow-y: auto;
 }
 
@@ -1334,12 +1334,12 @@
 }
 
 .td-map {
-  width: min(100%, 1024px);
+  width: min(100%, 1200px);
   align-self: flex-start;
   background: linear-gradient(180deg, #fafbff 0%, #eef0fb 100%);
   border: 1px solid rgba(78, 76, 176, 0.12);
   border-radius: var(--radius-lg, 14px);
-  padding: 1rem;
+  padding: 1.1rem 1.15rem;
   box-shadow: 0 4px 24px rgba(12, 11, 26, 0.06);
 }
 
@@ -1363,6 +1363,45 @@
   transform-box: fill-box;
   transition: transform 0.38s cubic-bezier(0.22, 1, 0.36, 1);
   cursor: pointer;
+}
+
+/* İl adları: path bbox ile merkez; tema fontu, bayi rengine göre iki ton */
+.td-province-measure {
+  fill: none;
+  stroke: none;
+  pointer-events: none;
+  opacity: 0;
+}
+
+.td-province-label {
+  pointer-events: none;
+  user-select: none;
+  font-family: var(--font-primary), ui-sans-serif, system-ui, sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  fill: rgba(49, 47, 114, 0.82);
+  paint-order: stroke fill;
+  stroke: rgba(255, 255, 255, 0.88);
+  stroke-width: 0.55px;
+  vector-effect: non-scaling-stroke;
+}
+
+.td-province-label--assigned {
+  fill: rgba(255, 255, 255, 0.96);
+  stroke: rgba(49, 47, 114, 0.38);
+  stroke-width: 0.65px;
+}
+
+.td-city:hover .td-province-label,
+.td-city--legend-hover .td-province-label {
+  fill: rgba(49, 47, 114, 0.92);
+  stroke: rgba(255, 255, 255, 0.92);
+}
+
+.td-city--assigned:hover .td-province-label,
+.td-city--assigned.td-city--legend-hover .td-province-label {
+  fill: #fff;
+  stroke: rgba(49, 47, 114, 0.42);
 }
 
 .td-city > g > path {
@@ -1430,7 +1469,7 @@
   overflow: visible;
   width: 100%;
   height: auto;
-  max-height: 560px;
+  max-height: 680px;
   display: block;
 }
 
@@ -1625,9 +1664,9 @@
 
 @media (max-width: 639px) {
   .td-map {
-    padding: 0.5rem;
+    padding: 0.5rem 0.55rem;
   }
   .td-map svg {
-    max-height: 360px;
+    max-height: 420px;
   }
 }
