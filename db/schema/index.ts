@@ -6,6 +6,8 @@ export * from "./seminars";
 export * from "./site-contact";
 export * from "./regional-office";
 export * from "./authorized-dealer";
+export * from "./province";
+export * from "./dealer-province";
 export * from "./site-maintenance";
 export * from "./site-catalog";
 export * from "./digital-library";

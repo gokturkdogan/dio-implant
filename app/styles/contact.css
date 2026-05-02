@@ -423,6 +423,18 @@
   font-weight: 700;
   color: var(--text-dark);
   margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.ct-dealer-color-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--ct-dealer-color, #999);
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.05);
+  flex-shrink: 0;
 }
 
 .ct-dealer-region {
@@ -437,6 +449,40 @@
 .ct-dealer-region .ct-icon {
   color: var(--accent);
   margin-top: 1px;
+}
+
+.ct-dealer-provinces {
+  list-style: none;
+  margin: 0;
+  padding: 0.5rem 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  border-top: 1px solid rgba(78, 76, 176, 0.08);
+}
+
+.ct-dealer-province {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 3px 10px 3px 4px;
+  border-radius: 999px;
+  background: rgba(78, 76, 176, 0.06);
+  border: 1px solid rgba(78, 76, 176, 0.18);
+  font-size: 0.74rem;
+  color: var(--text-dark);
+  line-height: 1;
+}
+
+.ct-dealer-province em {
+  font-style: normal;
+  font-weight: 700;
+  font-size: 0.68rem;
+  letter-spacing: 0.04em;
+  background: var(--accent, #4e4cb0);
+  color: #fff;
+  padding: 3px 6px;
+  border-radius: 999px;
 }
 
 .ct-dealer-meta {
@@ -686,5 +732,902 @@
   .ct-office-card,
   .ct-dealer-card {
     padding: 1rem;
+  }
+}
+
+/* ===================== Türkiye Bayi Haritası ===================== */
+
+/* Harita + bayi listesi tek kart içinde; ct-inner genişliğinde, padding taşmaz */
+.ct-dealer-map-panel {
+  margin-top: 2.25rem;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  padding: clamp(1rem, 2vw, 1.35rem);
+  border-radius: var(--radius-lg, 14px);
+  background: linear-gradient(180deg, #fafbff 0%, #eef0fb 100%);
+  border: 1px solid rgba(78, 76, 176, 0.12);
+  box-shadow: 0 4px 24px rgba(12, 11, 26, 0.06);
+}
+
+.ct-dealer-map-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(220px, 300px);
+  gap: clamp(1rem, 2.5vw, 1.75rem);
+  align-items: start;
+}
+
+.ct-dealer-map-main {
+  min-width: 0;
+}
+
+.ct-dealer-map-main .td-shell {
+  width: 100%;
+}
+
+/* Ortak panel arka planı — iç harita kutusunda çift çerçeve / ikinci gradient olmasın */
+.ct-dealer-map-panel .td-map {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 0.25rem 0 0;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.ct-dealer-map-legend-col {
+  position: sticky;
+  top: 1rem;
+  align-self: start;
+  padding-left: clamp(0.75rem, 2vw, 1.15rem);
+  margin-left: -1px;
+  border-left: 1px solid rgba(78, 76, 176, 0.12);
+  max-height: min(70vh, 640px);
+  overflow-y: auto;
+}
+
+.ct-dealer-map-legend-empty {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.ct-dealer-map-legend-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.ct-dealer-map-legend-item {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 0.55rem 0.75rem;
+  font-size: 0.88rem;
+  line-height: 1.35;
+  color: var(--text-dark);
+  cursor: pointer;
+  border-radius: var(--radius-sm, 8px);
+  padding: 0.35rem 0.4rem;
+  margin: -0.35rem -0.4rem;
+  transition: background 0.18s ease;
+}
+
+.ct-dealer-map-legend-item:hover {
+  background: rgba(78, 76, 176, 0.07);
+}
+
+.ct-dealer-map-legend-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  border: 2px solid rgba(255, 255, 255, 0.85);
+  box-shadow:
+    0 0 0 1px rgba(78, 76, 176, 0.2),
+    inset 0 1px 2px rgba(255, 255, 255, 0.35);
+}
+
+.ct-dealer-map-legend-name {
+  font-weight: 600;
+  min-width: 0;
+  word-break: break-word;
+}
+
+@media (max-width: 960px) {
+  .ct-dealer-map-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .ct-dealer-map-legend-col {
+    position: static;
+    max-height: none;
+    order: 2;
+    border-left: none;
+    padding-left: 0;
+    margin-left: 0;
+    padding-top: clamp(1rem, 3vw, 1.35rem);
+    border-top: 1px solid rgba(78, 76, 176, 0.12);
+  }
+
+  .ct-dealer-map-main {
+    order: 1;
+  }
+}
+
+.ct-section-head--compact {
+  margin-bottom: 0;
+  text-align: left;
+}
+
+.ct-dealer-map-title {
+  font-family: var(--font-primary);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-dark);
+  margin: 0 0 0.35rem;
+}
+
+.ct-dealer-map-lead {
+  margin: 0;
+  max-width: 60ch;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  line-height: 1.55;
+}
+
+/* ===================== Bayi detay modalı ===================== */
+
+.ct-dealer-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 10050;
+  background: rgba(12, 11, 26, 0.55);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: max(1rem, env(safe-area-inset-top))
+    max(1rem, env(safe-area-inset-right))
+    max(1rem, env(safe-area-inset-bottom))
+    max(1rem, env(safe-area-inset-left));
+  box-sizing: border-box;
+}
+
+.ct-dealer-modal {
+  width: min(100%, 500px);
+  max-height: min(88vh, 760px);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  border-radius: 18px;
+  background: linear-gradient(168deg, #fefeff 0%, #eef1fb 52%, #f8f7ff 100%);
+  border: 1px solid rgba(78, 76, 176, 0.2);
+  box-shadow:
+    0 32px 64px rgba(12, 11, 26, 0.32),
+    0 0 0 1px rgba(255, 255, 255, 0.65) inset;
+}
+
+.ct-dealer-modal--accent {
+  border-color: color-mix(in srgb, var(--ct-modal-accent, #5b8def) 35%, rgba(78, 76, 176, 0.35));
+}
+
+.ct-dealer-modal__head {
+  position: relative;
+  flex-shrink: 0;
+  padding: 1.15rem 1.25rem;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.ct-dealer-modal__head--neutral {
+  background: linear-gradient(
+    125deg,
+    rgba(78, 76, 176, 0.14) 0%,
+    rgba(138, 134, 224, 0.08) 100%
+  );
+  border-bottom: 1px solid rgba(78, 76, 176, 0.12);
+}
+
+.ct-dealer-modal__head--accent {
+  border-bottom: 1px solid rgba(78, 76, 176, 0.15);
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--ct-modal-accent, #5b8def) 22%, #ffffff) 0%,
+    rgba(250, 251, 255, 0.96) 72%
+  );
+}
+
+.ct-dealer-modal__head-inner {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+  min-width: 0;
+}
+
+.ct-dealer-modal__swatch {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  flex-shrink: 0;
+  border: 3px solid rgba(255, 255, 255, 0.95);
+  box-shadow:
+    0 4px 14px rgba(12, 11, 26, 0.12),
+    0 0 0 1px rgba(78, 76, 176, 0.15),
+    inset 0 1px 2px rgba(255, 255, 255, 0.5);
+}
+
+.ct-dealer-modal__head-text {
+  min-width: 0;
+}
+
+.ct-dealer-modal__eyebrow {
+  margin: 0 0 0.15rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(49, 47, 114, 0.62);
+}
+
+.ct-dealer-modal__title {
+  margin: 0;
+  font-family: var(--font-primary);
+  font-size: clamp(1.15rem, 2.8vw, 1.35rem);
+  font-weight: 700;
+  color: var(--text-dark);
+  line-height: 1.25;
+}
+
+.ct-dealer-modal__close {
+  flex-shrink: 0;
+  width: 42px;
+  height: 42px;
+  margin: -0.35rem -0.35rem 0 0;
+  border: none;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.55);
+  color: rgba(49, 47, 114, 0.65);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease;
+}
+
+.ct-dealer-modal__close:hover {
+  background: rgba(255, 255, 255, 0.95);
+  color: var(--text-dark);
+}
+
+.ct-dealer-modal__body {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  padding: 1rem 1.15rem 1.05rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  -webkit-overflow-scrolling: touch;
+}
+
+.ct-dealer-modal__panel {
+  margin: 0;
+  padding: 1rem 1rem 1.05rem;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(78, 76, 176, 0.12);
+  box-shadow: 0 4px 20px rgba(49, 47, 114, 0.06);
+}
+
+.ct-dealer-modal__panel--muted {
+  background: rgba(78, 76, 176, 0.04);
+}
+
+.ct-dealer-modal__panel--contact {
+  padding-bottom: 1rem;
+  border-color: rgba(78, 76, 176, 0.14);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.88) 0%, rgba(246, 247, 255, 0.95) 100%);
+}
+
+.ct-dealer-modal__section-head {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  margin-bottom: 0.85rem;
+}
+
+.ct-dealer-modal__section-head-ico {
+  width: 40px;
+  height: 40px;
+  border-radius: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: #4e4cb0;
+  background: linear-gradient(
+    145deg,
+    rgba(78, 76, 176, 0.14) 0%,
+    rgba(138, 134, 224, 0.1) 100%
+  );
+  border: 1px solid rgba(78, 76, 176, 0.18);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.65);
+}
+
+.ct-dealer-modal--accent .ct-dealer-modal__section-head-ico {
+  color: color-mix(in srgb, var(--ct-modal-accent) 58%, #312f72);
+  background: linear-gradient(
+    145deg,
+    color-mix(in srgb, var(--ct-modal-accent) 22%, transparent) 0%,
+    rgba(138, 134, 224, 0.08) 100%
+  );
+  border-color: color-mix(in srgb, var(--ct-modal-accent) 28%, rgba(78, 76, 176, 0.25));
+}
+
+.ct-dealer-modal__section-head-text {
+  min-width: 0;
+}
+
+.ct-dealer-modal__section-title {
+  margin: 0;
+  font-family: var(--font-primary);
+  font-size: 0.98rem;
+  font-weight: 700;
+  color: var(--text-dark);
+  letter-spacing: -0.01em;
+}
+
+.ct-dealer-modal__section-meta {
+  margin: 0.15rem 0 0;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: rgba(49, 47, 114, 0.48);
+}
+
+.ct-dealer-modal__text {
+  margin: 0;
+  font-size: 0.92rem;
+  line-height: 1.55;
+  color: var(--text-dark);
+}
+
+.ct-dealer-modal__text--region {
+  padding: 0.65rem 0.75rem;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.65);
+  border: 1px dashed rgba(78, 76, 176, 0.2);
+}
+
+.ct-dealer-modal__province-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  max-height: min(42vh, 340px);
+  overflow-y: auto;
+  padding-right: 2px;
+}
+
+.ct-dealer-modal__province-row {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.55rem 0.65rem;
+  border-radius: 11px;
+  font-size: 0.9rem;
+  line-height: 1.35;
+  color: var(--text-dark);
+  background: rgba(250, 251, 255, 0.95);
+  border: 1px solid rgba(78, 76, 176, 0.1);
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.ct-dealer-modal__province-row:hover {
+  background: #fff;
+  border-color: rgba(78, 76, 176, 0.18);
+  box-shadow: 0 4px 14px rgba(49, 47, 114, 0.06);
+}
+
+.ct-dealer-modal__province-pin {
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: #4e4cb0;
+  background: rgba(78, 76, 176, 0.1);
+  border: 1px solid rgba(78, 76, 176, 0.14);
+}
+
+.ct-dealer-modal--accent .ct-dealer-modal__province-pin {
+  color: color-mix(in srgb, var(--ct-modal-accent) 55%, #312f72);
+  background: color-mix(in srgb, var(--ct-modal-accent) 16%, transparent);
+  border-color: color-mix(in srgb, var(--ct-modal-accent) 28%, rgba(78, 76, 176, 0.2));
+}
+
+.ct-dealer-modal__province-name {
+  font-weight: 600;
+  min-width: 0;
+}
+
+.ct-dealer-modal__province-plate {
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  padding: 0.28rem 0.5rem;
+  border-radius: 8px;
+  color: rgba(49, 47, 114, 0.85);
+  background: rgba(78, 76, 176, 0.1);
+  border: 1px solid rgba(78, 76, 176, 0.14);
+}
+
+.ct-dealer-modal__contacts {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.ct-dealer-modal__contacts li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.7rem;
+  font-size: 0.92rem;
+  line-height: 1.45;
+  color: var(--text-dark);
+}
+
+.ct-dealer-modal__contact-badge {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #4e4cb0;
+  background: rgba(78, 76, 176, 0.09);
+  border: 1px solid rgba(78, 76, 176, 0.12);
+}
+
+.ct-dealer-modal__contact-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.12rem;
+  min-width: 0;
+}
+
+.ct-dealer-modal__contact-k {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: rgba(49, 47, 114, 0.48);
+}
+
+.ct-dealer-modal__contacts a {
+  color: #4e4cb0;
+  font-weight: 600;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(78, 76, 176, 0.28);
+  padding-bottom: 1px;
+  width: fit-content;
+}
+
+.ct-dealer-modal__contacts a:hover {
+  color: #312f72;
+  border-bottom-color: rgba(49, 47, 114, 0.45);
+}
+
+.ct-dealer-modal__empty-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 1rem;
+  padding: 1.5rem 1rem;
+  border-radius: 14px;
+  background: rgba(78, 76, 176, 0.05);
+  border: 1px dashed rgba(78, 76, 176, 0.18);
+}
+
+.ct-dealer-modal__empty-panel-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #4e4cb0;
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(78, 76, 176, 0.14);
+  box-shadow: 0 6px 18px rgba(49, 47, 114, 0.08);
+}
+
+.ct-dealer-modal__empty-msg {
+  margin: 0;
+  font-size: 0.92rem;
+  line-height: 1.55;
+  color: var(--text-muted);
+  max-width: 32ch;
+}
+
+.ct-dealer-modal__footer {
+  flex-shrink: 0;
+  padding: 0.85rem 1.25rem 1.15rem;
+  border-top: 1px solid rgba(78, 76, 176, 0.1);
+  background: rgba(250, 251, 255, 0.72);
+}
+
+.ct-dealer-modal__btn {
+  width: 100%;
+  padding: 0.65rem 1rem;
+  border: none;
+  border-radius: var(--radius-sm, 8px);
+  font-family: var(--font-primary);
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  color: #fff;
+  background: linear-gradient(135deg, #5c59c9 0%, #312f72 100%);
+  box-shadow: 0 8px 22px rgba(49, 47, 114, 0.28);
+  transition:
+    transform 0.12s ease,
+    box-shadow 0.12s ease;
+}
+
+.ct-dealer-modal__btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 28px rgba(49, 47, 114, 0.35);
+}
+
+.ct-dealer-modal__btn:active {
+  transform: translateY(0);
+}
+
+.ct-dealer-modal__btn--accent {
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--ct-modal-accent, #5c59c9) 62%, #312f72) 0%,
+    #312f72 100%
+  );
+  box-shadow:
+    0 8px 22px color-mix(in srgb, var(--ct-modal-accent, #312f72) 28%, rgba(49, 47, 114, 0.35)),
+    0 0 0 1px color-mix(in srgb, var(--ct-modal-accent) 15%, transparent);
+}
+
+.ct-dealer-modal__btn--accent:hover {
+  box-shadow:
+    0 12px 28px color-mix(in srgb, var(--ct-modal-accent, #312f72) 35%, rgba(49, 47, 114, 0.4)),
+    0 0 0 1px color-mix(in srgb, var(--ct-modal-accent) 22%, transparent);
+}
+
+.ct-dealer-map-legend-item:focus-visible {
+  outline: 2px solid rgba(78, 76, 176, 0.45);
+  outline-offset: 2px;
+}
+
+.td-shell {
+  position: relative;
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.td-map {
+  width: min(100%, 1024px);
+  align-self: flex-start;
+  background: linear-gradient(180deg, #fafbff 0%, #eef0fb 100%);
+  border: 1px solid rgba(78, 76, 176, 0.12);
+  border-radius: var(--radius-lg, 14px);
+  padding: 1rem;
+  box-shadow: 0 4px 24px rgba(12, 11, 26, 0.06);
+}
+
+.td-map--placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 280px;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+
+/*
+ * turkey-map-react her ili <g class="city" data-plate-number=...> olarak render eder.
+ * Biz bunu kendi <g class="td-city ..."> sarmalayıcımıza koyuyoruz ve fill'i CSS değişkeniyle
+ * uyguluyoruz. Kütüphane, içerideki <path>'lere customStyle.idleColor'u inline fill olarak
+ * yazdığı için spesifite gereği !important kullanıyoruz.
+ */
+.td-city {
+  transform-origin: center;
+  transform-box: fill-box;
+  transition: transform 0.38s cubic-bezier(0.22, 1, 0.36, 1);
+  cursor: pointer;
+}
+
+.td-city > g > path {
+  fill: var(--td-fill, #e6e7ee) !important;
+  stroke: #ffffff;
+  stroke-width: 0.6;
+  vector-effect: non-scaling-stroke;
+  transition:
+    filter 0.38s cubic-bezier(0.22, 1, 0.36, 1),
+    stroke 0.38s cubic-bezier(0.22, 1, 0.36, 1),
+    stroke-width 0.38s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.td-city:hover,
+.td-city--legend-hover {
+  transform: scale(1.028);
+}
+
+.td-city:hover > g > path,
+.td-city--legend-hover > g > path {
+  filter: brightness(1.08) saturate(1.14)
+    drop-shadow(0 2px 5px rgba(15, 23, 42, 0.28))
+    drop-shadow(0 8px 22px rgba(15, 23, 42, 0.32))
+    drop-shadow(0 14px 36px rgba(49, 46, 129, 0.18));
+  stroke: rgba(255, 255, 255, 0.98);
+  stroke-width: 1.35;
+}
+
+.td-city--assigned:hover,
+.td-city--assigned.td-city--legend-hover {
+  transform: scale(1.035);
+}
+
+.td-city--assigned:hover > g > path,
+.td-city--assigned.td-city--legend-hover > g > path {
+  filter: brightness(1.14) saturate(1.22)
+    drop-shadow(0 3px 8px rgba(15, 23, 42, 0.35))
+    drop-shadow(0 10px 28px rgba(15, 23, 42, 0.4))
+    drop-shadow(0 18px 44px rgba(49, 46, 129, 0.28));
+  stroke-width: 1.5;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .td-city {
+    transition-duration: 0.01ms;
+  }
+
+  .td-city:hover,
+  .td-city--assigned:hover,
+  .td-city--legend-hover,
+  .td-city--assigned.td-city--legend-hover {
+    transform: none;
+  }
+
+  .td-city > g > path {
+    transition-duration: 0.01ms;
+  }
+
+  .td-tooltip {
+    animation: none;
+  }
+}
+
+.td-map svg {
+  overflow: visible;
+  width: 100%;
+  height: auto;
+  max-height: 560px;
+  display: block;
+}
+
+.td-tooltip {
+  position: fixed;
+  z-index: 80;
+  pointer-events: none;
+  max-width: 280px;
+  padding: 0;
+  border-radius: 12px;
+  font-size: 12.5px;
+  line-height: 1.45;
+  color: #f8fafc;
+  background: linear-gradient(155deg, rgba(30, 41, 59, 0.97) 0%, rgba(15, 23, 42, 0.98) 100%);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  box-shadow:
+    0 4px 6px rgba(0, 0, 0, 0.07),
+    0 12px 28px rgba(15, 23, 42, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  transform-origin: top left;
+  animation: td-tooltip-in 0.22s cubic-bezier(0.22, 1, 0.36, 1) both;
+  overflow: hidden;
+}
+
+/* Bayi rengiyle uyumlu tema (--td-tip-accent harita / paneldeki hex ile set edilir) */
+.td-tooltip--branded {
+  border-color: color-mix(in srgb, var(--td-tip-accent) 45%, rgba(148, 163, 184, 0.15));
+  box-shadow:
+    0 4px 6px rgba(0, 0, 0, 0.08),
+    0 14px 36px color-mix(in srgb, var(--td-tip-accent) 26%, rgba(15, 23, 42, 0.5)),
+    inset 0 1px 0 color-mix(in srgb, var(--td-tip-accent) 22%, transparent);
+  background: linear-gradient(
+    155deg,
+    color-mix(in srgb, var(--td-tip-accent) 16%, rgba(30, 41, 59, 0.95)) 0%,
+    rgba(15, 23, 42, 0.98) 72%
+  );
+}
+
+.td-tooltip--branded .td-tooltip__header {
+  background: color-mix(in srgb, var(--td-tip-accent) 24%, rgba(15, 23, 42, 0.42));
+  border-bottom-color: color-mix(in srgb, var(--td-tip-accent) 38%, rgba(148, 163, 184, 0.12));
+}
+
+.td-tooltip--branded .td-tooltip__header-icon {
+  background: color-mix(in srgb, var(--td-tip-accent) 48%, rgba(0, 0, 0, 0.18));
+  color: color-mix(in srgb, var(--td-tip-accent) 15%, #fff);
+  box-shadow: inset 0 1px 0 color-mix(in srgb, var(--td-tip-accent) 35%, transparent);
+}
+
+.td-tooltip--branded .td-tooltip__city {
+  color: color-mix(in srgb, var(--td-tip-accent) 12%, #f8fafc);
+}
+
+.td-tooltip--branded .td-tooltip__row--primary .td-tooltip__row-icon {
+  background: color-mix(in srgb, var(--td-tip-accent) 40%, rgba(0, 0, 0, 0.12));
+  color: color-mix(in srgb, var(--td-tip-accent) 20%, #e0e7ff);
+}
+
+.td-tooltip--branded .td-tooltip__row:not(.td-tooltip__row--primary) .td-tooltip__row-icon {
+  background: color-mix(in srgb, var(--td-tip-accent) 18%, rgba(148, 163, 184, 0.08));
+  color: color-mix(in srgb, var(--td-tip-accent) 32%, #94a3b8);
+}
+
+.td-tooltip__svg {
+  display: block;
+  width: 15px;
+  height: 15px;
+  flex-shrink: 0;
+  color: #a5b4fc;
+}
+
+.td-tooltip__header {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 11px 13px 10px;
+  background: rgba(99, 102, 241, 0.12);
+  border-bottom: 1px solid rgba(148, 163, 184, 0.12);
+}
+
+.td-tooltip__header-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: rgba(99, 102, 241, 0.2);
+  color: #c7d2fe;
+}
+
+.td-tooltip__header-icon .td-tooltip__svg {
+  width: 16px;
+  height: 16px;
+  color: inherit;
+}
+
+.td-tooltip__body {
+  padding: 10px 13px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.td-tooltip__row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+}
+
+.td-tooltip__row-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  margin-top: 1px;
+  flex-shrink: 0;
+  border-radius: 7px;
+  background: rgba(148, 163, 184, 0.1);
+  color: #94a3b8;
+}
+
+.td-tooltip__row--primary .td-tooltip__row-icon {
+  background: rgba(99, 102, 241, 0.18);
+  color: #a5b4fc;
+}
+
+.td-tooltip__empty-wrap {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  padding: 11px 13px 13px;
+}
+
+.td-tooltip__empty-wrap .td-tooltip__row-icon {
+  margin-top: 0;
+  background: rgba(148, 163, 184, 0.12);
+  color: #94a3b8;
+}
+
+@keyframes td-tooltip-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.td-tooltip__city {
+  font-weight: 700;
+  font-size: 12.5px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #e0e7ff;
+  line-height: 1.3;
+}
+
+.td-tooltip__dealer {
+  font-weight: 700;
+  font-size: 13px;
+  color: #f1f5f9;
+  line-height: 1.35;
+  min-width: 0;
+}
+
+.td-tooltip__muted {
+  font-size: 12px;
+  color: #cbd5e1;
+  line-height: 1.4;
+  min-width: 0;
+  word-break: break-word;
+}
+
+.td-tooltip__muted--tel {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+}
+
+.td-tooltip__empty {
+  margin: 0;
+  font-size: 12px;
+  color: #94a3b8;
+  font-style: italic;
+  line-height: 1.45;
+}
+
+@media (max-width: 639px) {
+  .td-map {
+    padding: 0.5rem;
+  }
+  .td-map svg {
+    max-height: 360px;
   }
 }

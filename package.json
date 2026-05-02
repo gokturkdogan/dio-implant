@@ -27,6 +27,7 @@
     "react-easy-crop": "^5.5.7",
     "react-image-crop": "^11.0.10",
     "sharp": "^0.34.5",
+    "turkey-map-react": "^2.0.5",
     "zod": "latest"
   },
   "devDependencies": {

@@ -48,10 +48,29 @@ export const regionalOfficeUpdateSchema = regionalOfficeCreateSchema;
 export type RegionalOfficeCreateInput = z.infer<typeof regionalOfficeCreateSchema>;
 export type RegionalOfficeUpdateInput = z.infer<typeof regionalOfficeUpdateSchema>;
 
+/**
+ * Hizmet alanı artık `provinces` tablosundaki id'lerden seçilir.
+ * En az 1 il zorunludur; tekrar eden id'ler reddedilir.
+ */
+const provinceIdsSchema = z
+  .array(z.number().int().positive())
+  .min(1, "En az bir il seçin")
+  .max(81)
+  .refine((arr) => new Set(arr).size === arr.length, "Aynı il birden fazla seçilemez.");
+
+const HEX_COLOR_RE = /^#[0-9a-fA-F]{6}$/;
+
+const hexColorSchema = z
+  .string()
+  .trim()
+  .regex(HEX_COLOR_RE, "Renk #RRGGBB biçiminde 6 haneli hex olmalı.")
+  .transform((v) => v.toUpperCase());
+
 export const authorizedDealerCreateSchema = z.object({
   sortOrder: z.number().int().min(0).max(99999).optional(),
   name: z.string().trim().min(1, "Bayi adı gerekli").max(200),
-  serviceRegion: z.string().trim().min(1, "Sorumlu bölge gerekli").max(2000),
+  provinceIds: provinceIdsSchema,
+  color: hexColorSchema,
   contactPerson: z.string().trim().max(120).default(""),
   phone: z.string().trim().min(1, "Telefon gerekli").max(80),
   website: z

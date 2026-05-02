@@ -1,12 +1,19 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
-import type { AuthorizedDealer } from "@/db/schema/authorized-dealer";
+import type { Province } from "@/db/schema/province";
+import type { AuthorizedDealerWithProvinces } from "@/services/authorized-dealer.service";
 import { AdminToast, type AdminToastState, type AdminToastVariant } from "./admin-toast";
+import { ColorInput } from "./color-input";
+import {
+  SearchableMultiSelect,
+  type SearchableOption,
+} from "./searchable-multi-select";
 
 type Props = {
-  initialDealers: AuthorizedDealer[];
+  initialDealers: AuthorizedDealerWithProvinces[];
+  initialProvinces: Province[];
 };
 
 function formatApiError(data: unknown, fallback: string): string {
@@ -21,8 +28,24 @@ function formatApiError(data: unknown, fallback: string): string {
   return fallback;
 }
 
-export function AdminDealersManager({ initialDealers }: Props) {
-  const [dealers, setDealers] = useState<AuthorizedDealer[]>(initialDealers);
+function randomVivid(): string {
+  const h = Math.floor(Math.random() * 360);
+  const s = 65 + Math.floor(Math.random() * 18);
+  const l = 50 + Math.floor(Math.random() * 14);
+  const a = (s / 100) * Math.min(l / 100, 1 - l / 100);
+  const f = (n: number) => {
+    const k = (n + h / 30) % 12;
+    const c = l / 100 - a * Math.max(-1, Math.min(k - 3, 9 - k, 1));
+    return Math.round(255 * c)
+      .toString(16)
+      .padStart(2, "0");
+  };
+  return `#${f(0)}${f(8)}${f(4)}`.toUpperCase();
+}
+
+export function AdminDealersManager({ initialDealers, initialProvinces }: Props) {
+  const [dealers, setDealers] = useState<AuthorizedDealerWithProvinces[]>(initialDealers);
+  const [provinces] = useState<Province[]>(initialProvinces);
   const [toast, setToast] = useState<AdminToastState>(null);
   const [mounted, setMounted] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
@@ -30,7 +53,8 @@ export function AdminDealersManager({ initialDealers }: Props) {
   const [editingId, setEditingId] = useState<number | null>(null);
   const [sortOrder, setSortOrder] = useState(0);
   const [name, setName] = useState("");
-  const [serviceRegion, setServiceRegion] = useState("");
+  const [provinceIds, setProvinceIds] = useState<number[]>([]);
+  const [color, setColor] = useState("#5B8DEF");
   const [contactPerson, setContactPerson] = useState("");
   const [phone, setPhone] = useState("");
   const [website, setWebsite] = useState("");
@@ -42,7 +66,10 @@ export function AdminDealersManager({ initialDealers }: Props) {
 
   const syncList = useCallback(async () => {
     const res = await fetch("/api/admin/dealers", { credentials: "include" });
-    const data = (await res.json()) as { dealers?: AuthorizedDealer[]; error?: string };
+    const data = (await res.json()) as {
+      dealers?: AuthorizedDealerWithProvinces[];
+      error?: string;
+    };
     if (res.ok && data.dealers) setDealers(data.dealers);
   }, []);
 
@@ -54,6 +81,34 @@ export function AdminDealersManager({ initialDealers }: Props) {
     void syncList();
   }, [syncList]);
 
+  /**
+   * Hangi il başka bayilerde kullanılıyor → o il select içinde "disabled" görünsün
+   * (düzenleme modundaysa, kendi bayisindeki iller disabled olmasın).
+   */
+  const usedProvinceIdToDealerName = useMemo(() => {
+    const map = new Map<number, string>();
+    for (const d of dealers) {
+      if (modalMode === "edit" && d.id === editingId) continue;
+      for (const p of d.provinces) map.set(p.id, d.name);
+    }
+    return map;
+  }, [dealers, editingId, modalMode]);
+
+  const provinceOptions: SearchableOption[] = useMemo(
+    () =>
+      provinces.map((p) => {
+        const usedBy = usedProvinceIdToDealerName.get(p.id);
+        return {
+          value: p.id,
+          label: p.name,
+          code: p.code,
+          disabled: Boolean(usedBy),
+          disabledReason: usedBy ? `${usedBy} bayisinde kayıtlı` : undefined,
+        };
+      }),
+    [provinces, usedProvinceIdToDealerName],
+  );
+
   const closeModal = () => setModalOpen(false);
 
   const openCreate = () => {
@@ -61,19 +116,21 @@ export function AdminDealersManager({ initialDealers }: Props) {
     setEditingId(null);
     setSortOrder(0);
     setName("");
-    setServiceRegion("");
+    setProvinceIds([]);
+    setColor(randomVivid());
     setContactPerson("");
     setPhone("");
     setWebsite("");
     setModalOpen(true);
   };
 
-  const openEdit = (d: AuthorizedDealer) => {
+  const openEdit = (d: AuthorizedDealerWithProvinces) => {
     setModalMode("edit");
     setEditingId(d.id);
     setSortOrder(d.sortOrder);
     setName(d.name);
-    setServiceRegion(d.serviceRegion);
+    setProvinceIds(d.provinces.map((p) => p.id));
+    setColor((d.color || "#5B8DEF").toUpperCase());
     setContactPerson(d.contactPerson ?? "");
     setPhone(d.phone);
     setWebsite(d.website ?? "");
@@ -81,12 +138,17 @@ export function AdminDealersManager({ initialDealers }: Props) {
   };
 
   const handleSave = async () => {
+    if (provinceIds.length === 0) {
+      showToast("En az bir il seçin.", "error");
+      return;
+    }
     setSaving(true);
     try {
       const body = {
         sortOrder,
         name: name.trim(),
-        serviceRegion: serviceRegion.trim(),
+        provinceIds,
+        color,
         contactPerson: contactPerson.trim(),
         phone: phone.trim(),
         website: website.trim(),
@@ -125,7 +187,7 @@ export function AdminDealersManager({ initialDealers }: Props) {
     }
   };
 
-  const handleDelete = async (d: AuthorizedDealer) => {
+  const handleDelete = async (d: AuthorizedDealerWithProvinces) => {
     if (!window.confirm(`“${d.name}” silinsin mi?`)) return;
     const res = await fetch(`/api/admin/dealers/${d.id}`, {
       method: "DELETE",
@@ -162,41 +224,63 @@ export function AdminDealersManager({ initialDealers }: Props) {
           <thead>
             <tr>
               <th>Sıra</th>
+              <th aria-label="Renk" />
               <th>Bayi</th>
-              <th>Bölge</th>
+              <th>İller</th>
               <th>Telefon</th>
               <th aria-label="İşlemler" />
             </tr>
           </thead>
           <tbody>
-            {dealers.map((d) => (
-              <tr key={d.id}>
-                <td>{d.sortOrder}</td>
-                <td>{d.name}</td>
-                <td>
-                  <span className="admin-table-ellipsis" title={d.serviceRegion}>
-                    {d.serviceRegion.length > 40 ? `${d.serviceRegion.slice(0, 40)}…` : d.serviceRegion}
-                  </span>
-                </td>
-                <td>{d.phone}</td>
-                <td className="admin-table-actions">
-                  <button
-                    type="button"
-                    className="admin-table-action-btn"
-                    onClick={() => openEdit(d)}
-                  >
-                    Düzenle
-                  </button>
-                  <button
-                    type="button"
-                    className="admin-table-action-btn admin-table-action-btn--danger"
-                    onClick={() => void handleDelete(d)}
-                  >
-                    Sil
-                  </button>
-                </td>
-              </tr>
-            ))}
+            {dealers.map((d) => {
+              const regionLabel = d.provinces.length > 0
+                ? d.provinces.map((p) => p.name).join(", ")
+                : d.serviceRegion;
+              const truncated =
+                regionLabel.length > 48 ? `${regionLabel.slice(0, 48)}…` : regionLabel;
+              return (
+                <tr key={d.id}>
+                  <td>{d.sortOrder}</td>
+                  <td>
+                    <span
+                      className="admin-color-dot"
+                      style={{ background: d.color || "#5B8DEF" }}
+                      title={d.color || "#5B8DEF"}
+                    />
+                  </td>
+                  <td>{d.name}</td>
+                  <td>
+                    <span className="admin-table-ellipsis" title={regionLabel}>
+                      {d.provinces.length > 0 ? (
+                        <>
+                          <span className="admin-province-count">{d.provinces.length} il</span>{" "}
+                          <span className="admin-province-preview">{truncated}</span>
+                        </>
+                      ) : (
+                        truncated || "—"
+                      )}
+                    </span>
+                  </td>
+                  <td>{d.phone}</td>
+                  <td className="admin-table-actions">
+                    <button
+                      type="button"
+                      className="admin-table-action-btn"
+                      onClick={() => openEdit(d)}
+                    >
+                      Düzenle
+                    </button>
+                    <button
+                      type="button"
+                      className="admin-table-action-btn admin-table-action-btn--danger"
+                      onClick={() => void handleDelete(d)}
+                    >
+                      Sil
+                    </button>
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>
@@ -254,15 +338,31 @@ export function AdminDealersManager({ initialDealers }: Props) {
                       autoFocus
                     />
                   </label>
-                  <label className="admin-field admin-field--full">
-                    <span>Sorumlu bölge / iller</span>
-                    <textarea
-                      value={serviceRegion}
-                      onChange={(e) => setServiceRegion(e.target.value)}
-                      rows={2}
-                      maxLength={2000}
+
+                  <div className="admin-field admin-field--full">
+                    <span>Sorumlu iller</span>
+                    <SearchableMultiSelect
+                      options={provinceOptions}
+                      value={provinceIds}
+                      onChange={(next) => setProvinceIds(next.map((v) => Number(v)))}
+                      placeholder="İl seçin (örn. İstanbul, Ankara…)"
+                      searchPlaceholder="İl veya plaka ara…"
+                      emptyText="Eşleşen il yok"
                     />
-                  </label>
+                    <p className="admin-field__help">
+                      Bir il yalnızca tek bir bayide kayıtlı olabilir. Diğer bayilerde kullanılan
+                      iller listede pasif görünür.
+                    </p>
+                  </div>
+
+                  <div className="admin-field admin-field--full">
+                    <span>Harita rengi</span>
+                    <ColorInput value={color} onChange={setColor} />
+                    <p className="admin-field__help">
+                      Türkiye haritasında bu bayinin illeri seçilen renkle boyanır.
+                    </p>
+                  </div>
+
                   <label className="admin-field admin-field--full">
                     <span>Yetkili kişi (opsiyonel)</span>
                     <input

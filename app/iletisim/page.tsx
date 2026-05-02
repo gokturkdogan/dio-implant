@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Footer } from "@/components/common/footer";
+import { ContactDealerMapPanel } from "@/components/contact/contact-dealer-map-panel";
 import { authorizedDealerService } from "@/services/authorized-dealer.service";
 import { regionalOfficeService } from "@/services/regional-office.service";
 import { siteContactService } from "@/services/site-contact.service";
@@ -61,24 +62,6 @@ function IconMap() {
   return (
     <svg className="ct-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
       <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-    </svg>
-  );
-}
-
-function IconUser() {
-  return (
-    <svg className="ct-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <circle cx="12" cy="8" r="4" stroke="currentColor" strokeWidth="1.8"/>
-      <path d="M20 21a8 8 0 1 0-16 0" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
-    </svg>
-  );
-}
-
-function IconGlobe() {
-  return (
-    <svg className="ct-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="1.8"/>
-      <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10A15.3 15.3 0 0 1 12 2Z" stroke="currentColor" strokeWidth="1.8"/>
     </svg>
   );
 }
@@ -223,41 +206,29 @@ export default async function IletisimPage() {
             <div className="ct-section-head">
               <div className="section-tag"><span className="tag-line" /><span className="tag-text">Yetkili Bayiler</span></div>
               <h2 id="ct-dealers-title" className="ct-section-title">Bölgesel <em>çözüm ortaklarımız</em></h2>
-              <p className="ct-section-lead">Yetkili bayilerimiz aracılığıyla ürün temini, teknik destek ve eğitim hizmetlerine ulaşabilirsiniz.</p>
+              <p className="ct-section-lead">
+                {dealers.length === 0
+                  ? "Henüz kayıtlı yetkili bayi bulunmuyor."
+                  : "Detaylar için lütfen herhangi bir şehre tıklayınız."}
+              </p>
             </div>
 
-            {dealers.length === 0 ? (
-              <p className="ct-empty-block">Henüz kayıtlı yetkili bayi yok.</p>
-            ) : (
-              <div className="ct-dealers-grid">
-                {dealers.map((d) => (
-                  <article key={d.id} className="ct-dealer-card">
-                    <h3 className="ct-dealer-name">{d.name}</h3>
-                    <div className="ct-dealer-region">
-                      <IconRegion />
-                      <span>{d.serviceRegion}</span>
-                    </div>
-                    <div className="ct-dealer-meta">
-                      {d.contactPerson ? (
-                        <span className="ct-dealer-meta-item"><IconUser /> {d.contactPerson}</span>
-                      ) : null}
-                      <span className="ct-dealer-meta-item">
-                        <IconPhone />
-                        <a href={`tel:${d.phone.replace(/\s/g, "")}`}>{d.phone}</a>
-                      </span>
-                      {d.website && isDirectionsUrl(d.website) ? (
-                        <span className="ct-dealer-meta-item">
-                          <IconGlobe />
-                          <a href={d.website} target="_blank" rel="noopener noreferrer">
-                            {d.website.replace(/^https?:\/\//, "")}
-                          </a>
-                        </span>
-                      ) : null}
-                    </div>
-                  </article>
-                ))}
-              </div>
-            )}
+            <ContactDealerMapPanel
+              dealers={dealers.map((d) => ({
+                id: d.id,
+                name: d.name,
+                phone: d.phone,
+                contactPerson: d.contactPerson ?? null,
+                color: d.color ?? null,
+                provinceCodes: (d.provinces ?? []).map((p) => p.code),
+                website: d.website ?? null,
+                serviceRegion: d.serviceRegion,
+                provinces: (d.provinces ?? []).map((p) => ({
+                  code: p.code,
+                  name: p.name,
+                })),
+              }))}
+            />
           </div>
         </section>
       </main>

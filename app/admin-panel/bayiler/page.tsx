@@ -1,6 +1,7 @@
 import { AdminPanelShell } from "@/components/admin/admin-panel-shell";
 import { AdminDealersManager } from "@/components/admin/admin-dealers-manager";
 import { authorizedDealerService } from "@/services/authorized-dealer.service";
+import { provinceService } from "@/services/province.service";
 
 export const dynamic = "force-dynamic";
 
@@ -9,7 +10,10 @@ export const metadata = {
 };
 
 export default async function AdminBayilerPage() {
-  const dealers = await authorizedDealerService.listAll();
+  const [dealers, provinces] = await Promise.all([
+    authorizedDealerService.listAll(),
+    provinceService.listAll(),
+  ]);
 
   return (
     <AdminPanelShell title="Yetkili bayiler" activeHref="/admin-panel/bayiler">
@@ -19,7 +23,8 @@ export default async function AdminBayilerPage() {
             <div>
               <div className="admin-card__title">Yetkili bayiler</div>
               <div className="admin-card__sub">
-                Kayıtlar <code>authorized_dealers</code> tablosunda tutulur.
+                Kayıtlar <code>authorized_dealers</code> tablosunda; il eşlemeleri{" "}
+                <code>dealer_provinces</code> tablosunda tutulur.
               </div>
             </div>
             <a
@@ -32,7 +37,7 @@ export default async function AdminBayilerPage() {
             </a>
           </div>
           <div className="admin-card__body">
-            <AdminDealersManager initialDealers={dealers} />
+            <AdminDealersManager initialDealers={dealers} initialProvinces={provinces} />
           </div>
         </div>
       </div>

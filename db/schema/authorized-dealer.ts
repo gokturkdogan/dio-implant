@@ -1,4 +1,4 @@
-import { integer, pgTable, serial, text, timestamp } from "drizzle-orm/pg-core";
+import { integer, pgTable, serial, text, timestamp, varchar } from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
 
 export const authorizedDealers = pgTable("authorized_dealers", {
@@ -9,6 +9,8 @@ export const authorizedDealers = pgTable("authorized_dealers", {
   contactPerson: text("contact_person"),
   phone: text("phone").notNull(),
   website: text("website"),
+  /** Bayinin haritada kullanılacağı rengi (hex; örn. "#5B8DEF"). */
+  color: varchar("color", { length: 7 }).notNull().default("#5B8DEF"),
   createdAt: timestamp("created_at", { withTimezone: true })
     .notNull()
     .defaultNow(),
