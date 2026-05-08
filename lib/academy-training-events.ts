@@ -15,6 +15,7 @@ export type {
 export const ACADEMY_EVENT_GRID_COVER_URL =
   "https://www.dioimplant.com/file/images/dd665ea6-868b-46ba-b4f9-5a1b4730a469";
 
+/** Tarih alanına göre çoktan aza sıralı (en yeni tarih üstte). */
 export async function getTrainingEventsSorted() {
   return seminarService.listAll();
 }

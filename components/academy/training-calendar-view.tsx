@@ -45,6 +45,29 @@ function combineDateTime(dateISO: string, time: string): Date {
   return new Date(y, (m ?? 1) - 1, d ?? 1, hh ?? 0, mm ?? 0, 0, 0);
 }
 
+/** Takvim için haftanın ortasına sabitlemek için (timezone-local gün doğru seçilsin) */
+function weekAnchorDate(dateISO: string): Date {
+  return combineDateTime(dateISO, "12:00");
+}
+
+function initialCalendarDate(events: TrainingCalendarItem[]): Date {
+  const now = new Date();
+  if (!events.length) return now;
+  let earliest: TrainingCalendarItem | undefined;
+  let earliestStartMs = Infinity;
+  for (const ev of events) {
+    const end = combineDateTime(ev.dateISO, ev.slotEnd);
+    if (end < now) continue;
+    const startMs = combineDateTime(ev.dateISO, ev.slotStart).getTime();
+    if (startMs < earliestStartMs) {
+      earliestStartMs = startMs;
+      earliest = ev;
+    }
+  }
+  if (!earliest) return now;
+  return weekAnchorDate(earliest.dateISO);
+}
+
 const TR_MESSAGES = {
   date: "Tarih",
   time: "Saat",
@@ -91,10 +114,10 @@ export function TrainingCalendarView({ events }: Props) {
     [events],
   );
 
-  const initialDate = useMemo(() => {
-    if (!events.length) return new Date();
-    return combineDateTime(events[0].dateISO, "12:00");
-  }, [events]);
+  const initialDate = useMemo(
+    () => initialCalendarDate(events),
+    [events],
+  );
 
   const [calDate, setCalDate] = useState(initialDate);
 

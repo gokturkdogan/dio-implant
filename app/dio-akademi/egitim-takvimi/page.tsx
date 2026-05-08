@@ -62,6 +62,8 @@ export default async function AcademyTrainingCalendarPage() {
           aria-labelledby="ac-section-title"
         >
           <div className="ac-inner">
+            <TrainingEventGrid events={events} />
+
             <header className="ac-section-head">
               <div className="section-tag">
                 <span className="tag-line" />
@@ -75,12 +77,6 @@ export default async function AcademyTrainingCalendarPage() {
             <div className="ac-calendar-wrap">
               <TrainingCalendarView events={calendarItems} />
             </div>
-
-            <h3 id="ac-list-title" className="ac-section-title ac-section-title--list">
-              Tarihe göre <em>sıralı</em> liste
-            </h3>
-
-            <TrainingEventGrid events={events} />
           </div>
         </section>
       </main>

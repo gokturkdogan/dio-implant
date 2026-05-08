@@ -54,7 +54,7 @@ function eventToInsert(ev: TrainingEvent): NewSeminarRow {
 export const seminarService = {
   async listAll(): Promise<TrainingEvent[]> {
     const rows = await db.query.seminars.findMany({
-      orderBy: (t, { asc }) => [asc(t.dateIso)],
+      orderBy: (t, { desc }) => [desc(t.dateIso)],
     });
     return rows.map(rowToEvent);
   },

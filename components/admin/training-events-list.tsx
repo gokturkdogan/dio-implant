@@ -35,8 +35,6 @@ export function TrainingEventsList({ initialEvents }: Props) {
     await syncList();
   };
 
-  const sorted = [...events].sort((a, b) => a.dateISO.localeCompare(b.dateISO));
-
   return (
     <>
       <div className="admin-egitimler-toolbar">
@@ -69,7 +67,7 @@ export function TrainingEventsList({ initialEvents }: Props) {
             </tr>
           </thead>
           <tbody>
-            {sorted.map((ev) => (
+            {events.map((ev) => (
               <tr key={ev.slug}>
                 <td>
                   <Link

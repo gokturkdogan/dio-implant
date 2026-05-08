@@ -203,6 +203,7 @@ function DealerModalBody({
 }) {
   const provinces = sortProvinces(dealer.provinces ?? []);
   const serviceRegion = dealer.serviceRegion ?? "";
+  const regionText = serviceRegion.trim();
   const website = normalizeWebsite(dealer.website);
 
   return (
@@ -215,7 +216,6 @@ function DealerModalBody({
             aria-hidden="true"
           />
           <div className="ct-dealer-modal__head-text">
-            <p className="ct-dealer-modal__eyebrow">Yetkili bayi</p>
             <h2 id="ct-dealer-modal-title" className="ct-dealer-modal__title">
               {dealer.name}
             </h2>
@@ -254,7 +254,7 @@ function DealerModalBody({
               ))}
             </ul>
           </section>
-        ) : serviceRegion ? (
+        ) : regionText.length > 0 ? (
           <section className="ct-dealer-modal__panel ct-dealer-modal__panel--muted">
             <div className="ct-dealer-modal__section-head">
               <span className="ct-dealer-modal__section-head-ico" aria-hidden="true">
@@ -264,7 +264,7 @@ function DealerModalBody({
                 <h3 className="ct-dealer-modal__section-title">Hizmet alanı</h3>
               </div>
             </div>
-            <p className="ct-dealer-modal__text ct-dealer-modal__text--region">{serviceRegion}</p>
+            <p className="ct-dealer-modal__text ct-dealer-modal__text--region">{regionText}</p>
           </section>
         ) : null}
 

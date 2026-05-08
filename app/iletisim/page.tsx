@@ -104,7 +104,7 @@ export default async function IletisimPage() {
             <div className="ct-hero-actions">
               <a href="#genel-merkez" className="ct-hero-btn ct-hero-btn--primary">Genel Merkez</a>
               <a href="#bolge-mudurlukler" className="ct-hero-btn ct-hero-btn--ghost">Bölge Ofisleri</a>
-              <a href="#yetkili-bayiler" className="ct-hero-btn ct-hero-btn--ghost">Yetkili Bayiler</a>
+              <a href="#yetkili-bayiler" className="ct-hero-btn ct-hero-btn--ghost">Bölgesel çözüm ortakları</a>
             </div>
           </div>
         </section>
@@ -204,8 +204,7 @@ export default async function IletisimPage() {
         <section className="ct-section ct-dealers" id="yetkili-bayiler" aria-labelledby="ct-dealers-title">
           <div className="ct-inner">
             <div className="ct-section-head">
-              <div className="section-tag"><span className="tag-line" /><span className="tag-text">Yetkili Bayiler</span></div>
-              <h2 id="ct-dealers-title" className="ct-section-title">Bölgesel <em>çözüm ortaklarımız</em></h2>
+              <h2 id="ct-dealers-title" className="ct-section-title">Bölgesel <em>çözüm ortakları</em></h2>
               <p className="ct-section-lead">
                 {dealers.length === 0
                   ? "Henüz kayıtlı yetkili bayi bulunmuyor."
