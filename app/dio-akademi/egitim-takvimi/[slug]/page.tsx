@@ -156,9 +156,9 @@ export default async function AcademyTrainingDetailPage({ params }: Props) {
                   Kontenjan ve koşullar için DIO Türkiye eğitim ekibi ile
                   iletişime geçin.
                 </p>
-                <a href="#" className="acd-cta-btn">
+                <Link href="/iletisim" className="acd-cta-btn">
                   Bilgi talep et
-                </a>
+                </Link>
               </div>
             </div>
           </div>
