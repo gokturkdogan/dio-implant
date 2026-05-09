@@ -127,6 +127,20 @@
       "when": 1775950000000,
       "tag": "0017_authorized_dealers_color",
       "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "7",
+      "when": 1776000000000,
+      "tag": "0018_instructors",
+      "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "7",
+      "when": 1776050000000,
+      "tag": "0019_seminar_speakers",
+      "breakpoints": true
     }
   ]
 }

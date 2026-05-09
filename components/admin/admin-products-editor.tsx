@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useMemo, useRef, useState, type FormEvent, type ReactNode } from "react";
+import { useCallback, useMemo, useState, type FormEvent, type ReactNode } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type { Category } from "@/db/schema/category";
@@ -9,7 +9,7 @@ import {
   MAX_ADMIN_IMAGE_UPLOAD_MB,
 } from "@/lib/admin-image-upload";
 import { AdminCropImageField } from "./admin-crop-image-field";
-import { AdminToast, type AdminToastState, type AdminToastVariant } from "./admin-toast";
+import { useAdminToast } from "./admin-toast-provider";
 
 type Props = {
   mode: "create" | "edit";
@@ -159,8 +159,7 @@ function AccordionSection({
 
 export function AdminProductsEditor({ mode, categories, initialProduct }: Props) {
   const router = useRouter();
-  const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const [toast, setToast] = useState<AdminToastState>(null);
+  const { showToast } = useAdminToast();
   const [saving, setSaving] = useState(false);
 
   const categoryOptions = useMemo(() => buildCategorySelectOptions(categories), [categories]);
@@ -191,13 +190,6 @@ export function AdminProductsEditor({ mode, categories, initialProduct }: Props)
 
   const toggleSection = useCallback((key: SectionKey) => {
     setOpenSections((p) => ({ ...p, [key]: !p[key] }));
-  }, []);
-
-  const showToast = useCallback((message: string, variant: AdminToastVariant) => {
-    if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
-    const id = Date.now();
-    setToast({ id, message, variant });
-    toastTimerRef.current = setTimeout(() => setToast((prev) => (prev?.id === id ? null : prev)), 4000);
   }, []);
 
   const buildPosterUrlsAfterUploads = useCallback(async (slug: string) => {
@@ -467,8 +459,6 @@ export function AdminProductsEditor({ mode, categories, initialProduct }: Props)
           </button>
         </div>
       </form>
-
-      <AdminToast toast={toast} onClose={() => setToast(null)} />
     </div>
   );
 }

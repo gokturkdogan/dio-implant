@@ -818,6 +818,25 @@
 
 /* ── Toast ── */
 
+.admin-toast-viewport {
+  position: fixed;
+  top: 20px;
+  right: 24px;
+  z-index: 2300;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: flex-end;
+  pointer-events: none;
+}
+
+.admin-toast-viewport .admin-toast {
+  position: relative;
+  right: auto;
+  top: auto;
+  pointer-events: auto;
+}
+
 .admin-toast {
   position: fixed;
   right: 24px;
@@ -1761,6 +1780,104 @@ a.admin-table-action-btn {
   flex-shrink: 0;
 }
 
+.admin-instructor-table-thumb {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--admin-radius-sm);
+  object-fit: cover;
+  display: block;
+  border: 1px solid var(--admin-stroke);
+}
+
+.admin-instructor-table-thumb--empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  color: var(--admin-muted);
+  background: var(--admin-panel-soft);
+}
+
+.admin-instructor-name {
+  font-weight: 600;
+  color: var(--admin-text);
+}
+
+.admin-instructor-picker-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: min(48dvh, 420px);
+  overflow-y: auto;
+}
+
+.admin-instructor-picker-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: var(--admin-radius-md);
+  border: 1px solid var(--admin-stroke);
+  background: var(--admin-panel-soft);
+  color: var(--admin-text);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    background var(--admin-transition),
+    border-color var(--admin-transition);
+}
+
+.admin-instructor-picker-row:hover {
+  border-color: var(--admin-accent);
+  background: var(--admin-accent-soft);
+}
+
+.admin-instructor-picker-row__img {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  border: 1px solid var(--admin-stroke);
+}
+
+.admin-instructor-picker-row__img--empty {
+  background: var(--admin-panel);
+}
+
+.admin-instructor-picker-row__text {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.admin-instructor-picker-row__name {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.admin-instructor-picker-row__sub {
+  font-size: 12px;
+  color: var(--admin-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.admin-speakers-field__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+}
+
 .admin-contact-form .admin-field textarea {
   width: 100%;
   min-height: 72px;
@@ -1800,6 +1917,13 @@ a.admin-table-action-btn {
   display: inline-block;
   max-width: 220px;
   vertical-align: bottom;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.admin-table-ellipsis--bio {
+  max-width: 140px;
 }
 
 /* ── Repeatable rows ── */

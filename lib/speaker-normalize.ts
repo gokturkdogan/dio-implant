@@ -9,13 +9,28 @@ type LegacySpeaker = {
   photoUrl?: string;
   education?: string[];
   specialties?: string[];
+  instructorId?: unknown;
 };
+
+function parseInstructorId(v: unknown): number | undefined {
+  if (typeof v === "number" && Number.isFinite(v) && v > 0) return Math.floor(v);
+  if (typeof v === "bigint") {
+    const n = Number(v);
+    return n > 0 && Number.isFinite(n) ? n : undefined;
+  }
+  if (typeof v === "string" && /^\d+$/.test(v.trim())) {
+    const n = parseInt(v, 10);
+    return n > 0 ? n : undefined;
+  }
+  return undefined;
+}
 
 export function normalizeSpeaker(raw: unknown): Speaker {
   if (!raw || typeof raw !== "object") {
     return { name: "", education: [], specialties: [], bio: "" };
   }
   const o = raw as LegacySpeaker;
+  const instructorId = parseInstructorId(o.instructorId);
   if (Array.isArray(o.education) && Array.isArray(o.specialties)) {
     return {
       name: String(o.name ?? "").trim(),
@@ -30,6 +45,7 @@ export function normalizeSpeaker(raw: unknown): Speaker {
         .filter((x): x is string => typeof x === "string" && x.trim().length > 0)
         .map((x) => x.trim()),
       bio: String(o.bio ?? "").trim(),
+      ...(instructorId ? { instructorId } : {}),
     };
   }
   const education: string[] = [];
@@ -44,6 +60,7 @@ export function normalizeSpeaker(raw: unknown): Speaker {
     education,
     specialties: o.specialty?.trim() ? [o.specialty.trim()] : [],
     bio: String(o.bio ?? "").trim(),
+    ...(instructorId ? { instructorId } : {}),
   };
 }
 

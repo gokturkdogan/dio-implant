@@ -1,12 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import Link from "next/link";
+import type { InstructorRecord } from "@/lib/instructor-types";
+import { instructorToSpeaker } from "@/lib/instructor-types";
 import type { Speaker } from "@/lib/training-events-types";
-import { SpeakerFormModal } from "./speaker-form-modal";
+import { InstructorPickerModal } from "./instructor-picker-modal";
 
-export type SpeakerWithFile = Speaker & {
-  _pendingPhotoFile?: File | null;
-};
+export type SpeakerWithFile = Speaker;
 
 type Props = {
   speakers: SpeakerWithFile[];
@@ -14,56 +15,52 @@ type Props = {
 };
 
 export function TrainingEventSpeakersField({ speakers, onChange }: Props) {
-  const [modalOpen, setModalOpen] = useState(false);
-  const [modalTitle, setModalTitle] = useState("Konuşmacı ekle");
-  const [editingIndex, setEditingIndex] = useState<number | null>(null);
-  const [modalInitial, setModalInitial] = useState<Speaker | null>(null);
-  const [modalInitialFile, setModalInitialFile] = useState<File | null>(null);
+  const [pickerOpen, setPickerOpen] = useState(false);
+  const [catalog, setCatalog] = useState<InstructorRecord[]>([]);
 
-  const openAdd = () => {
-    setModalTitle("Konuşmacı ekle");
-    setEditingIndex(null);
-    setModalInitial(null);
-    setModalInitialFile(null);
-    setModalOpen(true);
-  };
+  const loadCatalog = useCallback(async () => {
+    const res = await fetch("/api/admin/instructors", { credentials: "include" });
+    const data = (await res.json()) as { instructors?: InstructorRecord[] };
+    if (res.ok && data.instructors) setCatalog(data.instructors);
+  }, []);
 
-  const openEdit = (index: number) => {
-    setModalTitle("Konuşmacıyı düzenle");
-    setEditingIndex(index);
-    const sp = speakers[index];
-    setModalInitial(sp ?? null);
-    setModalInitialFile(sp?._pendingPhotoFile ?? null);
-    setModalOpen(true);
-  };
+  useEffect(() => {
+    void loadCatalog();
+  }, [loadCatalog]);
 
-  const closeModal = () => {
-    setModalOpen(false);
-    setEditingIndex(null);
-    setModalInitial(null);
-    setModalInitialFile(null);
-  };
-
-  const handleSave = (speaker: Speaker, photoFile: File | null) => {
-    const entry: SpeakerWithFile = { ...speaker, _pendingPhotoFile: photoFile };
-    if (editingIndex !== null) {
-      const next = [...speakers];
-      next[editingIndex] = entry;
-      onChange(next);
-    } else {
-      onChange([...speakers, entry]);
+  const excludeIds = useMemo(() => {
+    const ids = new Set<number>();
+    for (const sp of speakers) {
+      if (sp.instructorId != null && sp.instructorId > 0) ids.add(sp.instructorId);
     }
-  };
+    return ids;
+  }, [speakers]);
 
   const remove = (index: number) => {
     onChange(speakers.filter((_, i) => i !== index));
+  };
+
+  const onPick = (record: InstructorRecord) => {
+    if (excludeIds.has(record.id)) return;
+    const entry: SpeakerWithFile = {
+      ...instructorToSpeaker(record),
+      instructorId: record.id,
+    };
+    onChange([...speakers, entry]);
   };
 
   return (
     <div className="admin-field admin-field--full admin-speakers-field">
       <span>Konuşmacılar</span>
       <p className="admin-field__help">
-        İsteğe bağlı. Satıra tıklayarak eklenen bilgileri görebilirsiniz.
+        Eğitmenleri{" "}
+        <Link href="/admin-panel/egitmenler" className="admin-table-link">
+          Eğitmenler
+        </Link>{" "}
+        sayfasından yönetir; burada etkinliğe eklemek üzere seçersiniz. Seçim
+        eğitmen kaydına bağlanır; kütüphanede yapılan güncellemeler geçmiş ve
+        yeni tüm etkinlik sayfalarında otomatik yansır. Sıra ve kaldırma yalnızca
+        bu eğitime uygulanır.
       </p>
 
       {speakers.length > 0 && (
@@ -83,18 +80,6 @@ export function TrainingEventSpeakersField({ speakers, onChange }: Props) {
                     onClick={(e) => e.stopPropagation()}
                     onKeyDown={(e) => e.stopPropagation()}
                   >
-                    <button
-                      type="button"
-                      className="admin-speaker-chip__btn"
-                      onMouseDown={(e) => e.preventDefault()}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        openEdit(idx);
-                      }}
-                    >
-                      Düzenle
-                    </button>
                     <button
                       type="button"
                       className="admin-speaker-chip__btn admin-speaker-chip__btn--danger"
@@ -171,17 +156,32 @@ export function TrainingEventSpeakersField({ speakers, onChange }: Props) {
         </ul>
       )}
 
-      <button type="button" className="admin-btn admin-btn--secondary" onClick={openAdd}>
-        + Konuşmacı ekle
-      </button>
+      <div className="admin-speakers-field__actions">
+        <button
+          type="button"
+          className="admin-btn admin-btn--secondary"
+          onClick={() => setPickerOpen(true)}
+        >
+          + Eğitmenden ekle
+        </button>
+        <Link href="/admin-panel/egitmenler" className="admin-btn admin-btn--ghost">
+          Eğitmenleri yönet →
+        </Link>
+        <button
+          type="button"
+          className="admin-btn admin-btn--ghost admin-btn--small"
+          onClick={() => void loadCatalog()}
+        >
+          Listeyi yenile
+        </button>
+      </div>
 
-      <SpeakerFormModal
-        open={modalOpen}
-        title={modalTitle}
-        initial={modalInitial}
-        initialPhotoFile={modalInitialFile}
-        onClose={closeModal}
-        onSave={handleSave}
+      <InstructorPickerModal
+        open={pickerOpen}
+        instructors={catalog}
+        excludeIds={excludeIds}
+        onClose={() => setPickerOpen(false)}
+        onPick={onPick}
       />
     </div>
   );

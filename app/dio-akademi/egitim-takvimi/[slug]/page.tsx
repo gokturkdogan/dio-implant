@@ -3,10 +3,14 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Footer } from "../../../../components/common/footer";
+import { AcademySpeakerBio } from "../../../../components/academy/academy-speaker-bio";
+import { speakerBioDisplayParts } from "../../../../lib/academy-speaker-bio";
 import { getTrainingBySlug } from "../../../../lib/academy-training-events";
 
 export const dynamic = "force-dynamic";
 export const dynamicParams = true;
+/** Eğitmen güncellemeleri anında görünsün (CDN / tam route önbelleği devre dışı). */
+export const revalidate = 0;
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -176,16 +180,22 @@ export default async function AcademyTrainingDetailPage({ params }: Props) {
                 Eğitmenler & <em>Konuşmacılar</em>
               </h2>
               <div className="acd-speakers-grid">
-                {speakers.map((sp, idx) => (
-                  <div key={idx} className="acd-speaker-card">
+                {speakers.map((sp, idx) => {
+                  const bioParts = speakerBioDisplayParts(sp.bio ?? "");
+                  return (
+                  <div
+                    key={sp.instructorId ?? `${sp.name}-${idx}`}
+                    className="acd-speaker-card"
+                  >
                     <div className="acd-speaker-photo-wrap">
                       {hasValidSpeakerPhoto(sp.photoUrl) ? (
                         <Image
                           src={String(sp.photoUrl).trim()}
                           alt={sp.name}
-                          width={220}
-                          height={220}
+                          width={256}
+                          height={256}
                           className="acd-speaker-photo"
+                          sizes="(max-width: 640px) 88px, 112px"
                         />
                       ) : (
                         <div
@@ -219,10 +229,17 @@ export default async function AcademyTrainingDetailPage({ params }: Props) {
                           ))}
                         </div>
                       ) : null}
-                      {sp.bio ? <p className="acd-speaker-bio">{sp.bio}</p> : null}
+                      {bioParts.trimmed ? (
+                        <AcademySpeakerBio
+                          fullText={bioParts.trimmed}
+                          previewText={bioParts.preview}
+                          needsTruncate={bioParts.needsTruncate}
+                        />
+                      ) : null}
                     </div>
                   </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
           </section>

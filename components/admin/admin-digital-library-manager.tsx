@@ -1,7 +1,7 @@
 "use client";
 
-import { useCallback, useState } from "react";
-import { AdminToast, type AdminToastState, type AdminToastVariant } from "./admin-toast";
+import { useState } from "react";
+import { useAdminToast } from "./admin-toast-provider";
 
 type Props = {
   initialZipUrl: string;
@@ -24,14 +24,10 @@ export function AdminDigitalLibraryManager({
   initialZipUrl,
   initialPptUrl,
 }: Props) {
-  const [toast, setToast] = useState<AdminToastState>(null);
+  const { showToast } = useAdminToast();
   const [saving, setSaving] = useState(false);
   const [zipUrl, setZipUrl] = useState(initialZipUrl);
   const [pptUrl, setPptUrl] = useState(initialPptUrl);
-
-  const showToast = useCallback((message: string, variant: AdminToastVariant) => {
-    setToast({ id: Date.now(), message, variant });
-  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -55,9 +51,7 @@ export function AdminDigitalLibraryManager({
   };
 
   return (
-    <>
-      <AdminToast toast={toast} onClose={() => setToast(null)} />
-      <form className="admin-contact-form" onSubmit={(ev) => void handleSubmit(ev)}>
+    <form className="admin-contact-form" onSubmit={(ev) => void handleSubmit(ev)}>
         <div className="admin-contact-grid">
           <label className="admin-field admin-field--full">
             <span>ZIP dosyası URL</span>
@@ -97,6 +91,5 @@ export function AdminDigitalLibraryManager({
           </button>
         </div>
       </form>
-    </>
   );
 }

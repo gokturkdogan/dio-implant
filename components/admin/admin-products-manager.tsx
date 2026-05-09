@@ -7,7 +7,7 @@ import type { Category } from "@/db/schema/category";
 import type { Product } from "@/db/schema/product";
 import { MAX_ADMIN_IMAGE_UPLOAD_MB } from "@/lib/admin-image-upload";
 import { AdminCropImageField } from "./admin-crop-image-field";
-import { AdminToast, type AdminToastState, type AdminToastVariant } from "./admin-toast";
+import { useAdminToast } from "./admin-toast-provider";
 
 type Props = {
   initialProducts: Product[];
@@ -143,9 +143,9 @@ function posterSlotFromStored(item: unknown, _idx: number): PosterSlot {
 }
 
 export function AdminProductsManager({ initialProducts, initialCategories }: Props) {
+  const { showToast } = useAdminToast();
   const [products, setProducts] = useState(initialProducts);
   const [categories, setCategories] = useState(initialCategories);
-  const [toast, setToast] = useState<AdminToastState>(null);
   const [mounted, setMounted] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [modalMode, setModalMode] = useState<"create" | "edit">("create");
@@ -161,10 +161,6 @@ export function AdminProductsManager({ initialProducts, initialCategories }: Pro
   const [posterSlots, setPosterSlots] = useState<PosterSlot[]>([]);
   const [saving, setSaving] = useState(false);
 
-  const showToast = useCallback((message: string, variant: AdminToastVariant) => {
-    setToast({ id: Date.now(), message, variant });
-  }, []);
-
   const categoryOptions = useMemo(
     () => buildCategorySelectOptions(categories),
     [categories],
@@ -176,23 +172,32 @@ export function AdminProductsManager({ initialProducts, initialCategories }: Pro
     return m;
   }, [categories]);
 
-  const syncList = useCallback(async () => {
-    const [pr, cat] = await Promise.all([
-      fetch("/api/admin/products", { credentials: "include" }),
-      fetch("/api/admin/categories", { credentials: "include" }),
-    ]);
-    const pData = (await pr.json()) as { products?: Product[]; error?: string };
-    const cData = (await cat.json()) as { categories?: Category[]; error?: string };
-    if (pr.ok && pData.products) setProducts(pData.products);
-    if (cat.ok && cData.categories) setCategories(cData.categories);
-  }, []);
+  const syncList = useCallback(
+    async (opts?: { quiet?: boolean }) => {
+      const [pr, cat] = await Promise.all([
+        fetch("/api/admin/products", { credentials: "include" }),
+        fetch("/api/admin/categories", { credentials: "include" }),
+      ]);
+      const pData = (await pr.json()) as { products?: Product[]; error?: string };
+      const cData = (await cat.json()) as { categories?: Category[]; error?: string };
+      const productsOk = pr.ok && Boolean(pData.products);
+      const categoriesOk = cat.ok && Boolean(cData.categories);
+      if (productsOk) setProducts(pData.products!);
+      if (categoriesOk) setCategories(cData.categories!);
+      if (opts?.quiet) return;
+      if (productsOk && categoriesOk) showToast("Liste güncellendi.", "success");
+      else if (!productsOk) showToast(formatApiError(pData, "Ürün listesi alınamadı."), "error");
+      else showToast(formatApiError(cData, "Kategoriler alınamadı."), "error");
+    },
+    [showToast],
+  );
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
   useEffect(() => {
-    void syncList();
+    void syncList({ quiet: true });
   }, [syncList]);
 
   const defaultCategoryId = categoryOptions[0]?.id;
@@ -624,8 +629,6 @@ export function AdminProductsManager({ initialProducts, initialCategories }: Pro
 
   return (
     <>
-      <AdminToast toast={toast} onClose={() => setToast(null)} />
-
       <div className="admin-egitimler-toolbar">
         <Link href="/admin-panel/urunler/yeni" className="admin-btn admin-btn--primary">
           Yeni ürün

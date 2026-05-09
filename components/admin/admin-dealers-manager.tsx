@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
 import type { Province } from "@/db/schema/province";
 import type { AuthorizedDealerWithProvinces } from "@/services/authorized-dealer.service";
-import { AdminToast, type AdminToastState, type AdminToastVariant } from "./admin-toast";
+import { useAdminToast } from "./admin-toast-provider";
 import { ColorInput } from "./color-input";
 import {
   SearchableMultiSelect,
@@ -44,9 +44,9 @@ function randomVivid(): string {
 }
 
 export function AdminDealersManager({ initialDealers, initialProvinces }: Props) {
+  const { showToast } = useAdminToast();
   const [dealers, setDealers] = useState<AuthorizedDealerWithProvinces[]>(initialDealers);
   const [provinces] = useState<Province[]>(initialProvinces);
-  const [toast, setToast] = useState<AdminToastState>(null);
   const [mounted, setMounted] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [modalMode, setModalMode] = useState<"create" | "edit">("create");
@@ -60,25 +60,29 @@ export function AdminDealersManager({ initialDealers, initialProvinces }: Props)
   const [website, setWebsite] = useState("");
   const [saving, setSaving] = useState(false);
 
-  const showToast = useCallback((message: string, variant: AdminToastVariant) => {
-    setToast({ id: Date.now(), message, variant });
-  }, []);
-
-  const syncList = useCallback(async () => {
-    const res = await fetch("/api/admin/dealers", { credentials: "include" });
-    const data = (await res.json()) as {
-      dealers?: AuthorizedDealerWithProvinces[];
-      error?: string;
-    };
-    if (res.ok && data.dealers) setDealers(data.dealers);
-  }, []);
+  const syncList = useCallback(
+    async (opts?: { quiet?: boolean }) => {
+      const res = await fetch("/api/admin/dealers", { credentials: "include" });
+      const data = (await res.json()) as {
+        dealers?: AuthorizedDealerWithProvinces[];
+        error?: string;
+      };
+      if (res.ok && data.dealers) {
+        setDealers(data.dealers);
+        if (!opts?.quiet) showToast("Liste güncellendi.", "success");
+      } else if (!opts?.quiet) {
+        showToast(formatApiError(data, "Liste yüklenemedi."), "error");
+      }
+    },
+    [showToast],
+  );
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
   useEffect(() => {
-    void syncList();
+    void syncList({ quiet: true });
   }, [syncList]);
 
   /**
@@ -204,8 +208,6 @@ export function AdminDealersManager({ initialDealers, initialProvinces }: Props)
 
   return (
     <>
-      <AdminToast toast={toast} onClose={() => setToast(null)} />
-
       <div className="admin-egitimler-toolbar">
         <button type="button" className="admin-btn admin-btn--primary" onClick={openCreate}>
           Yeni bayi

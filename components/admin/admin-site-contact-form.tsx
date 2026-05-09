@@ -1,8 +1,8 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useState } from "react";
 import type { SiteContact } from "@/db/schema/site-contact";
-import { AdminToast, type AdminToastState, type AdminToastVariant } from "./admin-toast";
+import { useAdminToast } from "./admin-toast-provider";
 
 type Props = {
   initial: SiteContact;
@@ -21,7 +21,7 @@ function formatApiError(data: unknown, fallback: string): string {
 }
 
 export function AdminSiteContactForm({ initial }: Props) {
-  const [toast, setToast] = useState<AdminToastState>(null);
+  const { showToast } = useAdminToast();
   const [saving, setSaving] = useState(false);
   const [companyName, setCompanyName] = useState(initial.companyName);
   const [centerLabel, setCenterLabel] = useState(initial.centerLabel);
@@ -31,10 +31,6 @@ export function AdminSiteContactForm({ initial }: Props) {
   const [hours, setHours] = useState(initial.hours);
   const [mapDirectionsUrl, setMapDirectionsUrl] = useState(initial.mapDirectionsUrl);
   const [mapEmbedUrl, setMapEmbedUrl] = useState(initial.mapEmbedUrl);
-
-  const showToast = useCallback((message: string, variant: AdminToastVariant) => {
-    setToast({ id: Date.now(), message, variant });
-  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -67,9 +63,7 @@ export function AdminSiteContactForm({ initial }: Props) {
   };
 
   return (
-    <>
-      <AdminToast toast={toast} onClose={() => setToast(null)} />
-      <form className="admin-contact-form" onSubmit={(ev) => void handleSubmit(ev)}>
+    <form className="admin-contact-form" onSubmit={(ev) => void handleSubmit(ev)}>
         <div className="admin-contact-grid">
           <label className="admin-field admin-field--full">
             <span>Ünvan (tam ticari ad)</span>
@@ -155,6 +149,5 @@ export function AdminSiteContactForm({ initial }: Props) {
           </button>
         </div>
       </form>
-    </>
   );
 }

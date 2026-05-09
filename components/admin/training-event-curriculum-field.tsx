@@ -13,9 +13,15 @@ function truncate(s: string, max: number): string {
 type Props = {
   items: CurriculumItem[];
   onChange: (items: CurriculumItem[]) => void;
+  /** Bu etkinlik formunda seçili konuşmacı adları (sıra korunur, tekrarsız). */
+  eventSpeakerNames: string[];
 };
 
-export function TrainingEventCurriculumField({ items, onChange }: Props) {
+export function TrainingEventCurriculumField({
+  items,
+  onChange,
+  eventSpeakerNames,
+}: Props) {
   const [modalOpen, setModalOpen] = useState(false);
   const [modalTitle, setModalTitle] = useState("Müfredat bölümü ekle");
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
@@ -59,8 +65,8 @@ export function TrainingEventCurriculumField({ items, onChange }: Props) {
     <div className="admin-field admin-field--full admin-curriculum-field">
       <span>Müfredat</span>
       <p className="admin-field__help">
-        İsteğe bağlı. Program bölümlerini ekleyin; satıra tıklayarak ayrıntıyı
-        görebilirsiniz.
+        İsteğe bağlı. Program bölümlerini ekleyin; konuşmacı bu etkinlikte seçtiğiniz
+        kişiler listesinden gelir. Satıra tıklayarak ayrıntıyı görebilirsiniz.
       </p>
 
       {items.length > 0 && (
@@ -140,6 +146,7 @@ export function TrainingEventCurriculumField({ items, onChange }: Props) {
         open={modalOpen}
         title={modalTitle}
         initial={modalInitial}
+        speakerNames={eventSpeakerNames}
         onClose={closeModal}
         onSave={handleSave}
       />

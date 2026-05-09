@@ -11,3 +11,6 @@ export * from "./dealer-province";
 export * from "./site-maintenance";
 export * from "./site-catalog";
 export * from "./digital-library";
+export * from "./instructor";
+export * from "./seminar-speaker";
+export * from "./training-relations";

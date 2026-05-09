@@ -98,14 +98,12 @@ async function handleSlugRename(
 ): Promise<{
   coverUrl?: string;
   posterUrl?: string;
-  speakerUrls: (string | undefined)[];
 }> {
   const folder = seminarFolder(newSlug);
   const result: {
     coverUrl?: string;
     posterUrl?: string;
-    speakerUrls: (string | undefined)[];
-  } = { speakerUrls: [] };
+  } = {};
 
   if (existingEvent.coverUrl) {
     try {
@@ -118,22 +116,6 @@ async function handleSlugRename(
       const buf = await downloadUrl(existingEvent.posterUrl);
       result.posterUrl = await uploadBuffer(buf, folder, `poster-${newSlug}`);
     } catch { /* eski görsel alınamazsa atla */ }
-  }
-
-  const speakers = existingEvent.speakers ?? [];
-  for (let i = 0; i < speakers.length; i++) {
-    const sp = speakers[i];
-    if (sp.photoUrl) {
-      try {
-        const buf = await downloadUrl(sp.photoUrl);
-        const url = await uploadBuffer(buf, folder, `speaker-${newSlug}-${i + 1}`);
-        result.speakerUrls.push(url);
-      } catch {
-        result.speakerUrls.push(sp.photoUrl);
-      }
-    } else {
-      result.speakerUrls.push(undefined);
-    }
   }
 
   await deleteCloudinaryFolder(oldSlug);
@@ -183,23 +165,11 @@ export async function POST(request: Request) {
       posterUrl = await processAndUpload(posterFile, folder, `poster-${slug}`);
     }
 
-    const speakers = parsed.speakers ?? [];
-    for (let i = 0; i < speakers.length; i++) {
-      const spFile = fd.get(`speakerPhoto_${i}`);
-      if (spFile instanceof File && spFile.size > 0) {
-        speakers[i].photoUrl = await processAndUpload(
-          spFile,
-          folder,
-          `speaker-${slug}-${i + 1}`,
-        );
-      }
-    }
-
     const event: TrainingEvent = {
       ...parsed,
       coverUrl,
       posterUrl,
-      speakers: speakers.length ? speakers : undefined,
+      speakers: parsed.speakers?.length ? parsed.speakers : undefined,
     };
 
     const created = await seminarService.create(event);
@@ -236,14 +206,11 @@ export async function PUT(request: Request) {
 
     let coverUrl = existing.coverUrl;
     let posterUrl = existing.posterUrl;
-    let speakerPhotoUrls: (string | undefined)[] =
-      (existing.speakers ?? []).map((s) => s.photoUrl);
 
     if (slugChanged) {
       const renamed = await handleSlugRename(rawOrigSlug, newSlug, existing);
       coverUrl = renamed.coverUrl;
       posterUrl = renamed.posterUrl;
-      speakerPhotoUrls = renamed.speakerUrls;
     }
 
     const coverFileField = fd.get("coverFile");
@@ -260,25 +227,11 @@ export async function PUT(request: Request) {
       posterUrl = undefined;
     }
 
-    const speakers = parsed.speakers ?? [];
-    for (let i = 0; i < speakers.length; i++) {
-      const spFile = fd.get(`speakerPhoto_${i}`);
-      if (spFile instanceof File && spFile.size > 0) {
-        speakers[i].photoUrl = await processAndUpload(
-          spFile,
-          folder,
-          `speaker-${newSlug}-${i + 1}`,
-        );
-      } else if (speakerPhotoUrls[i]) {
-        speakers[i].photoUrl = speakerPhotoUrls[i];
-      }
-    }
-
     const event: TrainingEvent = {
       ...parsed,
       coverUrl,
       posterUrl,
-      speakers: speakers.length ? speakers : undefined,
+      speakers: parsed.speakers?.length ? parsed.speakers : undefined,
     };
 
     const updated = await seminarService.update(rawOrigSlug, event);

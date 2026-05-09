@@ -3,22 +3,39 @@
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import type { TrainingEvent } from "@/lib/training-events-types";
+import { useAdminToast } from "./admin-toast-provider";
 
 type Props = {
   initialEvents: TrainingEvent[];
 };
 
+function formatApiError(data: unknown, fallback: string): string {
+  if (data && typeof data === "object" && "error" in data && typeof (data as { error: unknown }).error === "string") {
+    return (data as { error: string }).error;
+  }
+  return fallback;
+}
+
 export function TrainingEventsList({ initialEvents }: Props) {
+  const { showToast } = useAdminToast();
   const [events, setEvents] = useState<TrainingEvent[]>(initialEvents);
 
-  const syncList = useCallback(async () => {
-    const res = await fetch("/api/admin/trainings", { credentials: "include" });
-    const data = (await res.json()) as { events?: TrainingEvent[]; error?: string };
-    if (res.ok && data.events) setEvents(data.events);
-  }, []);
+  const syncList = useCallback(
+    async (opts?: { quiet?: boolean }) => {
+      const res = await fetch("/api/admin/trainings", { credentials: "include" });
+      const data = (await res.json()) as { events?: TrainingEvent[]; error?: string };
+      if (res.ok && data.events) {
+        setEvents(data.events);
+        if (!opts?.quiet) showToast("Liste güncellendi.", "success");
+      } else {
+        showToast(formatApiError(data, "Liste yüklenemedi."), "error");
+      }
+    },
+    [showToast],
+  );
 
   useEffect(() => {
-    void syncList();
+    void syncList({ quiet: true });
   }, [syncList]);
 
   const onDelete = async (slug: string) => {
@@ -29,9 +46,10 @@ export function TrainingEventsList({ initialEvents }: Props) {
     );
     const data = await res.json();
     if (!res.ok) {
-      alert(typeof data.error === "string" ? data.error : "Silinemedi");
+      showToast(formatApiError(data, "Silinemedi"), "error");
       return;
     }
+    showToast("Eğitim silindi.", "success");
     await syncList();
   };
 

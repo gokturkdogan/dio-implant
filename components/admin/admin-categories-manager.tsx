@@ -6,7 +6,7 @@ import type { Category } from "@/db/schema/category";
 import { MAX_ADMIN_IMAGE_UPLOAD_MB } from "@/lib/admin-image-upload";
 import { sortByOrderThenName } from "@/lib/category-sort";
 import { AdminCropImageField } from "./admin-crop-image-field";
-import { AdminToast, type AdminToastState, type AdminToastVariant } from "./admin-toast";
+import { useAdminToast } from "./admin-toast-provider";
 
 type Props = {
   initialCategories: Category[];
@@ -58,11 +58,11 @@ export function AdminCategoriesManager({
   initialCategories,
   initialProductCounts,
 }: Props) {
+  const { showToast } = useAdminToast();
   const [categories, setCategories] = useState<Category[]>(initialCategories);
   const [productCounts, setProductCounts] = useState<Record<string, number>>(
     () => initialProductCounts ?? {},
   );
-  const [toast, setToast] = useState<AdminToastState>(null);
   const [mounted, setMounted] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [modalMode, setModalMode] = useState<"create" | "edit">("create");
@@ -77,22 +77,24 @@ export function AdminCategoriesManager({
   const [saving, setSaving] = useState(false);
   const [reordering, setReordering] = useState(false);
 
-  const showToast = useCallback((message: string, variant: AdminToastVariant) => {
-    setToast({ id: Date.now(), message, variant });
-  }, []);
-
-  const syncList = useCallback(async () => {
-    const res = await fetch("/api/admin/categories", { credentials: "include" });
-    const data = (await res.json()) as {
-      categories?: Category[];
-      productCounts?: Record<string, number>;
-      error?: string;
-    };
-    if (res.ok && data.categories) {
-      setCategories(data.categories);
-      setProductCounts(data.productCounts ?? {});
-    }
-  }, []);
+  const syncList = useCallback(
+    async (opts?: { quiet?: boolean }) => {
+      const res = await fetch("/api/admin/categories", { credentials: "include" });
+      const data = (await res.json()) as {
+        categories?: Category[];
+        productCounts?: Record<string, number>;
+        error?: string;
+      };
+      if (res.ok && data.categories) {
+        setCategories(data.categories);
+        setProductCounts(data.productCounts ?? {});
+        if (!opts?.quiet) showToast("Liste güncellendi.", "success");
+      } else if (!opts?.quiet) {
+        showToast(formatApiError(data, "Liste yüklenemedi."), "error");
+      }
+    },
+    [showToast],
+  );
 
   const roots = useMemo(
     () => sortByOrderThenName(categories.filter((c) => c.parentId == null)),
@@ -114,7 +116,7 @@ export function AdminCategoriesManager({
   }, []);
 
   useEffect(() => {
-    void syncList();
+    void syncList({ quiet: true });
   }, [syncList]);
 
   const resetImageFields = useCallback(() => {
@@ -385,8 +387,6 @@ export function AdminCategoriesManager({
 
   return (
     <>
-      <AdminToast toast={toast} onClose={() => setToast(null)} />
-
       <div className="admin-egitimler-toolbar">
         <button type="button" className="admin-btn admin-btn--primary" onClick={openCreate}>
           Yeni kategori

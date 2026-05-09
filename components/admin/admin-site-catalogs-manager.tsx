@@ -5,7 +5,7 @@ import { createPortal } from "react-dom";
 import type { SiteCatalog } from "@/db/schema/site-catalog";
 import { MAX_ADMIN_IMAGE_UPLOAD_MB } from "@/lib/admin-image-upload";
 import { AdminCropImageField } from "./admin-crop-image-field";
-import { AdminToast, type AdminToastState, type AdminToastVariant } from "./admin-toast";
+import { useAdminToast } from "./admin-toast-provider";
 
 type Props = {
   initialCatalogs: SiteCatalog[];
@@ -39,8 +39,8 @@ async function uploadCatalogCoverImage(file: File, catalogId: number): Promise<v
 }
 
 export function AdminSiteCatalogsManager({ initialCatalogs }: Props) {
+  const { showToast } = useAdminToast();
   const [catalogs, setCatalogs] = useState<SiteCatalog[]>(initialCatalogs);
-  const [toast, setToast] = useState<AdminToastState>(null);
   const [mounted, setMounted] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [modalMode, setModalMode] = useState<"create" | "edit">("create");
@@ -54,22 +54,26 @@ export function AdminSiteCatalogsManager({ initialCatalogs }: Props) {
   const initialStoredImageRef = useRef<string | null>(null);
   const [saving, setSaving] = useState(false);
 
-  const showToast = useCallback((message: string, variant: AdminToastVariant) => {
-    setToast({ id: Date.now(), message, variant });
-  }, []);
-
-  const syncList = useCallback(async () => {
-    const res = await fetch("/api/admin/site-catalogs", { credentials: "include" });
-    const data = (await res.json()) as { catalogs?: SiteCatalog[]; error?: string };
-    if (res.ok && data.catalogs) setCatalogs(data.catalogs);
-  }, []);
+  const syncList = useCallback(
+    async (opts?: { quiet?: boolean }) => {
+      const res = await fetch("/api/admin/site-catalogs", { credentials: "include" });
+      const data = (await res.json()) as { catalogs?: SiteCatalog[]; error?: string };
+      if (res.ok && data.catalogs) {
+        setCatalogs(data.catalogs);
+        if (!opts?.quiet) showToast("Liste güncellendi.", "success");
+      } else if (!opts?.quiet) {
+        showToast(formatApiError(data, "Liste yüklenemedi."), "error");
+      }
+    },
+    [showToast],
+  );
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
   useEffect(() => {
-    void syncList();
+    void syncList({ quiet: true });
   }, [syncList]);
 
   const resetImageFields = useCallback(() => {
@@ -226,8 +230,6 @@ export function AdminSiteCatalogsManager({ initialCatalogs }: Props) {
 
   return (
     <>
-      <AdminToast toast={toast} onClose={() => setToast(null)} />
-
       <div className="admin-egitimler-toolbar">
         <button type="button" className="admin-btn admin-btn--primary" onClick={openCreate}>
           Yeni katalog

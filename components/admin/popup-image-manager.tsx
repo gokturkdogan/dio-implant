@@ -6,7 +6,7 @@ import {
   MAX_ADMIN_IMAGE_UPLOAD_BYTES,
   MAX_ADMIN_IMAGE_UPLOAD_MB,
 } from "@/lib/admin-image-upload";
-import { AdminToast, type AdminToastState, type AdminToastVariant } from "./admin-toast";
+import { useAdminToast } from "./admin-toast-provider";
 
 type Area = {
   x: number;
@@ -61,6 +61,7 @@ async function getCroppedBlob(imageSrc: string, area: Area): Promise<Blob> {
 }
 
 export function PopupImageManager() {
+  const { showToast } = useAdminToast();
   const fallbackPreviewUrl =
     "https://res.cloudinary.com/drjz8v617/image/upload/HomeModal/modal-poster.webp";
 
@@ -76,8 +77,6 @@ export function PopupImageManager() {
   const [zoom, setZoom] = useState(1);
   const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
   const [uploading, setUploading] = useState(false);
-  const [toast, setToast] = useState<AdminToastState>(null);
-  const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [mounted, setMounted] = useState(false);
 
   const fetchPopupData = useCallback(async () => {
@@ -98,18 +97,7 @@ export function PopupImageManager() {
     } finally {
       setLoadingPopup(false);
     }
-  }, []);
-
-  const showToast = (message: string, variant: AdminToastVariant) => {
-    if (toastTimerRef.current) {
-      clearTimeout(toastTimerRef.current);
-    }
-    const id = Date.now();
-    setToast({ id, message, variant });
-    toastTimerRef.current = setTimeout(() => {
-      setToast((prev) => (prev?.id === id ? null : prev));
-    }, 3600);
-  };
+  }, [fallbackPreviewUrl, showToast]);
 
   const patchPopup = useCallback(async (payload: Record<string, unknown>) => {
     const res = await fetch("/api/site-popups/homepage", {
@@ -285,8 +273,6 @@ export function PopupImageManager() {
           </div>
         </div>
       </div>
-
-      <AdminToast toast={toast} onClose={() => setToast(null)} />
 
       {cropModalOpen && sourceImage ? (
         <div className="admin-crop-modal" role="dialog" aria-modal="true">

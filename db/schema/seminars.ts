@@ -8,7 +8,7 @@ import {
   text,
   timestamp,
 } from "drizzle-orm/pg-core";
-import type { CurriculumItem, Speaker } from "@/lib/training-events-types";
+import type { CurriculumItem } from "@/lib/training-events-types";
 
 /** Eğitim / seminer formatı — uygulama `TrainingFormat` ile aynı değerler */
 export const seminarFormatEnum = pgEnum("seminar_format", [
@@ -19,7 +19,7 @@ export const seminarFormatEnum = pgEnum("seminar_format", [
 
 /**
  * Akademi eğitimleri (admin formundaki tüm alanlar).
- * `speakers` ve `curriculum` JSONB; diğer alanlar ayrı sütun.
+ * Konuşmacılar `seminar_speakers` tablosunda; `curriculum` JSONB.
  */
 export const seminars = pgTable("seminars", {
   id: serial("id").primaryKey(),
@@ -42,7 +42,6 @@ export const seminars = pgTable("seminars", {
     .default(sql`'[]'::jsonb`),
   excerpt: text("excerpt").notNull(),
   highlights: jsonb("highlights").$type<string[]>(),
-  speakers: jsonb("speakers").$type<Speaker[]>(),
   curriculum: jsonb("curriculum").$type<CurriculumItem[]>(),
   createdAt: timestamp("created_at", { withTimezone: true })
     .notNull()

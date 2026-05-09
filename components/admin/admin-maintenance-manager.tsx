@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { AdminToast, type AdminToastState } from "./admin-toast";
+import { useAdminToast } from "./admin-toast-provider";
 
 type Props = {
   initialEnabled: boolean;
@@ -24,10 +24,10 @@ export function AdminMaintenanceManager({
   initialEnabled,
   initialMessage,
 }: Props) {
+  const { showToast } = useAdminToast();
   const [enabled, setEnabled] = useState(initialEnabled);
   const [message, setMessage] = useState(initialMessage);
   const [saving, setSaving] = useState(false);
-  const [toast, setToast] = useState<AdminToastState>(null);
 
   const save = async () => {
     setSaving(true);
@@ -40,29 +40,20 @@ export function AdminMaintenanceManager({
       });
       const data = await res.json();
       if (!res.ok) {
-        setToast({
-          id: Date.now(),
-          message: readError(data, "Bakım modu kaydedilemedi."),
-          variant: "error",
-        });
+        showToast(readError(data, "Bakım modu kaydedilemedi."), "error");
         return;
       }
-      setToast({
-        id: Date.now(),
-        message: enabled
-          ? "Bakım modu aktif edildi."
-          : "Bakım modu pasif edildi.",
-        variant: "success",
-      });
+      showToast(
+        enabled ? "Bakım modu aktif edildi." : "Bakım modu pasif edildi.",
+        "success",
+      );
     } finally {
       setSaving(false);
     }
   };
 
   return (
-    <>
-      <AdminToast toast={toast} onClose={() => setToast(null)} />
-      <div className="admin-contact-form">
+    <div className="admin-contact-form">
         <div className="admin-contact-grid">
           <label className="admin-field admin-field--full">
             <span>Bakım modu durumu</span>
@@ -110,8 +101,7 @@ export function AdminMaintenanceManager({
             {saving ? "Kaydediliyor…" : "Kaydet"}
           </button>
         </div>
-      </div>
-    </>
+    </div>
   );
 }
 

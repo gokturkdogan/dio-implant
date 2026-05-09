@@ -10,6 +10,10 @@ export type Speaker = {
   specialties: string[];
   /** Kısa biyografi */
   bio: string;
+  /**
+   * `instructors` tablosundaki kayıt; varsa liste ve detayda güncel eğitmen verisi bu id ile çözülür.
+   */
+  instructorId?: number;
 };
 
 export type CurriculumItem = {

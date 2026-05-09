@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import type { RegionalOffice } from "@/db/schema/regional-office";
-import { AdminToast, type AdminToastState, type AdminToastVariant } from "./admin-toast";
+import { useAdminToast } from "./admin-toast-provider";
 
 type Props = {
   initialOffices: RegionalOffice[];
@@ -22,8 +22,8 @@ function formatApiError(data: unknown, fallback: string): string {
 }
 
 export function AdminRegionalOfficesManager({ initialOffices }: Props) {
+  const { showToast } = useAdminToast();
   const [offices, setOffices] = useState<RegionalOffice[]>(initialOffices);
-  const [toast, setToast] = useState<AdminToastState>(null);
   const [mounted, setMounted] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [modalMode, setModalMode] = useState<"create" | "edit">("create");
@@ -37,22 +37,26 @@ export function AdminRegionalOfficesManager({ initialOffices }: Props) {
   const [mapDirectionsUrl, setMapDirectionsUrl] = useState("");
   const [saving, setSaving] = useState(false);
 
-  const showToast = useCallback((message: string, variant: AdminToastVariant) => {
-    setToast({ id: Date.now(), message, variant });
-  }, []);
-
-  const syncList = useCallback(async () => {
-    const res = await fetch("/api/admin/regional-offices", { credentials: "include" });
-    const data = (await res.json()) as { offices?: RegionalOffice[]; error?: string };
-    if (res.ok && data.offices) setOffices(data.offices);
-  }, []);
+  const syncList = useCallback(
+    async (opts?: { quiet?: boolean }) => {
+      const res = await fetch("/api/admin/regional-offices", { credentials: "include" });
+      const data = (await res.json()) as { offices?: RegionalOffice[]; error?: string };
+      if (res.ok && data.offices) {
+        setOffices(data.offices);
+        if (!opts?.quiet) showToast("Liste güncellendi.", "success");
+      } else if (!opts?.quiet) {
+        showToast(formatApiError(data, "Liste yüklenemedi."), "error");
+      }
+    },
+    [showToast],
+  );
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
   useEffect(() => {
-    void syncList();
+    void syncList({ quiet: true });
   }, [syncList]);
 
   const closeModal = () => setModalOpen(false);
@@ -146,8 +150,6 @@ export function AdminRegionalOfficesManager({ initialOffices }: Props) {
 
   return (
     <>
-      <AdminToast toast={toast} onClose={() => setToast(null)} />
-
       <div className="admin-egitimler-toolbar">
         <button type="button" className="admin-btn admin-btn--primary" onClick={openCreate}>
           Yeni ofis

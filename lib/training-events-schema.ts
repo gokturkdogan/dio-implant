@@ -9,12 +9,18 @@ const optionalHttpsUrl = z.preprocess(
   z.string().url().optional(),
 );
 
-const speakerSchema = z.object({
+/** Eğitmen CRUD formu / API gövdesi — kayıt kimliği URL veya INSERT ile gelir. */
+export const instructorFormSchema = z.object({
   name: z.string().min(1),
   photoUrl: optionalHttpsUrl,
   education: z.array(z.string().min(1)).default([]),
   specialties: z.array(z.string().min(1)).default([]),
   bio: z.string(),
+});
+
+/** Eğitim etkinliğinde konuşmacı: `instructors` satırına bağlı olmalı. */
+export const speakerSchema = instructorFormSchema.extend({
+  instructorId: z.number().int().positive(),
 });
 
 const curriculumItemSchema = z.object({

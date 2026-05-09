@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
 import type { CurriculumItem } from "@/lib/training-events-types";
 
@@ -65,11 +65,20 @@ type Props = {
   open: boolean;
   title: string;
   initial: CurriculumItem | null;
+  /** Bu etkinlikte seçili konuşmacı adları (formdan; kayıt gerekmez). */
+  speakerNames: string[];
   onClose: () => void;
   onSave: (item: CurriculumItem) => void;
 };
 
-export function CurriculumFormModal({ open, title, initial, onClose, onSave }: Props) {
+export function CurriculumFormModal({
+  open,
+  title,
+  initial,
+  speakerNames,
+  onClose,
+  onSave,
+}: Props) {
   const [draft, setDraft] = useState<Draft>(emptyDraft);
   const [mounted, setMounted] = useState(false);
 
@@ -90,6 +99,22 @@ export function CurriculumFormModal({ open, title, initial, onClose, onSave }: P
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
   }, [open, onClose]);
+
+  const speakerSelectOptions = useMemo(() => {
+    const seen = new Set<string>();
+    const ordered: string[] = [];
+    for (const raw of speakerNames) {
+      const n = raw.trim();
+      if (!n || seen.has(n)) continue;
+      seen.add(n);
+      ordered.push(n);
+    }
+    const cur = draft.speaker.trim();
+    if (cur && !seen.has(cur)) {
+      ordered.unshift(cur);
+    }
+    return ordered;
+  }, [speakerNames, draft.speaker]);
 
   if (!open || !mounted) return null;
 
@@ -171,17 +196,29 @@ export function CurriculumFormModal({ open, title, initial, onClose, onSave }: P
             />
           </label>
 
-          <label className="admin-field admin-field--full">
+          <div className="admin-field admin-field--full">
             <span>Konuşmacı (opsiyonel)</span>
             <p className="admin-field__help">
-              Müfredat satırında isim göstermek için; boş bırakılabilir.
+              Yalnızca bu etkinlikte eklediğiniz konuşmacılardan seçilir; listede
+              yoksa önce üstteki “Konuşmacılar” bölümünden ekleyin. Kayıt etmeden
+              seçilen konuşmacılar da burada görünür.
             </p>
-            <input
+            <select
               value={draft.speaker}
               onChange={(e) => setDraft((d) => ({ ...d, speaker: e.target.value }))}
-              placeholder="Örn. Prof. Dr. …"
-            />
-          </label>
+              aria-label="Müfredat satırı konuşmacısı"
+            >
+              <option value="">— Yok —</option>
+              {speakerSelectOptions.map((name) => (
+                <option key={name} value={name}>
+                  {name}
+                </option>
+              ))}
+            </select>
+            {speakerNames.length === 0 && !draft.speaker.trim() ? (
+              <p className="admin-field__help">Henüz konuşmacı eklenmedi.</p>
+            ) : null}
+          </div>
 
           <div className="admin-mini-modal__footer">
             <button type="button" className="admin-btn admin-btn--ghost" onClick={onClose}>

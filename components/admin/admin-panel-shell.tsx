@@ -9,6 +9,7 @@ const NAV = [
   { href: "/admin-panel/kataloglar", label: "Kataloglar" },
   { href: "/admin-panel/dijital-kutuphane", label: "Dijital kütüphane" },
   { href: "/admin-panel/egitimler", label: "Eğitimler" },
+  { href: "/admin-panel/egitmenler", label: "Eğitmenler" },
   { href: "/admin-panel/iletisim-bilgileri", label: "İletişim bilgileri" },
   { href: "/admin-panel/ofisler", label: "Bölge ofisleri" },
   { href: "/admin-panel/bayiler", label: "Yetkili bayiler" },

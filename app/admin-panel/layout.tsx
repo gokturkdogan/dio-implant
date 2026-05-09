@@ -1,5 +1,6 @@
 import Script from "next/script";
 import type { ReactNode } from "react";
+import { AdminPanelProviders } from "../../components/admin/admin-panel-providers";
 import {
   ADMIN_THEME_COOKIE_NAME,
   ADMIN_THEME_LOCAL_STORAGE_KEY,
@@ -24,7 +25,7 @@ export default function AdminPanelLayout({
         strategy="beforeInteractive"
         dangerouslySetInnerHTML={{ __html: adminThemeBootScript() }}
       />
-      {children}
+      <AdminPanelProviders>{children}</AdminPanelProviders>
     </>
   );
 }

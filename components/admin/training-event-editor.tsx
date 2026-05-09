@@ -13,10 +13,9 @@ import type {
   TrainingEvent,
   TrainingFormat,
 } from "@/lib/training-events-types";
-import { normalizeSpeakers } from "@/lib/speaker-normalize";
 import { TURKIYE_ILLERI, TURKIYE_ILLERI_SET } from "@/lib/turkiye-iller";
 import { AdminCropImageField } from "./admin-crop-image-field";
-import { AdminToast, type AdminToastState, type AdminToastVariant } from "./admin-toast";
+import { useAdminToast } from "./admin-toast-provider";
 import { TrainingEventCurriculumField } from "./training-event-curriculum-field";
 import {
   TrainingEventSpeakersField,
@@ -186,10 +185,7 @@ function eventToForm(ev: TrainingEvent): FormState {
     format: ev.format,
     excerpt: ev.excerpt,
     highlightsText: (ev.highlights ?? []).join("\n"),
-    speakers: normalizeSpeakers(ev.speakers ?? []).map((s) => ({
-      ...s,
-      _pendingPhotoFile: undefined,
-    })),
+    speakers: (ev.speakers ?? []).map((s) => ({ ...s })),
     curriculum: [...(ev.curriculum ?? [])],
   };
 }
@@ -204,13 +200,22 @@ function buildEventPayload(
 } {
   const speakers: TrainingEvent["speakers"] =
     form.speakers.length > 0
-      ? form.speakers.map((s) => ({
-          name: s.name.trim(),
-          photoUrl: s.photoUrl?.startsWith("http") ? s.photoUrl : undefined,
-          education: s.education.map((x) => x.trim()).filter(Boolean),
-          specialties: s.specialties.map((x) => x.trim()).filter(Boolean),
-          bio: s.bio.trim(),
-        }))
+      ? form.speakers.map((s) => {
+          if (typeof s.instructorId !== "number" || s.instructorId < 1 || !Number.isFinite(s.instructorId)) {
+            throw new Error(
+              "Tüm konuşmacılar eğitmen kütüphanesinden seçilmelidir (Eğitmenler sayfası).",
+            );
+          }
+          const entry: NonNullable<TrainingEvent["speakers"]>[number] = {
+            name: s.name.trim(),
+            photoUrl: s.photoUrl?.startsWith("http") ? s.photoUrl : undefined,
+            education: s.education.map((x) => x.trim()).filter(Boolean),
+            specialties: s.specialties.map((x) => x.trim()).filter(Boolean),
+            bio: s.bio.trim(),
+            instructorId: s.instructorId,
+          };
+          return entry;
+        })
       : undefined;
   if (speakers?.some((s) => !s.name)) {
     throw new Error("Konuşmacı adı boş olamaz.");
@@ -319,6 +324,7 @@ type Props = {
 
 export function TrainingEventEditor({ mode, initialEvent, originalSlug }: Props) {
   const router = useRouter();
+  const { showToast } = useAdminToast();
   const [form, setForm] = useState<FormState>(() =>
     mode === "edit" && initialEvent ? eventToForm(initialEvent) : emptyForm(),
   );
@@ -327,8 +333,6 @@ export function TrainingEventEditor({ mode, initialEvent, originalSlug }: Props)
   const [saving, setSaving] = useState(false);
   const [datePickerOpen, setDatePickerOpen] = useState(false);
   const dateFieldRef = useRef<HTMLDivElement>(null);
-  const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const [toast, setToast] = useState<AdminToastState>(null);
 
   const [openSections, setOpenSections] = useState<Record<SectionKey, boolean>>({
     general: true,
@@ -339,15 +343,6 @@ export function TrainingEventEditor({ mode, initialEvent, originalSlug }: Props)
 
   const toggleSection = useCallback((key: SectionKey) => {
     setOpenSections((prev) => ({ ...prev, [key]: !prev[key] }));
-  }, []);
-
-  const showToast = useCallback((message: string, variant: AdminToastVariant) => {
-    if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
-    const id = Date.now();
-    setToast({ id, message, variant });
-    toastTimerRef.current = setTimeout(() => {
-      setToast((prev) => (prev?.id === id ? null : prev));
-    }, 4000);
   }, []);
 
   const citySelectOptions = useMemo(() => {
@@ -378,6 +373,18 @@ export function TrainingEventEditor({ mode, initialEvent, originalSlug }: Props)
     return () => document.removeEventListener("mousedown", onDown);
   }, [datePickerOpen]);
 
+  const curriculumSpeakerNames = useMemo(() => {
+    const seen = new Set<string>();
+    const out: string[] = [];
+    for (const s of form.speakers) {
+      const n = s.name.trim();
+      if (!n || seen.has(n)) continue;
+      seen.add(n);
+      out.push(n);
+    }
+    return out;
+  }, [form.speakers]);
+
   const applySuggestSlug = () => {
     setForm((f) => ({ ...f, slug: suggestSlug(f.title, f.dateISO) }));
   };
@@ -385,7 +392,6 @@ export function TrainingEventEditor({ mode, initialEvent, originalSlug }: Props)
   const onSubmit = useCallback(
     async (e: React.FormEvent) => {
       e.preventDefault();
-      setToast(null);
 
       let payload: ReturnType<typeof buildEventPayload>;
       try {
@@ -414,12 +420,6 @@ export function TrainingEventEditor({ mode, initialEvent, originalSlug }: Props)
 
         if (!coverFile && !hasCoverUrl) fd.append("removeCover", "1");
         if (!posterFile && !hasPosterUrl) fd.append("removePoster", "1");
-
-        form.speakers.forEach((sp, i) => {
-          if (sp._pendingPhotoFile) {
-            fd.append(`speakerPhoto_${i}`, sp._pendingPhotoFile);
-          }
-        });
 
         const method = mode === "create" ? "POST" : "PUT";
         const res = await fetch("/api/admin/trainings", {
@@ -719,6 +719,7 @@ export function TrainingEventEditor({ mode, initialEvent, originalSlug }: Props)
 
             <TrainingEventCurriculumField
               items={form.curriculum}
+              eventSpeakerNames={curriculumSpeakerNames}
               onChange={(curriculum) => setForm((f) => ({ ...f, curriculum }))}
             />
           </div>
@@ -738,8 +739,6 @@ export function TrainingEventEditor({ mode, initialEvent, originalSlug }: Props)
           </button>
         </div>
       </form>
-
-      <AdminToast toast={toast} onClose={() => setToast(null)} />
     </div>
   );
 }

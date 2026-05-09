@@ -3,6 +3,7 @@
 import { useId, useState } from "react";
 import { useRouter } from "next/navigation";
 import Script from "next/script";
+import { useAdminToast } from "@/components/admin/admin-toast-provider";
 
 function IconEye() {
   return (
@@ -36,18 +37,17 @@ function IconEyeOff() {
 
 export function AdminLoginClient({ nextPath }: { nextPath: string }) {
   const router = useRouter();
+  const { showToast } = useAdminToast();
   const pwdId = useId();
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setError(null);
 
     try {
       const res = await fetch("/api/admin/login", {
@@ -58,13 +58,14 @@ export function AdminLoginClient({ nextPath }: { nextPath: string }) {
 
       if (!res.ok) {
         const body = await res.json().catch(() => null);
-        setError(body?.error ?? "Giriş yapılamadı");
+        showToast(body?.error ?? "Giriş yapılamadı", "error");
         return;
       }
 
+      showToast("Giriş başarılı.", "success");
       router.replace(nextPath);
     } catch {
-      setError("Giriş yapılamadı");
+      showToast("Giriş yapılamadı", "error");
     } finally {
       setLoading(false);
     }
@@ -116,8 +117,6 @@ export function AdminLoginClient({ nextPath }: { nextPath: string }) {
                 </button>
               </div>
             </label>
-
-            {error ? <div className="admin-auth__error">{error}</div> : null}
 
             <button className="admin-btn admin-btn--primary admin-auth__submit" disabled={loading}>
               {loading ? "Giriş yapılıyor…" : "Giriş yap"}
