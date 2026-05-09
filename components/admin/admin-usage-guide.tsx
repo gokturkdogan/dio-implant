@@ -74,12 +74,46 @@ function IconPdf() {
   );
 }
 
+function IconLibrary() {
+  return (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path
+        d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"
+        stroke="currentColor"
+        strokeWidth="1.75"
+        strokeLinecap="round"
+      />
+      <path
+        d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"
+        stroke="currentColor"
+        strokeWidth="1.75"
+        strokeLinecap="round"
+      />
+      <path d="M8 6h8M8 10h8M8 14h5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+    </svg>
+  );
+}
+
 function IconCalendar() {
   return (
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
       <rect x="3" y="4" width="18" height="18" rx="2" stroke="currentColor" strokeWidth="1.75" />
       <path d="M16 2v4M8 2v4M3 10h18" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" />
       <circle cx="12" cy="15" r="1.5" fill="currentColor" />
+    </svg>
+  );
+}
+
+function IconGradCap() {
+  return (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path
+        d="M22 10v6M2 10l10 5 10-5-10-5L2 10z"
+        stroke="currentColor"
+        strokeWidth="1.75"
+        strokeLinejoin="round"
+      />
+      <path d="M6 12v5c3 3 9 3 12 0v-5" stroke="currentColor" strokeWidth="1.75" strokeLinejoin="round" />
     </svg>
   );
 }
@@ -162,24 +196,26 @@ function IconArrowSite() {
   );
 }
 
-function IconKey() {
+function IconBell() {
   return (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <circle cx="8" cy="8" r="3" stroke="currentColor" strokeWidth="1.75" />
-      <path d="M11 11l10 10M15 15l2 2M19 19l2 2" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" />
+      <path
+        d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"
+        stroke="currentColor"
+        strokeWidth="1.75"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path d="M13.73 21a2 2 0 0 1-3.46 0" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" />
     </svg>
   );
 }
 
-function IconCloud() {
+function IconSun() {
   return (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path
-        d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"
-        stroke="currentColor"
-        strokeWidth="1.75"
-        strokeLinejoin="round"
-      />
+      <circle cx="12" cy="12" r="4" stroke="currentColor" strokeWidth="1.75" />
+      <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" />
     </svg>
   );
 }
@@ -213,7 +249,6 @@ function GuideTile({
   primaryVariant?: "req" | "opt" | "neutral";
   secondaryLine?: string;
   secondaryVariant?: "opt" | "neutral";
-  /** Kartın altında; kısa madde veya paragraf */
   details?: ReactNode;
 }) {
   return (
@@ -242,7 +277,6 @@ function GuideTile({
   );
 }
 
-/** Görsel kartlar + her modül için madde işaretli açıklama. */
 export function AdminUsageGuide() {
   return (
     <div className="admin-guide">
@@ -258,25 +292,55 @@ export function AdminUsageGuide() {
           </div>
         </div>
         <div className="admin-guide-hero__text">
-          <h2 className="admin-guide-hero__title">Hızlı kılavuz</h2>
+          <h2 className="admin-guide-hero__title">Siteyi buradan güncellersiniz</h2>
           <p className="admin-guide-hero__lead">
-            Soldaki menüden ilgili bölüme gidin. Her kartta üstte <strong>ön yüzde nerede</strong>{" "}
-            çıktığı, renkli rozetlerde <strong>zorunlu / opsiyonel</strong> özet ve altta kısa
-            açıklama bulunur. Ürün ve kategori verileri API ile siteye bağlanır; diğer sayfaların
-            bir kısmı kod içi şablondur (kartların altındaki nota bakın).
+            Soldaki menüden bir bölüm seçin, formu doldurun, <strong>Kaydet</strong> deyin. İşlem
+            olunca sağ üstte kısa bir bildirim görürsünüz (başarılı veya hata).
+          </p>
+          <p className="admin-guide-hero__lead admin-guide-hero__lead--tight">
+            Teknik bilgi gerekmez: aşağıdaki kartlar, her menünün “sitede nerede görünür” ve “nelere
+            dikkat etmelisiniz” özetidir.
           </p>
           <div className="admin-guide-hero__pills">
             <span className="admin-guide-pill">
-              <IconKey /> Süre dolunca parola ile yenile veya çık
+              <IconSun /> Tema: solda üstte ay/güneş
             </span>
             <span className="admin-guide-pill">
-              <IconWrench /> Bakım: ziyaretçi kilit, panel açık
-            </span>
-            <span className="admin-guide-pill">
-              <IconCloud /> Görseller CDN’e (WebP)
+              <IconBell /> Kayıt / silme sonrası bildirim
             </span>
           </div>
         </div>
+      </section>
+
+      <section className="admin-guide-steps-wrap admin-card">
+        <h3 className="admin-guide-steps-title">3 adımda</h3>
+        <ol className="admin-guide-steps">
+          <li className="admin-guide-step">
+            <span className="admin-guide-step__num" aria-hidden="true">
+              1
+            </span>
+            <p className="admin-guide-step__text">
+              Soldan ilgili sayfayı açın <span className="admin-guide-step__muted">(ör. Eğitimler)</span>.
+            </p>
+          </li>
+          <li className="admin-guide-step">
+            <span className="admin-guide-step__num" aria-hidden="true">
+              2
+            </span>
+            <p className="admin-guide-step__text">
+              Metin ve görselleri girin, formun altındaki <strong>Kaydet</strong> veya <strong>Ekle</strong>
+              tuşunu kullanın.
+            </p>
+          </li>
+          <li className="admin-guide-step">
+            <span className="admin-guide-step__num" aria-hidden="true">
+              3
+            </span>
+            <p className="admin-guide-step__text">
+              Sitede görmek için yeni sekmede canlı siteyi açıp menüden o bölüme gidin.
+            </p>
+          </li>
+        </ol>
       </section>
 
       <div className="admin-guide-tiles">
@@ -284,135 +348,152 @@ export function AdminUsageGuide() {
           icon={<IconPopup />}
           title="Popup"
           adminPath="/admin-panel"
-          siteHint="Anasayfa / — modal (açıkken)"
-          primaryLine="Durum: açık · kapalı"
+          siteHint="Anasayfada — ziyaretçiye açılan kutucuk"
+          primaryLine="Aç / kapat"
           primaryVariant="neutral"
           secondaryLine="Görsel + kırpma"
           details={
-            <ul>
-              <li>Ziyaretçi anasayfaya geldiğinde tam ekran üzerinde kutucuk olarak açılır.</li>
-              <li>Önce görseli yükleyip kırpın; ardından “göster” seçeneğini açın — kapalıyken modal hiç çıkmaz.</li>
-              <li>Metin içeriği şu an sabit şablondadır; yalnızca görsel ve görünürlük buradan yönetilir.</li>
-            </ul>
+            <p>
+              Görseli yükleyip kırptıktan sonra “göster” açıksa anasayfada çıkar. Kapalıysa hiç
+              görünmez. Yazı metni sabittir; sadece görsel ve görünürlük sizden.
+            </p>
           }
         />
         <GuideTile
           icon={<IconFolderTree />}
           title="Kategoriler"
           adminPath="/admin-panel/kategoriler"
-          siteHint="Menü Ürünler · /urunler"
-          primaryLine="Zorunlu: ad"
-          secondaryLine="Görsel · slug otomatik · sıra ↑↓"
+          siteHint="Üst menü “Ürünler” listesi"
+          primaryLine="İsim gerekli"
+          secondaryLine="Sıra · alt kategori · görsel"
           details={
-            <ul>
-              <li>Üst menüdeki “Ürünler” açılır listesi ve ürünler indeksi bu hiyerarşiyi kullanır; sıra okları aynı gruptaki kardeşleri (kök veya aynı üstün altları) etkiler.</li>
-              <li>En fazla bir seviye alt kategori vardır; alt kategorinin altına kategori eklenemez.</li>
-              <li>“Ürün” sütunu yalnızca o kategoriye doğrudan bağlı ürün sayısıdır.</li>
-            </ul>
+            <p>
+              Menüde ürünler nasıl gruplansın, buradan ayarlanır. En fazla bir alt seviye vardır.
+            </p>
           }
         />
         <GuideTile
           icon={<IconPackage />}
           title="Ürünler"
           adminPath="/admin-panel/urunler"
-          siteHint="/urunler · /urunler/…"
-          primaryLine="Zorunlu: ad + kategori"
-          secondaryLine="PDF · afiş · carousel×3 · özet"
+          siteHint="Ürün listesi ve ürün sayfası"
+          primaryLine="İsim + kategori"
+          secondaryLine="Fotoğraflar · özet · PDF"
           details={
-            <ul>
-              <li>Listede hızlı ekleme/düzenleme modalı; uzun içerik için “yeni” veya “düzenle” tam sayfa editörünü kullanın.</li>
-              <li>Slug ürün adından üretilir; ana görsel, afişler, carousel ve katalog PDF’si isteğe bağlıdır.</li>
-              <li>Ürün yalnızca bağlı kategoride listelenir; detay sayfasında hero, açıklama ve görseller gösterilir.</li>
-            </ul>
+            <p>
+              Listeden hızlı ekleyebilir veya “düzenle” ile uzun sayfayı kullanabilirsiniz. Kategori
+              seçmezseniz vitrinde doğru yerde çıkmaz.
+            </p>
           }
         />
         <GuideTile
           icon={<IconPdf />}
           title="Kataloglar"
           adminPath="/admin-panel/kataloglar"
-          siteHint="/kataloglar"
-          primaryLine="Zorunlu: başlık + PDF"
-          secondaryLine="Kapak görseli"
+          siteHint="Kataloglar sayfası — PDF kartları"
+          primaryLine="Başlık + PDF linki"
+          secondaryLine="İsteğe bağlı kapak"
           details={
-            <ul>
-              <li>Her satır sitede bir karttır: başlık, isteğe bağlı kapak ve tam HTTPS PDF bağlantısı.</li>
-              <li>PDF dosyası sunucuya yüklenmez; yalnızca erişilebilir bir URL girilir (ör. CDN veya dosya sunucusu).</li>
-            </ul>
+            <p>
+              PDF dosyası buraya yüklenmez; çalışan bir internet adresi (link) yazarsınız. İsterseniz
+              kapak görseli eklenir.
+            </p>
+          }
+        />
+        <GuideTile
+          icon={<IconLibrary />}
+          title="Dijital kütüphane"
+          adminPath="/admin-panel/dijital-kutuphane"
+          siteHint="Dijital kütüphane sayfası"
+          primaryLine="ZIP + sunum linkleri"
+          primaryVariant="neutral"
+          details={
+            <p>
+              Ziyaretçinin indireceği ZIP ve PPT adreslerini buraya kaydedersiniz. Adresler tam ve
+              erişilebilir olmalıdır.
+            </p>
+          }
+        />
+        <GuideTile
+          icon={<IconGradCap />}
+          title="Eğitmenler"
+          adminPath="/admin-panel/egitmenler"
+          siteHint="Eğitim detayı — konuşmacı kartları"
+          primaryLine="Kimlik kartı oluştur"
+          primaryVariant="neutral"
+          secondaryLine="Foto · biyo · uzmanlık"
+          details={
+            <p>
+              Önce burada eğitmeni ekleyin veya düzenleyin. Aynı kişi, farklı etkinliklerde tekrar
+              kullanılır; bilgiyi bir yerde güncellemeniz yeterlidir.
+            </p>
           }
         />
         <GuideTile
           icon={<IconCalendar />}
           title="Eğitimler"
           adminPath="/admin-panel/egitimler"
-          siteHint="Takvim · detay sayfası"
-          primaryLine="Zorunlu: başlık · slug · tarih · format · il"
-          secondaryLine="Kapak · eğitmen · içerik"
+          siteHint="Akademi takvimi + etkinlik detayı"
+          primaryLine="Başlık · tarih · yer"
+          secondaryLine="Konuşmacı = eğitmen listesinden"
           details={
-            <ul>
-              <li>DIO Akademi eğitim takviminde görünür; etkinliğe tıklanınca slug ile detay sayfası açılır.</li>
-              <li>Slug benzersiz olmalı; yayında değiştirmek medya klasörlerini etkileyebilir — mümkünse sabit tutun.</li>
-              <li>Konum, eğitmenler, müfredat ve uzun metin alanları zengin içerik için opsiyoneldir.</li>
-            </ul>
+            <p>
+              Etkinliği oluştururken konuşmacıları listeden seçersiniz; elle yazmak yerine{" "}
+              <strong>Eğitmenler</strong> sayfasındaki kayıtlar kullanılır. Takvim ve detay sayfası
+              canlı güncellenir.
+            </p>
           }
         />
         <GuideTile
           icon={<IconPhone />}
-          title="İletişim"
+          title="İletişim bilgileri"
           adminPath="/admin-panel/iletisim-bilgileri"
-          siteHint="/iletisim üst alan"
-          primaryLine="Tek kayıt (genel merkez)"
+          siteHint="İletişim sayfası — üst bilgi"
+          primaryLine="Tek merkez kaydı"
           primaryVariant="neutral"
-          secondaryLine="Adres · tel · e-posta · harita"
+          secondaryLine="Adres · telefon · harita"
           details={
-            <ul>
-              <li>Veritabanında tek satır (genel merkez); iletişim sayfasının üst bölümünü besler.</li>
-              <li>Harita embed ve yol tarifi farklı alanlardır; şablonda hangi alanın kullanıldığına göre ikisini de doldurmak faydalıdır.</li>
-            </ul>
+            <p>
+              Genel merkez adresi ve iletişim buradan gelir. Harita kutusu için ayrı alanlar vardır;
+              ikisini de doldurmak genelde daha iyidir.
+            </p>
           }
         />
         <GuideTile
           icon={<IconBuilding />}
           title="Bölge ofisleri"
           adminPath="/admin-panel/ofisler"
-          siteHint="#bolge-mudurlukler"
-          primaryLine="Kart alanlarını doldur"
+          siteHint="İletişim sayfası — bölge kartları"
+          primaryLine="Kart bilgileri"
           primaryVariant="neutral"
-          secondaryLine="Logo / not"
-          details={
-            <ul>
-              <li>İletişim sayfasındaki “Bölge müdürlükleri” bölümünde kart olarak listelenir.</li>
-              <li>Kayıt ekleyip düzenleyin; sunucu hata dönerse alanları kontrol edin.</li>
-            </ul>
-          }
+          details={<p>Her satır sitede bir ofis kartıdır. Ekleyin, düzenleyin; sıra alanı varsa onu da kullanın.</p>}
         />
         <GuideTile
           icon={<IconUsers />}
           title="Yetkili bayiler"
           adminPath="/admin-panel/bayiler"
-          siteHint="#yetkili-bayiler · menü Bayi Ağı"
-          primaryLine="Ünvan · şehir · iletişim"
-          primaryVariant="req"
+          siteHint="İletişim · Bayi Ağı"
+          primaryLine="Bayi bilgileri + iller"
           details={
-            <ul>
-              <li>Yetkili bayi kartları iletişim sayfasında listelenir; üst menüdeki “Bayi Ağı” da bu bölüme gider.</li>
-              <li>Hiç kayıt yoksa ziyaretçiye boş liste mesajı gösterilebilir.</li>
-            </ul>
+            <p>
+              Haritadaki bayi listesi ve menüdeki “Bayi Ağı” bu kayıtları kullanır. İl seçimini
+              doldurmayı unutmayın.
+            </p>
           }
         />
         <GuideTile
           icon={<IconWrench />}
           title="Bakım modu"
           adminPath="/admin-panel/bakim-modu"
-          siteHint="/maintenance"
-          primaryLine="Anahtar: açık / kapalı"
+          siteHint="/maintenance — ziyaretçi için"
+          primaryLine="Aç / kapat"
           primaryVariant="neutral"
-          secondaryLine="Ziyaretçi mesajı"
+          secondaryLine="Kısa mesaj"
           details={
-            <ul>
-              <li>Açıkken ziyaretçiler bakım sayfasına yönlendirilir; yönetim paneli ve API çalışmaya devam eder.</li>
-              <li>Kısa mesaj alanı ziyaretçiye gösterilen metni özelleştirir.</li>
-              <li>Değişiklik bazen önbellek nedeniyle gecikebilir; gizli pencerede doğrulayın.</li>
-            </ul>
+            <p>
+              Açıkken ziyaretçi bakım sayfası görür; siz panelde çalışmaya devam edersiniz. Mesajı
+              kısa ve anlaşılır yazın.
+            </p>
           }
         />
       </div>
@@ -422,12 +503,11 @@ export function AdminUsageGuide() {
           <IconLayout />
         </div>
         <div>
-          <h3 className="admin-guide-footnote__title">Panel dışı içerik</h3>
+          <h3 className="admin-guide-footnote__title">Kısa not</h3>
           <p className="admin-guide-footnote__text">
-            Anasayfa gövdesi, çoğu CTA metni ve Kurumsal / Dijital çözümler gibi sayfalar şu an{" "}
-            <strong>kod içi bileşenlerde</strong> sabittir; bu panelden tek tek düzenlenmez.{" "}
-            <strong>Ürünler</strong> menüsü, ürün listesi ve katalog kartları ise veritabanı + API
-            ile canlıdır — içerik yoksa menüde kısa bilgi metni görünür.
+            Anasayfa veya kurumsal sayfalardaki <em>sabit metinler</em> çoğu zaman doğrudan bu panelden
+            değişmez. <strong>Ürünler, kategoriler, kataloglar, eğitimler, eğitmenler, iletişim, bayiler…</strong>{" "}
+            ise buradan yönetilen canlı içeriktir.
           </p>
         </div>
       </section>
