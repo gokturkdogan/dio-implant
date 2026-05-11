@@ -9,6 +9,7 @@ import {
   type SeminarRow,
 } from "../db/schema";
 import { db } from "../lib/drizzle";
+import { AppError } from "../lib/errors";
 import { instructorToSpeaker } from "../lib/instructor-types";
 import type { InstructorRecord } from "../lib/instructor-types";
 import type { Speaker, TrainingEvent } from "../lib/training-events-types";
@@ -101,8 +102,9 @@ function assertSpeakersLinkable(speakers: TrainingEvent["speakers"]): void {
   for (const s of speakers) {
     const id = s.instructorId;
     if (typeof id !== "number" || !Number.isFinite(id) || id < 1) {
-      throw new Error(
+      throw new AppError(
         "Her konuşmacı eğitmen kütüphanesinden seçilmelidir (Eğitmenler sayfası).",
+        400,
       );
     }
   }
@@ -176,11 +178,12 @@ export const seminarService = {
 
   async create(ev: TrainingEvent): Promise<TrainingEvent> {
     assertSpeakersLinkable(ev.speakers);
-    const inserted = await db.transaction(async (tx) => {
-      const [r] = await tx.insert(seminars).values(eventToInsert(ev)).returning();
-      if (!r) throw new Error("Etkinlik oluşturulamadı");
+    /* neon-http: transaction yok; konuşmacı insert patlarsa semineri geri al */
+    const [r] = await db.insert(seminars).values(eventToInsert(ev)).returning();
+    if (!r) throw new AppError("Etkinlik oluşturulamadı", 500);
+    try {
       if (ev.speakers?.length) {
-        await tx.insert(seminarSpeakers).values(
+        await db.insert(seminarSpeakers).values(
           ev.speakers.map((s, i) => ({
             seminarId: r.id,
             instructorId: s.instructorId!,
@@ -188,37 +191,37 @@ export const seminarService = {
           })),
         );
       }
-      return r;
-    });
-    const out = await seminarService.getBySlug(inserted.slug);
-    if (!out) throw new Error("Etkinlik okunamadı");
+    } catch (e) {
+      await db.delete(seminars).where(eq(seminars.id, r.id));
+      throw e;
+    }
+    const out = await seminarService.getBySlug(r.slug);
+    if (!out) throw new AppError("Etkinlik okunamadı", 500);
     return out;
   },
 
   async update(originalSlug: string, ev: TrainingEvent): Promise<TrainingEvent> {
     assertSpeakersLinkable(ev.speakers);
-    const updatedRow = await db.transaction(async (tx) => {
-      const [r] = await tx
-        .update(seminars)
-        .set({ ...eventToInsert(ev), updatedAt: new Date() })
-        .where(eq(seminars.slug, originalSlug))
-        .returning();
-      if (!r) throw new Error("Etkinlik bulunamadı");
+    const [r] = await db
+      .update(seminars)
+      .set({ ...eventToInsert(ev), updatedAt: new Date() })
+      .where(eq(seminars.slug, originalSlug))
+      .returning();
+    if (!r) throw new AppError("Etkinlik bulunamadı", 404);
 
-      await tx.delete(seminarSpeakers).where(eq(seminarSpeakers.seminarId, r.id));
-      if (ev.speakers?.length) {
-        await tx.insert(seminarSpeakers).values(
-          ev.speakers.map((s, i) => ({
-            seminarId: r.id,
-            instructorId: s.instructorId!,
-            sortOrder: i,
-          })),
-        );
-      }
-      return r;
-    });
-    const out = await seminarService.getBySlug(updatedRow.slug);
-    if (!out) throw new Error("Etkinlik okunamadı");
+    await db.delete(seminarSpeakers).where(eq(seminarSpeakers.seminarId, r.id));
+    if (ev.speakers?.length) {
+      await db.insert(seminarSpeakers).values(
+        ev.speakers.map((s, i) => ({
+          seminarId: r.id,
+          instructorId: s.instructorId!,
+          sortOrder: i,
+        })),
+      );
+    }
+
+    const out = await seminarService.getBySlug(r.slug);
+    if (!out) throw new AppError("Etkinlik okunamadı", 500);
     return out;
   },
 
