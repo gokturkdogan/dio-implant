@@ -27,7 +27,7 @@ const FAVICON_PNG =
 
 export const metadata: Metadata = {
   title: "DIO Implant",
-  description: "Clean architecture backend with Next.js + Drizzle + Neon",
+  description: "Dijital teknolojiyi estetik ve hassasiyetle buluşturan yeni nesil implant çözümleri.",
   icons: {
     icon: [{ url: FAVICON_PNG, type: "image/png" }],
     shortcut: FAVICON_PNG,
