@@ -3,24 +3,22 @@ import {
   signAdminToken,
   setAdminCookie,
 } from "../../../../lib/admin-auth";
-import { adminSettingsService } from "../../../../services/admin-settings.service";
+import { userService } from "../../../../services/user.service";
 import { adminLoginSchema } from "../../../../validations/admin.validation";
 
 export async function POST(request: Request) {
   try {
-    await adminSettingsService.ensureDefaultAdminFromEnv();
-
     const payload = await request.json();
     const input = adminLoginSchema.parse(payload);
 
-    const admin = await adminSettingsService.verifyLogin(
-      input.username,
-      input.password
-    );
+    const user = await userService.verifyLogin(input.username, input.password);
 
     const { token, exp } = await signAdminToken({
-      sub: String(admin.id),
-      username: admin.username,
+      sub: String(user.id),
+      username: user.username,
+      role: user.role,
+      firstName: user.firstName,
+      lastName: user.lastName,
     });
 
     await setAdminCookie(token);

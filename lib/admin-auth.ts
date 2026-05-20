@@ -21,13 +21,22 @@ export const ADMIN_SESSION_SECONDS = 20 * 60;
 export type AdminTokenPayload = {
   sub: string;
   username: string;
+  role: "admin" | "super_admin";
+  firstName: string;
+  lastName: string;
 };
 
 export async function signAdminToken(payload: AdminTokenPayload) {
   const iat = Math.floor(Date.now() / 1000);
   const exp = iat + ADMIN_SESSION_SECONDS;
 
-  const token = await new SignJWT(payload)
+  const token = await new SignJWT({
+    sub: payload.sub,
+    username: payload.username,
+    role: payload.role,
+    firstName: payload.firstName,
+    lastName: payload.lastName,
+  })
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt(iat)
     .setExpirationTime(exp)

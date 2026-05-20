@@ -11,9 +11,22 @@ export async function GET() {
     const payload = await verifyAdminToken(token);
     const exp = typeof payload.exp === "number" ? payload.exp : null;
 
+    const role =
+      payload.role === "admin" || payload.role === "super_admin"
+        ? payload.role
+        : null;
+
+    const firstName =
+      typeof payload.firstName === "string" ? payload.firstName : null;
+    const lastName =
+      typeof payload.lastName === "string" ? payload.lastName : null;
+
     return jsonOk({
       authenticated: true,
-      username: payload.username ?? null,
+      username: typeof payload.username === "string" ? payload.username : null,
+      firstName,
+      lastName,
+      role,
       expiresAt: exp ? exp * 1000 : null,
     });
   } catch (error) {
