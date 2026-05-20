@@ -601,6 +601,83 @@
   text-transform: none;
 }
 
+.admin-field__help--error {
+  color: var(--admin-danger);
+}
+
+/* Parola gereksinimleri — bilgi kutusu */
+.admin-password-reqs {
+  grid-column: 1 / -1;
+  margin: 4px 0 0;
+  padding: 14px 16px;
+  border-radius: var(--admin-radius-md);
+  border: 1px solid color-mix(in srgb, #eab308 45%, var(--admin-stroke));
+  background: color-mix(in srgb, #fef9c3 22%, var(--admin-panel-soft));
+}
+
+:root[data-admin-theme="light"] .admin-password-reqs {
+  background: #fffbeb;
+  border-color: #fde047;
+}
+
+.admin-password-reqs__title {
+  margin: 0 0 10px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, #ca8a04 85%, var(--admin-muted));
+}
+
+.admin-password-reqs__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.admin-password-reqs__item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--admin-text-secondary);
+  transition: color var(--admin-transition);
+}
+
+.admin-password-reqs__item--met {
+  color: var(--admin-success);
+  font-weight: 500;
+}
+
+.admin-password-reqs__mark {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+}
+
+.admin-password-reqs__dot {
+  display: block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: color-mix(in srgb, #ca8a04 70%, var(--admin-muted));
+}
+
+.admin-password-reqs__item--met .admin-password-reqs__dot {
+  display: none;
+}
+
+.admin-password-reqs__icon {
+  color: var(--admin-success);
+}
+
 .admin-field input {
   height: 40px;
   border-radius: var(--admin-radius-md);
@@ -619,6 +696,47 @@
 .admin-field input:focus {
   border-color: var(--admin-accent);
   box-shadow: 0 0 0 3px var(--admin-accent-soft);
+}
+
+/* Autofill — tarayıcı beyaz/sarı arka plan + siyah metin düzeltmesi */
+[data-admin-theme] input:-webkit-autofill,
+[data-admin-theme] input:-webkit-autofill:hover,
+[data-admin-theme] input:-webkit-autofill:focus,
+[data-admin-theme] input:-webkit-autofill:active,
+[data-admin-theme] textarea:-webkit-autofill,
+[data-admin-theme] textarea:-webkit-autofill:hover,
+[data-admin-theme] textarea:-webkit-autofill:focus,
+[data-admin-theme] textarea:-webkit-autofill:active,
+[data-admin-theme] select:-webkit-autofill,
+[data-admin-theme] select:-webkit-autofill:hover,
+[data-admin-theme] select:-webkit-autofill:focus,
+[data-admin-theme] select:-webkit-autofill:active,
+[data-admin-theme] input:autofill,
+[data-admin-theme] input:autofill:hover,
+[data-admin-theme] input:autofill:focus,
+[data-admin-theme] textarea:autofill,
+[data-admin-theme] textarea:autofill:hover,
+[data-admin-theme] textarea:autofill:focus,
+[data-admin-theme] select:autofill,
+[data-admin-theme] select:autofill:hover,
+[data-admin-theme] select:autofill:focus,
+[data-admin-theme] .admin-auth-password input:-webkit-autofill,
+[data-admin-theme] .admin-auth-password input:-webkit-autofill:hover,
+[data-admin-theme] .admin-auth-password input:-webkit-autofill:focus,
+[data-admin-theme] .admin-auth-password input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 1000px var(--admin-input-bg) inset !important;
+  box-shadow: 0 0 0 1000px var(--admin-input-bg) inset !important;
+  -webkit-text-fill-color: var(--admin-text) !important;
+  color: var(--admin-text) !important;
+  caret-color: var(--admin-text) !important;
+  transition: background-color 99999s ease-in-out 0s;
+}
+
+/* Parola alanı: tarayıcı yazım denetimi kırmızı alt çizgi göstermesin */
+[data-admin-theme] .admin-auth-password input,
+[data-admin-theme] .admin-field input[type="password"] {
+  color: var(--admin-text);
+  -webkit-text-fill-color: var(--admin-text);
 }
 
 .admin-field select,
@@ -1011,6 +1129,15 @@
   background: var(--admin-bg);
 }
 
+.admin-auth__card .admin-theme-btn--auth {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 2;
+  width: 36px;
+  height: 36px;
+}
+
 .admin-auth__glow {
   position: absolute;
   width: min(520px, 90vw);
@@ -1189,6 +1316,49 @@
   font-size: 11.5px;
   line-height: 1.45;
   text-align: center;
+}
+
+.admin-auth__forgot-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: -4px;
+}
+
+.admin-auth__link {
+  color: var(--admin-accent);
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color var(--admin-transition);
+}
+
+.admin-auth__link:hover {
+  color: var(--admin-accent-hover);
+  text-decoration: underline;
+}
+
+.admin-auth__success-block {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.admin-auth__success-text {
+  margin: 0;
+  padding: 14px 16px;
+  border-radius: var(--admin-radius-md);
+  border: 1px solid color-mix(in srgb, var(--admin-success) 35%, transparent);
+  background: color-mix(in srgb, var(--admin-success) 10%, var(--admin-panel-soft));
+  color: var(--admin-text-secondary);
+  font-size: 13.5px;
+  line-height: 1.5;
+}
+
+.admin-auth__success-block .admin-auth__submit {
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* ── List ── */

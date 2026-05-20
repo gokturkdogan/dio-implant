@@ -8,6 +8,22 @@ body {
   box-sizing: border-box;
 }
 
+/* Tarayıcı autofill — yalnızca admin dışı sayfalar (panel kuralları ayrı) */
+html:not([data-admin-theme]) input:-webkit-autofill,
+html:not([data-admin-theme]) input:-webkit-autofill:hover,
+html:not([data-admin-theme]) input:-webkit-autofill:focus,
+html:not([data-admin-theme]) input:-webkit-autofill:active,
+html:not([data-admin-theme]) textarea:-webkit-autofill,
+html:not([data-admin-theme]) textarea:-webkit-autofill:hover,
+html:not([data-admin-theme]) textarea:-webkit-autofill:focus,
+html:not([data-admin-theme]) textarea:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 1000px #ffffff inset !important;
+  box-shadow: 0 0 0 1000px #ffffff inset !important;
+  -webkit-text-fill-color: inherit !important;
+  caret-color: inherit;
+  transition: background-color 99999s ease-in-out 0s;
+}
+
 .sr-only {
   position: absolute;
   width: 1px;

@@ -13,5 +13,6 @@ export * from "./site-catalog";
 export * from "./digital-library";
 export * from "./instructor";
 export * from "./user";
+export * from "./password-reset-token";
 export * from "./seminar-speaker";
 export * from "./training-relations";

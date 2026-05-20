@@ -20,6 +20,7 @@
     "drizzle-orm": "latest",
     "jose": "^6.2.2",
     "next": "latest",
+    "nodemailer": "^8.0.7",
     "pg": "latest",
     "react": "latest",
     "react-big-calendar": "^1.19.4",
@@ -33,6 +34,7 @@
   },
   "devDependencies": {
     "@types/node": "latest",
+    "@types/nodemailer": "^8.0.0",
     "@types/react": "latest",
     "@types/react-big-calendar": "^1.16.3",
     "@types/react-dom": "latest",

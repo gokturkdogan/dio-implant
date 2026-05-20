@@ -2,6 +2,15 @@
 
 import { useCallback, useEffect, useId, useState } from "react";
 import { useAdminToast } from "./admin-toast-provider";
+import { AdminPasswordRequirements } from "@/components/admin/admin-password-requirements";
+import { allPasswordRequirementsMet } from "@/lib/admin-password-requirements";
+import { ADMIN_PASSWORD_INPUT_ATTRS } from "@/lib/admin-password-input-props";
+import {
+  ADMIN_NEW_PASSWORD_MAX_LENGTH,
+  ADMIN_NEW_PASSWORD_MIN_LENGTH,
+  adminAccountPasswordSchema,
+  firstZodIssueMessage,
+} from "@/validations/admin.validation";
 
 type Account = {
   id: number;
@@ -13,13 +22,18 @@ type Account = {
 };
 
 function readApiError(data: unknown, fallback: string): string {
-  if (
-    data &&
-    typeof data === "object" &&
-    "error" in data &&
-    typeof (data as { error: unknown }).error === "string"
-  ) {
-    return (data as { error: string }).error;
+  if (data && typeof data === "object") {
+    const d = data as {
+      error?: unknown;
+      details?: { fieldErrors?: Record<string, string[]> };
+    };
+    if (d.details?.fieldErrors) {
+      const first = Object.values(d.details.fieldErrors).flat().find(Boolean);
+      if (first) return first;
+    }
+    if (typeof d.error === "string" && d.error !== "Validation failed") {
+      return d.error;
+    }
   }
   return fallback;
 }
@@ -132,6 +146,8 @@ type PasswordFieldProps = {
   autoComplete: string;
   fullWidth?: boolean;
   minLength?: number;
+  maxLength?: number;
+  error?: string | null;
 };
 
 function PasswordField({
@@ -143,6 +159,8 @@ function PasswordField({
   autoComplete,
   fullWidth,
   minLength,
+  maxLength,
+  error,
 }: PasswordFieldProps) {
   const id = useId();
   return (
@@ -159,7 +177,10 @@ function PasswordField({
           onChange={(e) => onChange(e.target.value)}
           autoComplete={autoComplete}
           minLength={minLength}
+          maxLength={maxLength}
+          aria-invalid={error ? true : undefined}
           required
+          {...ADMIN_PASSWORD_INPUT_ATTRS}
         />
         <button
           type="button"
@@ -171,6 +192,9 @@ function PasswordField({
           {show ? <IconEyeOff /> : <IconEye />}
         </button>
       </div>
+      {error ? (
+        <span className="admin-field__help admin-field__help--error">{error}</span>
+      ) : null}
     </label>
   );
 }
@@ -194,6 +218,13 @@ export function AdminAccountPage() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [editingPassword, setEditingPassword] = useState(false);
   const [savingPassword, setSavingPassword] = useState(false);
+  const [currentPasswordError, setCurrentPasswordError] = useState<string | null>(
+    null,
+  );
+  const [newPasswordError, setNewPasswordError] = useState<string | null>(null);
+  const [confirmPasswordError, setConfirmPasswordError] = useState<string | null>(
+    null,
+  );
 
   const applyAccount = useCallback((a: Account) => {
     setAccount(a);
@@ -266,25 +297,40 @@ export function AdminAccountPage() {
     setShowNewPassword(false);
     setShowConfirmPassword(false);
     setEditingPassword(false);
+    setCurrentPasswordError(null);
+    setNewPasswordError(null);
+    setConfirmPasswordError(null);
   };
 
   const savePassword = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (newPassword !== confirmPassword) {
-      showToast("Yeni parolalar eşleşmiyor.", "error");
+
+    setCurrentPasswordError(null);
+    setNewPasswordError(null);
+    setConfirmPasswordError(null);
+
+    const parsed = adminAccountPasswordSchema.safeParse({
+      currentPassword,
+      newPassword,
+      confirmPassword,
+    });
+
+    if (!parsed.success) {
+      const fieldErrors = parsed.error.flatten().fieldErrors;
+      setCurrentPasswordError(fieldErrors.currentPassword?.[0] ?? null);
+      setNewPasswordError(fieldErrors.newPassword?.[0] ?? null);
+      setConfirmPasswordError(fieldErrors.confirmPassword?.[0] ?? null);
+      showToast(firstZodIssueMessage(parsed.error), "error");
       return;
     }
+
     setSavingPassword(true);
     try {
       const res = await fetch("/api/admin/account/password", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
-        body: JSON.stringify({
-          currentPassword,
-          newPassword,
-          confirmPassword,
-        }),
+        body: JSON.stringify(parsed.data),
       });
       const data = await res.json();
       if (!res.ok) {
@@ -472,7 +518,7 @@ export function AdminAccountPage() {
                 </div>
                 <div className="admin-card__sub">
                   {editingPassword
-                    ? "Güvenliğiniz için en az 8 karakterli yeni bir parola belirleyin."
+                    ? "Yeni parolanızı belirleyin; gereksinimler aşağıda listelenir."
                     : "Parolanız güvenlik nedeniyle gösterilmez."}
                 </div>
               </div>
@@ -484,29 +530,48 @@ export function AdminAccountPage() {
                 <PasswordField
                   label="Mevcut parola"
                   value={currentPassword}
-                  onChange={setCurrentPassword}
+                  onChange={(v) => {
+                    setCurrentPassword(v);
+                    if (currentPasswordError) setCurrentPasswordError(null);
+                  }}
                   show={showCurrentPassword}
                   onToggleShow={() => setShowCurrentPassword((v) => !v)}
                   autoComplete="current-password"
                   fullWidth
+                  maxLength={ADMIN_NEW_PASSWORD_MAX_LENGTH}
+                  error={currentPasswordError}
                 />
                 <PasswordField
                   label="Yeni parola"
                   value={newPassword}
-                  onChange={setNewPassword}
+                  onChange={(v) => {
+                    setNewPassword(v);
+                    if (newPasswordError) setNewPasswordError(null);
+                  }}
                   show={showNewPassword}
                   onToggleShow={() => setShowNewPassword((v) => !v)}
                   autoComplete="new-password"
-                  minLength={8}
+                  minLength={ADMIN_NEW_PASSWORD_MIN_LENGTH}
+                  maxLength={ADMIN_NEW_PASSWORD_MAX_LENGTH}
+                  error={newPasswordError}
                 />
                 <PasswordField
                   label="Yeni parola (tekrar)"
                   value={confirmPassword}
-                  onChange={setConfirmPassword}
+                  onChange={(v) => {
+                    setConfirmPassword(v);
+                    if (confirmPasswordError) setConfirmPasswordError(null);
+                  }}
                   show={showConfirmPassword}
                   onToggleShow={() => setShowConfirmPassword((v) => !v)}
                   autoComplete="new-password"
-                  minLength={8}
+                  minLength={ADMIN_NEW_PASSWORD_MIN_LENGTH}
+                  maxLength={ADMIN_NEW_PASSWORD_MAX_LENGTH}
+                  error={confirmPasswordError}
+                />
+                <AdminPasswordRequirements
+                  password={newPassword}
+                  confirmPassword={confirmPassword}
                 />
                 <div className="admin-account__form-actions">
                   <button
@@ -520,7 +585,11 @@ export function AdminAccountPage() {
                   <button
                     type="submit"
                     className="admin-btn admin-btn--primary"
-                    disabled={savingPassword}
+                    disabled={
+                      savingPassword ||
+                      !currentPassword.trim() ||
+                      !allPasswordRequirementsMet(newPassword, confirmPassword)
+                    }
                   >
                     <IconLock />
                     {savingPassword ? "Güncelleniyor…" : "Kaydet"}

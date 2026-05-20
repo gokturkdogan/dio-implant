@@ -12,7 +12,19 @@ export const toAppError = (error: unknown): AppError => {
   }
 
   if (error instanceof ZodError) {
-    return new AppError("Validation failed", 400, error.flatten());
+    const flat = error.flatten();
+    const firstFieldMsg = Object.values(flat.fieldErrors)
+      .flat()
+      .find((m): m is string => typeof m === "string");
+    const firstFormMsg = flat.formErrors[0];
+    const message =
+      firstFieldMsg ?? firstFormMsg ?? error.issues[0]?.message ?? "Geçersiz giriş";
+    return new AppError(message, 400, flat);
+  }
+
+  if (error instanceof Error && error.message.trim()) {
+    console.error("[jsonError]", error);
+    return new AppError(error.message, 500);
   }
 
   return new AppError("Internal server error", 500);

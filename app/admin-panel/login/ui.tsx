@@ -1,9 +1,12 @@
 "use client";
 
+import Link from "next/link";
 import { useId, useState } from "react";
 import { useRouter } from "next/navigation";
 import Script from "next/script";
 import { useAdminToast } from "@/components/admin/admin-toast-provider";
+import { AdminThemeToggle } from "@/components/admin/admin-theme-toggle";
+import { ADMIN_PASSWORD_INPUT_ATTRS } from "@/lib/admin-password-input-props";
 
 function IconEye() {
   return (
@@ -76,6 +79,7 @@ export function AdminLoginClient({ nextPath }: { nextPath: string }) {
       <div className="admin-auth">
         <div className="admin-auth__glow" aria-hidden="true" />
         <div className="admin-auth__card">
+          <AdminThemeToggle className="admin-theme-btn admin-theme-btn--auth" />
           <div className="admin-auth__brand">
             <div className="admin-auth__mark">DIO</div>
             <div className="admin-auth__brand-text">
@@ -105,6 +109,7 @@ export function AdminLoginClient({ nextPath }: { nextPath: string }) {
                   type={showPassword ? "text" : "password"}
                   autoComplete="current-password"
                   placeholder="••••••••"
+                  {...ADMIN_PASSWORD_INPUT_ATTRS}
                 />
                 <button
                   type="button"
@@ -117,6 +122,12 @@ export function AdminLoginClient({ nextPath }: { nextPath: string }) {
                 </button>
               </div>
             </label>
+
+            <div className="admin-auth__forgot-row">
+              <Link href="/admin-panel/sifremi-unuttum" className="admin-auth__link">
+                Şifremi unuttum
+              </Link>
+            </div>
 
             <button className="admin-btn admin-btn--primary admin-auth__submit" disabled={loading}>
               {loading ? "Giriş yapılıyor…" : "Giriş yap"}

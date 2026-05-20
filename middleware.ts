@@ -3,6 +3,14 @@ import type { NextRequest } from "next/server";
 import { ADMIN_COOKIE_NAME, verifyAdminToken } from "./lib/admin-auth";
 
 const ADMIN_LOGIN_PATH = "/admin-panel/login";
+const ADMIN_FORGOT_PASSWORD_PATH = "/admin-panel/sifremi-unuttum";
+const ADMIN_RESET_PASSWORD_PATH = "/admin-panel/parola-sifirla";
+
+const ADMIN_PUBLIC_PATHS = new Set([
+  ADMIN_LOGIN_PATH,
+  ADMIN_FORGOT_PASSWORD_PATH,
+  ADMIN_RESET_PASSWORD_PATH,
+]);
 const MAINTENANCE_PATH = "/maintenance";
 const MAINTENANCE_STATUS_API = "/api/public/site-maintenance";
 
@@ -40,8 +48,8 @@ export async function middleware(request: NextRequest) {
 
   // Admin panel auth akışı.
   if (pathname.startsWith("/admin-panel")) {
-    // Login sayfasına erişim serbest
-    if (pathname === ADMIN_LOGIN_PATH) {
+    // Giriş ve şifremi unuttum sayfalarına erişim serbest
+    if (ADMIN_PUBLIC_PATHS.has(pathname)) {
       return NextResponse.next();
     }
 
