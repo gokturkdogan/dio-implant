@@ -6,6 +6,7 @@ import { cloudinary } from "../../../../../lib/cloudinary";
 import { AppError } from "../../../../../lib/errors";
 import { jsonError, jsonOk } from "../../../../../lib/http";
 import { instructorFormSchema } from "../../../../../lib/training-events-schema";
+import { auditAdminAction } from "@/lib/admin-audit";
 import { instructorService } from "../../../../../services/instructor.service";
 
 export const runtime = "nodejs";
@@ -125,9 +126,22 @@ export async function PUT(request: Request, context: RouteContext) {
       const url = await processAndUpload(photoFile, folder, "portrait");
       await instructorService.setPhotoUrl(id, url);
       const finalRow = await instructorService.getById(id);
-      return jsonOk({ ok: true, instructor: finalRow ?? updated });
+      const row = finalRow ?? updated;
+      await auditAdminAction({
+        action: "update",
+        resourceType: "instructor",
+        resourceId: id,
+        resourceLabel: row.name,
+      });
+      return jsonOk({ ok: true, instructor: row });
     }
 
+    await auditAdminAction({
+      action: "update",
+      resourceType: "instructor",
+      resourceId: id,
+      resourceLabel: updated.name,
+    });
     return jsonOk({ ok: true, instructor: updated });
   } catch (e) {
     return jsonError(e);
@@ -144,10 +158,17 @@ export async function DELETE(_request: Request, context: RouteContext) {
       return jsonOk({ error: "Geçersiz id" }, 400);
     }
 
+    const existing = await instructorService.getById(id);
     const deleted = await instructorService.deleteById(id);
     if (!deleted) return jsonOk({ error: "Eğitmen bulunamadı" }, 404);
 
     await deleteInstructorMedia(id);
+    await auditAdminAction({
+      action: "delete",
+      resourceType: "instructor",
+      resourceId: id,
+      resourceLabel: existing?.name ?? String(id),
+    });
 
     return jsonOk({ ok: true });
   } catch (e) {

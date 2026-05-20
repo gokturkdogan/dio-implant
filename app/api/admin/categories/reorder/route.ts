@@ -3,6 +3,7 @@ import { ADMIN_COOKIE_NAME, verifyAdminToken } from "../../../../../lib/admin-au
 import { jsonError, jsonOk } from "../../../../../lib/http";
 import { categoryService } from "../../../../../services/category.service";
 import { productService } from "../../../../../services/product.service";
+import { auditAdminAction } from "@/lib/admin-audit";
 import { reorderCategoriesSchema } from "../../../../../validations/category.validation";
 
 export const runtime = "nodejs";
@@ -25,6 +26,12 @@ export async function POST(request: Request) {
     const body = await request.json();
     const input = reorderCategoriesSchema.parse(body);
     await categoryService.reorderSiblings(input.parentId, input.orderedIds);
+    await auditAdminAction({
+      action: "reorder",
+      resourceType: "category",
+      resourceLabel: input.parentId ? `Alt kategoriler (#${input.parentId})` : "Üst kategoriler",
+      metadata: { orderedIds: input.orderedIds },
+    });
     const [categories, productCounts] = await Promise.all([
       categoryService.listAll(),
       productService.countByCategoryId(),

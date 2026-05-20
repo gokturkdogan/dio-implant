@@ -1,3 +1,4 @@
+import { auditAdminAction } from "@/lib/admin-audit";
 import { requireAdminApi } from "@/lib/require-admin-api";
 import { jsonError, jsonOk } from "@/lib/http";
 import { siteCatalogService } from "@/services/site-catalog.service";
@@ -21,6 +22,12 @@ export async function POST(request: Request) {
     const body = await request.json();
     const input = siteCatalogCreateSchema.parse(body);
     const catalog = await siteCatalogService.create(input);
+    await auditAdminAction({
+      action: "create",
+      resourceType: "site_catalog",
+      resourceId: catalog.id,
+      resourceLabel: catalog.title,
+    });
     return jsonOk({ ok: true, catalog }, 201);
   } catch (e) {
     return jsonError(e);

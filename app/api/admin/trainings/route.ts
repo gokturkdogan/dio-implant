@@ -7,6 +7,7 @@ import { AppError } from "../../../../lib/errors";
 import { jsonError, jsonOk } from "../../../../lib/http";
 import { trainingEventSchema } from "../../../../lib/training-events-schema";
 import type { TrainingEvent } from "../../../../lib/training-events-types";
+import { auditAdminAction } from "@/lib/admin-audit";
 import { seminarService } from "../../../../services/seminar.service";
 
 export const runtime = "nodejs";
@@ -173,6 +174,12 @@ export async function POST(request: Request) {
     };
 
     const created = await seminarService.create(event);
+    await auditAdminAction({
+      action: "create",
+      resourceType: "training",
+      resourceId: created.slug,
+      resourceLabel: created.title,
+    });
     return jsonOk({ ok: true, event: created });
   } catch (e) {
     return jsonError(e);
@@ -235,6 +242,13 @@ export async function PUT(request: Request) {
     };
 
     const updated = await seminarService.update(rawOrigSlug, event);
+    await auditAdminAction({
+      action: "update",
+      resourceType: "training",
+      resourceId: updated.slug,
+      resourceLabel: updated.title,
+      metadata: { previousSlug: rawOrigSlug },
+    });
     return jsonOk({ ok: true, event: updated });
   } catch (e) {
     return jsonError(e);
@@ -251,10 +265,17 @@ export async function DELETE(request: Request) {
     const slug = searchParams.get("slug");
     if (!slug?.trim()) return jsonOk({ error: "slug gerekli" }, 400);
 
+    const existing = await seminarService.getBySlug(slug);
     const deleted = await seminarService.deleteBySlug(slug);
     if (!deleted) return jsonOk({ error: "Etkinlik bulunamadı" }, 404);
 
     await deleteCloudinaryFolder(slug);
+    await auditAdminAction({
+      action: "delete",
+      resourceType: "training",
+      resourceId: slug,
+      resourceLabel: existing?.title ?? slug,
+    });
 
     return jsonOk({ ok: true });
   } catch (e) {

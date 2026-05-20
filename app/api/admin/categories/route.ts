@@ -3,6 +3,7 @@ import { ADMIN_COOKIE_NAME, verifyAdminToken } from "../../../../lib/admin-auth"
 import { jsonError, jsonOk } from "../../../../lib/http";
 import { categoryService } from "../../../../services/category.service";
 import { productService } from "../../../../services/product.service";
+import { auditAdminAction } from "@/lib/admin-audit";
 import { createCategorySchema } from "../../../../validations/category.validation";
 
 export const runtime = "nodejs";
@@ -38,6 +39,12 @@ export async function POST(request: Request) {
     const body = await request.json();
     const input = createCategorySchema.parse(body);
     const created = await categoryService.create(input);
+    await auditAdminAction({
+      action: "create",
+      resourceType: "category",
+      resourceId: created.id,
+      resourceLabel: created.name,
+    });
     return jsonOk({ ok: true, category: created }, 201);
   } catch (e) {
     return jsonError(e);

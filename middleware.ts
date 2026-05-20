@@ -5,11 +5,13 @@ import { ADMIN_COOKIE_NAME, verifyAdminToken } from "./lib/admin-auth";
 const ADMIN_LOGIN_PATH = "/admin-panel/login";
 const ADMIN_FORGOT_PASSWORD_PATH = "/admin-panel/sifremi-unuttum";
 const ADMIN_RESET_PASSWORD_PATH = "/admin-panel/parola-sifirla";
+const ADMIN_USER_SETUP_PATH = "/admin-panel/kullanici-parola-olustur";
 
 const ADMIN_PUBLIC_PATHS = new Set([
   ADMIN_LOGIN_PATH,
   ADMIN_FORGOT_PASSWORD_PATH,
   ADMIN_RESET_PASSWORD_PATH,
+  ADMIN_USER_SETUP_PATH,
 ]);
 const MAINTENANCE_PATH = "/maintenance";
 const MAINTENANCE_STATUS_API = "/api/public/site-maintenance";

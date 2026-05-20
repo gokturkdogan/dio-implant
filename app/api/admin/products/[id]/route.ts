@@ -1,6 +1,7 @@
 import { cookies } from "next/headers";
 import { ADMIN_COOKIE_NAME, verifyAdminToken } from "../../../../../lib/admin-auth";
 import { jsonError, jsonOk } from "../../../../../lib/http";
+import { auditAdminAction } from "@/lib/admin-audit";
 import { productService } from "../../../../../services/product.service";
 import {
   productIdSchema,
@@ -43,6 +44,12 @@ export async function PUT(request: Request, { params }: RouteParams) {
     const body = await request.json();
     const input = updateProductSchema.parse(body);
     const updated = await productService.update(productId, input);
+    await auditAdminAction({
+      action: "update",
+      resourceType: "product",
+      resourceId: updated.id,
+      resourceLabel: updated.name,
+    });
     return jsonOk({ ok: true, product: updated });
   } catch (e) {
     return jsonError(e);
@@ -54,7 +61,14 @@ export async function DELETE(_: Request, { params }: RouteParams) {
     if (!(await requireAdmin())) return jsonOk({ error: "Yetkisiz" }, 401);
     const { id } = await params;
     const productId = productIdSchema.parse(id);
+    const existing = await productService.getById(productId);
     await productService.remove(productId);
+    await auditAdminAction({
+      action: "delete",
+      resourceType: "product",
+      resourceId: productId,
+      resourceLabel: existing.name,
+    });
     return jsonOk({ ok: true });
   } catch (e) {
     return jsonError(e);

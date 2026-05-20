@@ -1,3 +1,4 @@
+import { auditAdminAction } from "@/lib/admin-audit";
 import { requireAdminApi } from "@/lib/require-admin-api";
 import { jsonError, jsonOk } from "@/lib/http";
 import { regionalOfficeService } from "@/services/regional-office.service";
@@ -21,6 +22,12 @@ export async function POST(request: Request) {
     const body = await request.json();
     const input = regionalOfficeCreateSchema.parse(body);
     const office = await regionalOfficeService.create(input);
+    await auditAdminAction({
+      action: "create",
+      resourceType: "regional_office",
+      resourceId: office.id,
+      resourceLabel: office.name,
+    });
     return jsonOk({ ok: true, office }, 201);
   } catch (e) {
     return jsonError(e);

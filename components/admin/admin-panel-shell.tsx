@@ -1,7 +1,13 @@
 import Script from "next/script";
 import type { ReactNode } from "react";
+import { getAdminSession } from "@/lib/require-admin-api";
 import { AdminSidebarIdentity } from "./admin-sidebar-identity";
 import { AdminThemeToggle } from "./admin-theme-toggle";
+
+const SUPER_ADMIN_ONLY_HREFS = new Set([
+  "/admin-panel/kullanicilar",
+  "/admin-panel/islem-gunlugu",
+]);
 
 const NAV_GROUPS = [
   {
@@ -10,7 +16,11 @@ const NAV_GROUPS = [
   },
   {
     section: "Hesap",
-    items: [{ href: "/admin-panel/hesap-bilgileri", label: "Hesap Bilgileri" }],
+    items: [
+      { href: "/admin-panel/hesap-bilgileri", label: "Hesap Bilgileri" },
+      { href: "/admin-panel/kullanicilar", label: "Kullanıcılar" },
+      { href: "/admin-panel/islem-gunlugu", label: "İşlem günlüğü" },
+    ],
   },
   {
     section: "Yönetim",
@@ -40,7 +50,20 @@ type Props = {
   children: ReactNode;
 };
 
-export function AdminPanelShell({ title, activeHref, children }: Props) {
+export async function AdminPanelShell({ title, activeHref, children }: Props) {
+  const session = await getAdminSession();
+  const isSuperAdmin = session?.role === "super_admin";
+
+  const navGroups = NAV_GROUPS.map((group) => {
+    if (!isSuperAdmin) {
+      return {
+        ...group,
+        items: group.items.filter((item) => !SUPER_ADMIN_ONLY_HREFS.has(item.href)),
+      };
+    }
+    return group;
+  }).filter((group) => group.items.length > 0);
+
   return (
     <main className="admin-shell">
       <div className="admin-layout">
@@ -70,7 +93,7 @@ export function AdminPanelShell({ title, activeHref, children }: Props) {
           </div>
 
           <nav className="admin-nav" aria-label="Yönetim paneli menüsü">
-            {NAV_GROUPS.map((group, groupIndex) => (
+            {navGroups.map((group, groupIndex) => (
               <div key={group.section} className="admin-nav__group">
                 <div
                   className={

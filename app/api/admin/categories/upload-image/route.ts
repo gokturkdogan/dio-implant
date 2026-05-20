@@ -39,7 +39,6 @@ export async function POST(request: Request) {
     const slug = categoryImageSlugSchema.parse(rawSlug);
     const folder = categoryFolder(slug);
     const url = await processImageFileToCloudinaryWebp(file, folder, "image");
-
     return jsonOk({ url });
   } catch (error) {
     return jsonError(error);

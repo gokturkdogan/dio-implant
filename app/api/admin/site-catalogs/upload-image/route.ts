@@ -35,7 +35,6 @@ export async function POST(request: Request) {
 
     const url = await processImageFileToCloudinaryWebp(file, folder, "cover");
     const catalog = await siteCatalogService.setCoverAssets(catalogId, url, folder);
-
     return jsonOk({ ok: true, url, catalog });
   } catch (e) {
     return jsonError(e);

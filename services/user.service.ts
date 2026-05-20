@@ -1,11 +1,16 @@
 import "server-only";
 import bcrypt from "bcryptjs";
-import { eq } from "drizzle-orm";
+import { desc, eq, sql } from "drizzle-orm";
 import { users } from "../db/schema/user";
 import { db } from "../lib/drizzle";
+import type { AdminUserListItem } from "../lib/admin-user-types";
 import { AppError } from "../lib/errors";
 
 const BCRYPT_ROUNDS = 12;
+
+export function normalizeUserEmail(email: string): string {
+  return email.trim().toLowerCase();
+}
 
 export type PublicUserProfile = {
   id: number;
@@ -40,6 +45,34 @@ export const userService = {
       email: row.email,
       role: row.role,
     };
+  },
+
+  /** Kayıtlı kullanıcı var mı (e-posta büyük/küçük harf duyarsız). */
+  async isEmailRegistered(email: string): Promise<boolean> {
+    const normalized = normalizeUserEmail(email);
+    if (!normalized) return false;
+    const row = await db.query.users.findFirst({
+      where: sql`lower(${users.email}) = ${normalized}`,
+      columns: { id: true },
+    });
+    return !!row;
+  },
+
+  /** Yönetim paneli kullanıcı listesi (parola hash döndürülmez). */
+  async listForAdmin(): Promise<AdminUserListItem[]> {
+    const rows = await db.query.users.findMany({
+      orderBy: [desc(users.createdAt), desc(users.id)],
+    });
+    return rows.map((r) => ({
+      id: r.id,
+      username: r.username,
+      firstName: r.firstName,
+      lastName: r.lastName,
+      email: r.email,
+      role: r.role,
+      createdAt: r.createdAt.toISOString(),
+      updatedAt: r.updatedAt.toISOString(),
+    }));
   },
 
   async getById(id: number): Promise<PublicUserProfile> {

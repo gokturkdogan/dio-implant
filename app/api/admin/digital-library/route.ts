@@ -1,3 +1,4 @@
+import { auditAdminAction } from "@/lib/admin-audit";
 import { requireAdminApi } from "@/lib/require-admin-api";
 import { jsonError, jsonOk } from "@/lib/http";
 import { digitalLibraryService } from "@/services/digital-library.service";
@@ -32,6 +33,11 @@ export async function PUT(request: Request) {
       return jsonOk({ error: "URL çok uzun (en fazla 2048 karakter)." }, 400);
     }
     const updated = await digitalLibraryService.upsert({ zipUrl, pptUrl });
+    await auditAdminAction({
+      action: "update",
+      resourceType: "digital_library",
+      resourceLabel: "Dijital kütüphane bağlantıları",
+    });
     return jsonOk({
       ok: true,
       digitalLibrary: {

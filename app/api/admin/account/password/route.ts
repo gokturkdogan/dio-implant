@@ -1,3 +1,4 @@
+import { auditAdminAction } from "@/lib/admin-audit";
 import { jsonError, jsonOk } from "@/lib/http";
 import { getAdminUserId } from "@/lib/require-admin-api";
 import { userService } from "@/services/user.service";
@@ -19,6 +20,11 @@ export async function PATCH(request: Request) {
       input.currentPassword,
       input.newPassword,
     );
+    await auditAdminAction({
+      action: "password_update",
+      resourceType: "account",
+      resourceId: userId,
+    });
 
     return jsonOk({ ok: true });
   } catch (e) {

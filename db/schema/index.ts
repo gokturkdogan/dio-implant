@@ -14,5 +14,7 @@ export * from "./digital-library";
 export * from "./instructor";
 export * from "./user";
 export * from "./password-reset-token";
+export * from "./user-invitation";
+export * from "./admin-audit-log";
 export * from "./seminar-speaker";
 export * from "./training-relations";

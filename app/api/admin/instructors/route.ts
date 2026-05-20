@@ -6,6 +6,7 @@ import { cloudinary } from "../../../../lib/cloudinary";
 import { AppError } from "../../../../lib/errors";
 import { jsonError, jsonOk } from "../../../../lib/http";
 import { instructorFormSchema } from "../../../../lib/training-events-schema";
+import { auditAdminAction } from "@/lib/admin-audit";
 import { instructorService } from "../../../../services/instructor.service";
 
 export const runtime = "nodejs";
@@ -109,9 +110,22 @@ export async function POST(request: Request) {
       const url = await processAndUpload(photoFile, folder, "portrait");
       await instructorService.setPhotoUrl(created.id, url);
       const updated = await instructorService.getById(created.id);
-      return jsonOk({ ok: true, instructor: updated ?? created });
+      const row = updated ?? created;
+      await auditAdminAction({
+        action: "create",
+        resourceType: "instructor",
+        resourceId: row.id,
+        resourceLabel: row.name,
+      });
+      return jsonOk({ ok: true, instructor: row });
     }
 
+    await auditAdminAction({
+      action: "create",
+      resourceType: "instructor",
+      resourceId: created.id,
+      resourceLabel: created.name,
+    });
     return jsonOk({ ok: true, instructor: created });
   } catch (e) {
     return jsonError(e);

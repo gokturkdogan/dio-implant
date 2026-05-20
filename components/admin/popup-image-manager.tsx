@@ -103,6 +103,7 @@ export function PopupImageManager() {
     const res = await fetch("/api/site-popups/homepage", {
       method: "PATCH",
       headers: { "content-type": "application/json" },
+      credentials: "include",
       body: JSON.stringify(payload),
     });
     const body = await res.json().catch(() => null);

@@ -79,7 +79,6 @@ export async function POST(request: Request) {
       .toBuffer();
 
     const uploaded = await uploadToCloudinary(webpBuffer);
-
     return jsonOk({
       url: uploaded.secure_url,
       bytes: uploaded.bytes,

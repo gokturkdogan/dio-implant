@@ -52,6 +52,24 @@
       "/admin-panel/login?next=" + encodeURIComponent(nextParam);
   }
 
+  function svgEye() {
+    return (
+      '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">' +
+      '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>' +
+      '<circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.75"/>' +
+      "</svg>"
+    );
+  }
+
+  function svgEyeOff() {
+    return (
+      '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">' +
+      '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>' +
+      '<path d="M1 1l22 22" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/>' +
+      "</svg>"
+    );
+  }
+
   function closeModal() {
     if (modalEl && modalEl.parentNode) {
       modalEl.parentNode.removeChild(modalEl);
@@ -150,11 +168,40 @@
     passWrap.className = "admin-session-expiry__field";
     var passLabel = document.createElement("span");
     passLabel.textContent = "Parola";
+
+    var passPwdWrap = document.createElement("div");
+    passPwdWrap.className = "admin-auth-password";
+
     var passInput = document.createElement("input");
     passInput.type = "password";
     passInput.autocomplete = "current-password";
+    passInput.spellcheck = false;
+    passInput.setAttribute("autocorrect", "off");
+    passInput.setAttribute("autocapitalize", "off");
+
+    var passToggle = document.createElement("button");
+    passToggle.type = "button";
+    passToggle.className = "admin-auth-password__toggle";
+    passToggle.setAttribute("aria-label", "Parolayı göster");
+    passToggle.setAttribute("aria-pressed", "false");
+    passToggle.innerHTML = svgEye();
+
+    var showPassword = false;
+    passToggle.addEventListener("click", function () {
+      showPassword = !showPassword;
+      passInput.type = showPassword ? "text" : "password";
+      passToggle.setAttribute(
+        "aria-label",
+        showPassword ? "Parolayı gizle" : "Parolayı göster",
+      );
+      passToggle.setAttribute("aria-pressed", showPassword ? "true" : "false");
+      passToggle.innerHTML = showPassword ? svgEyeOff() : svgEye();
+    });
+
+    passPwdWrap.appendChild(passInput);
+    passPwdWrap.appendChild(passToggle);
     passWrap.appendChild(passLabel);
-    passWrap.appendChild(passInput);
+    passWrap.appendChild(passPwdWrap);
 
     var row = document.createElement("div");
     row.className = "admin-session-expiry__actions";

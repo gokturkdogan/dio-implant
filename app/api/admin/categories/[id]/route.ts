@@ -2,6 +2,7 @@ import { cookies } from "next/headers";
 import { ADMIN_COOKIE_NAME, verifyAdminToken } from "../../../../../lib/admin-auth";
 import { jsonError, jsonOk } from "../../../../../lib/http";
 import { categoryService } from "../../../../../services/category.service";
+import { auditAdminAction } from "@/lib/admin-audit";
 import {
   categoryIdSchema,
   updateCategorySchema,
@@ -43,6 +44,12 @@ export async function PUT(request: Request, { params }: RouteParams) {
     const body = await request.json();
     const input = updateCategorySchema.parse(body);
     const updated = await categoryService.update(categoryId, input);
+    await auditAdminAction({
+      action: "update",
+      resourceType: "category",
+      resourceId: updated.id,
+      resourceLabel: updated.name,
+    });
     return jsonOk({ ok: true, category: updated });
   } catch (e) {
     return jsonError(e);
@@ -54,7 +61,14 @@ export async function DELETE(_: Request, { params }: RouteParams) {
     if (!(await requireAdmin())) return jsonOk({ error: "Yetkisiz" }, 401);
     const { id } = await params;
     const categoryId = categoryIdSchema.parse(id);
+    const existing = await categoryService.getById(categoryId);
     await categoryService.remove(categoryId);
+    await auditAdminAction({
+      action: "delete",
+      resourceType: "category",
+      resourceId: categoryId,
+      resourceLabel: existing.name,
+    });
     return jsonOk({ ok: true });
   } catch (e) {
     return jsonError(e);

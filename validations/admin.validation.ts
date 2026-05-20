@@ -61,6 +61,28 @@ export const adminResetPasswordSchema = adminNewPasswordPairBaseSchema
 
 export type AdminResetPasswordInput = z.infer<typeof adminResetPasswordSchema>;
 
+export const adminInviteUserSchema = z.object({
+  firstName: z.string().trim().min(1, "Ad gerekli").max(80),
+  lastName: z.string().trim().min(1, "Soyad gerekli").max(80),
+  email: z.string().trim().email("Geçerli bir e-posta girin").max(200),
+});
+
+export type AdminInviteUserInput = z.infer<typeof adminInviteUserSchema>;
+
+/** Davet bağlantısı ile hesap tamamlama (parola + token). */
+export const adminCompleteUserSetupSchema = adminNewPasswordPairBaseSchema
+  .extend({
+    token: z.string().trim().min(1, "Geçersiz davet bağlantısı"),
+  })
+  .refine((d) => d.newPassword === d.confirmPassword, {
+    message: "Parolalar eşleşmiyor",
+    path: ["confirmPassword"],
+  });
+
+export type AdminCompleteUserSetupInput = z.infer<
+  typeof adminCompleteUserSetupSchema
+>;
+
 export const adminAccountProfileSchema = z.object({
   firstName: z.string().trim().min(1, "Ad gerekli").max(80),
   lastName: z.string().trim().min(1, "Soyad gerekli").max(80),
