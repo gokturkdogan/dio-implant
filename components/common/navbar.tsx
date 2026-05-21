@@ -24,6 +24,7 @@ export function Navbar() {
     "/dio-akademi/egitim-takvimi",
   );
   const contactActive = pathMatches(pathname, "/iletisim");
+  const bizeUlasinActive = pathMatches(pathname, "/bize-ulasin");
   const catalogsActive = pathMatches(pathname, "/kataloglar");
   const digitalLibraryActive = pathMatches(pathname, "/dijital-kutuphane");
 
@@ -203,6 +204,9 @@ export function Navbar() {
             </li>
             <li className={`nav-item${contactActive ? " active" : ""}`}>
               <Link href="/iletisim">İletişim</Link>
+            </li>
+            <li className={`nav-item${bizeUlasinActive ? " active" : ""}`}>
+              <Link href="/bize-ulasin">Bize Ulaşın</Link>
             </li>
           </ul>
         </nav>
