@@ -31,6 +31,7 @@ export type SendMailInput = {
   subject: string;
   html: string;
   text: string;
+  replyTo?: string;
 };
 
 export async function sendMail(input: SendMailInput): Promise<void> {
@@ -51,6 +52,7 @@ export async function sendMail(input: SendMailInput): Promise<void> {
     await transport.sendMail({
       from: cfg.SMTP_FROM,
       to: input.to,
+      replyTo: input.replyTo,
       subject: input.subject,
       html: input.html,
       text: input.text,
