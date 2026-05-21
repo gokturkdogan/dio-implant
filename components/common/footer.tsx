@@ -70,6 +70,9 @@ export function Footer() {
               <h4 className="footer-col-title">Destek</h4>
               <ul>
                 <li>
+                  <Link href="/bize-ulasin">Bize Ulaşın</Link>
+                </li>
+                <li>
                   <a href="/iletisim">İletişim</a>
                 </li>
                 <li>
