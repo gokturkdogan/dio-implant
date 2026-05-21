@@ -93,18 +93,31 @@ export default async function IletisimPage() {
 
   return (
     <>
-      <main className="ct-page">
-        <section className="ct-hero">
-          <div className="ct-hero-inner">
-            <div className="ct-hero-copy">
-              <p className="ct-eyebrow">İletişim & Bayi Ağı</p>
-              <h1>Size en yakın <em>DIO Implant</em> noktası</h1>
-              <p>Genel merkez, bölge müdürlükleri ve yetkili bayilerimiz ile Türkiye genelinde yanınızdayız.</p>
-            </div>
-            <div className="ct-hero-actions">
-              <a href="#genel-merkez" className="ct-hero-btn ct-hero-btn--primary">Genel Merkez</a>
-              <a href="#bolge-mudurlukler" className="ct-hero-btn ct-hero-btn--ghost">Bölge Ofisleri</a>
-              <a href="#yetkili-bayiler" className="ct-hero-btn ct-hero-btn--ghost">Bölgesel çözüm ortakları</a>
+      <main className="ct-page ct-page--iletisim">
+        <section className="ct-hero" aria-labelledby="ct-iletisim-hero-title">
+          <div className="ct-hero-header-sync">
+            <div className="ct-hero-header-sync__inner">
+              <div className="ct-hero-copy">
+                <p className="ct-eyebrow">İletişim & Bayi Ağı</p>
+                <h1 id="ct-iletisim-hero-title">
+                  Size en yakın <em>DIO Implant</em> noktası
+                </h1>
+                <p className="ct-hero-lead">
+                  Genel merkez, bölge müdürlükleri ve yetkili bayilerimiz ile Türkiye
+                  genelinde yanınızdayız.
+                </p>
+              </div>
+              <div className="ct-hero-actions">
+                <a href="#genel-merkez" className="ct-hero-btn ct-hero-btn--primary">
+                  Genel Merkez
+                </a>
+                <a href="#bolge-mudurlukler" className="ct-hero-btn ct-hero-btn--ghost">
+                  Bölge Ofisleri
+                </a>
+                <a href="#yetkili-bayiler" className="ct-hero-btn ct-hero-btn--ghost">
+                  Bölgesel çözüm ortakları
+                </a>
+              </div>
             </div>
           </div>
         </section>

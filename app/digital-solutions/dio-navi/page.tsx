@@ -83,7 +83,7 @@ export default function DioNaviPage() {
                   <path d="M5 12h14M12 5l7 7-7 7" />
                 </svg>
               </a>
-              <a href="#" className="btn np-btn-ghost">
+              <a href="/bize-ulasin" className="btn np-btn-ghost">
                 Bilgi Alın
               </a>
             </div>

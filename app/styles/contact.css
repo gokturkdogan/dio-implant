@@ -1676,6 +1676,86 @@
   min-height: min(38vh, 320px);
 }
 
+/* İletişim / Bize Ulaşın — hero hizası .header + .header-inner ile aynı */
+.ct-page--bize-ulasin .ct-hero,
+.ct-page--iletisim .ct-hero {
+  padding: 0;
+  display: flex;
+  align-items: center;
+}
+
+.ct-page--bize-ulasin .ct-hero-header-sync,
+.ct-page--iletisim .ct-hero-header-sync {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  padding-left: max(var(--page-gutter), env(safe-area-inset-left, 0px));
+  padding-right: max(var(--page-gutter), env(safe-area-inset-right, 0px));
+  padding-top: clamp(4.25rem, 8.5vw, 5.25rem);
+  padding-bottom: clamp(0.65rem, 2vw, 1.1rem);
+  box-sizing: border-box;
+}
+
+.ct-page--iletisim .ct-hero-header-sync {
+  padding-bottom: clamp(1.25rem, 3vw, 2rem);
+}
+
+.ct-page--bize-ulasin .ct-hero-header-sync__inner,
+.ct-page--iletisim .ct-hero-header-sync__inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.ct-page--iletisim .ct-hero-header-sync__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.45rem 0.7rem;
+}
+
+@media (max-width: 900px) {
+  .ct-page--iletisim .ct-hero-header-sync__inner {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .ct-page--iletisim .ct-hero-actions {
+    justify-content: flex-start;
+  }
+}
+
+.ct-page--bize-ulasin .ct-hero-content h1,
+.ct-page--iletisim .ct-hero-copy h1 {
+  margin: 0.2rem 0 0.55rem;
+  font-size: clamp(1.6rem, 3vw, 2.3rem);
+  font-family: var(--font-primary);
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.ct-page--bize-ulasin .ct-hero-content h1 em,
+.ct-page--iletisim .ct-hero-copy h1 em {
+  font-style: normal;
+  background: var(--gradient-text);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.ct-page--bize-ulasin .ct-hero-lead,
+.ct-page--iletisim .ct-hero-lead {
+  margin: 0;
+  max-width: 40rem;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.9);
+}
+
 .ct-inquiry-section {
   padding-top: clamp(2rem, 5vw, 3rem);
 }

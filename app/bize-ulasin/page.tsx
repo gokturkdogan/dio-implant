@@ -12,15 +12,15 @@ export const metadata: Metadata = {
 export default function BizeUlasinPage() {
   return (
     <>
-      <main className="ct-page">
-        <section className="ct-hero ct-hero--compact">
-          <div className="ct-hero-inner">
-            <div className="ct-hero-copy">
+      <main className="ct-page ct-page--bize-ulasin">
+        <section className="ct-hero ct-hero--compact" aria-labelledby="ct-bize-hero-title">
+          <div className="ct-hero-header-sync">
+            <div className="ct-hero-header-sync__inner ct-hero-content">
               <p className="ct-eyebrow">Bize Ulaşın</p>
-              <h1>
+              <h1 id="ct-bize-hero-title">
                 Sorularınız için <em>buradayız</em>
               </h1>
-              <p>
+              <p className="ct-hero-lead">
                 Ürünler, eğitimler veya iş birliği hakkında mesajınızı iletin; size
                 e-posta ile dönüş yapalım.
               </p>
