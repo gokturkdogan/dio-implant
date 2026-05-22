@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { LegalModal } from "@/components/common/legal-modals";
 
 type FormState = "idle" | "submitting" | "success" | "error";
 
@@ -50,19 +51,27 @@ export function ContactInquiryForm() {
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
   const [website, setWebsite] = useState("");
+  const [kvkkAccepted, setKvkkAccepted] = useState(false);
+  const [kvkkModalOpen, setKvkkModalOpen] = useState(false);
   const [state, setState] = useState<FormState>("idle");
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setState("submitting");
     setErrorMsg(null);
+
+    if (!kvkkAccepted) {
+      setErrorMsg("KVKK aydınlatma metnini onaylamanız gerekir.");
+      return;
+    }
+
+    setState("submitting");
 
     try {
       const res = await fetch("/api/contact-inquiry", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, message, website }),
+        body: JSON.stringify({ email, message, website, kvkkAccepted: true }),
       });
       const data = (await res.json()) as { ok?: boolean; error?: string };
 
@@ -79,6 +88,7 @@ export function ContactInquiryForm() {
       setEmail("");
       setMessage("");
       setWebsite("");
+      setKvkkAccepted(false);
     } catch {
       setState("error");
       setErrorMsg("Bağlantı hatası. Lütfen tekrar deneyin.");
@@ -163,6 +173,34 @@ export function ContactInquiryForm() {
         <span className="ct-inquiry-field__hint">{message.length} / 5000</span>
       </div>
 
+      <div className="ct-inquiry-consent">
+        <label className="ct-inquiry-consent__label">
+          <input
+            type="checkbox"
+            className="ct-inquiry-consent__checkbox"
+            checked={kvkkAccepted}
+            onChange={(e) => setKvkkAccepted(e.target.checked)}
+            disabled={state === "submitting"}
+            required
+          />
+          <span className="ct-inquiry-consent__text">
+            <button
+              type="button"
+              className="ct-inquiry-consent__link"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                setKvkkModalOpen(true);
+              }}
+            >
+              KVKK Aydınlatma Metni
+            </button>
+            &apos;ni okudum ve kişisel verilerimin tarafıma geri dönüş yapılabilmesi amacıyla
+            işlenmesini kabul ediyorum.
+          </span>
+        </label>
+      </div>
+
       {errorMsg ? (
         <p className="ct-inquiry-form__error" role="alert">
           {errorMsg}
@@ -172,10 +210,12 @@ export function ContactInquiryForm() {
       <button
         type="submit"
         className="ct-inquiry-btn ct-inquiry-btn--primary"
-        disabled={state === "submitting"}
+        disabled={state === "submitting" || !kvkkAccepted}
       >
         {state === "submitting" ? "Gönderiliyor…" : "Mesajı gönder"}
       </button>
+
+      <LegalModal doc="kvkk" open={kvkkModalOpen} onClose={() => setKvkkModalOpen(false)} />
     </form>
   );
 }

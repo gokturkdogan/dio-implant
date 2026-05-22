@@ -4,7 +4,7 @@ import type { ReactNode } from "react";
 import { useCallback, useEffect, useId, useRef, useState } from "react";
 import "../../app/styles/legal-modal.css";
 
-export type LegalDocId = "privacy" | "terms" | "cookie";
+export type LegalDocId = "privacy" | "terms" | "cookie" | "kvkk";
 
 function formatUpdatedDate() {
   return new Intl.DateTimeFormat("tr-TR", {
@@ -322,6 +322,67 @@ function PrivacyPolicyBody() {
   );
 }
 
+function KvkkDisclosureBody() {
+  return (
+    <>
+      <Section icon={<IconFileText />} title="Kişisel Verilerin Korunması Hakkında Aydınlatma Metni">
+        <ul className="legal-modal__list">
+          <li>
+            İşbu Aydınlatma Metni, DIO Implant web sitesi üzerinden iletilen iletişim formu kapsamında toplanan kişisel
+            verilere ilişkin olarak, 6698 sayılı Kişisel Verilerin Korunması Kanunu (&quot;KVKK&quot;) uyarınca
+            kullanıcıların bilgilendirilmesi amacıyla hazırlanmıştır.
+          </li>
+        </ul>
+      </Section>
+      <Section icon={<IconMail />} title="Toplanan Veriler">
+        <ul className="legal-modal__list">
+          <li>İletişim formu aracılığıyla aşağıdaki veriler toplanabilmektedir:</li>
+          <li>E-posta adresi</li>
+          <li>Kullanıcı tarafından iletilen mesaj içeriği</li>
+        </ul>
+      </Section>
+      <Section icon={<IconEye />} title="Kişisel Verilerin İşlenme Amacı">
+        <ul className="legal-modal__list">
+          <li>Toplanan kişisel veriler aşağıdaki amaçlarla işlenmektedir:</li>
+          <li>Kullanıcı taleplerine geri dönüş sağlanması</li>
+          <li>İletişim süreçlerinin yürütülmesi</li>
+          <li>Teknik destek ve bilgilendirme sağlanması</li>
+        </ul>
+      </Section>
+      <Section icon={<IconShare />} title="Kişisel Verilerin Aktarılması">
+        <ul className="legal-modal__list">
+          <li>
+            Kişisel veriler, yasal yükümlülükler dışında üçüncü kişilerle paylaşılmamaktadır. Ancak kullanılan altyapı
+            hizmetleri, e-posta servis sağlayıcıları ve barındırma hizmetleri kapsamında sınırlı olarak işlenebilmektedir.
+          </li>
+        </ul>
+      </Section>
+      <Section icon={<IconServer />} title="Veri Toplama Yöntemi ve Hukuki Sebep">
+        <ul className="legal-modal__list">
+          <li>
+            Kişisel veriler, web sitesi üzerindeki iletişim formu aracılığıyla elektronik ortamda toplanmakta olup,
+            KVKK&apos;nın 5. maddesi kapsamında &quot;bir hakkın tesisi, kullanılması veya korunması&quot; ve &quot;ilgili
+            kişinin temel hak ve özgürlüklerine zarar vermemek kaydıyla veri sorumlusunun meşru menfaati&quot; hukuki
+            sebeplerine dayanılarak işlenmektedir.
+          </li>
+        </ul>
+      </Section>
+      <Section icon={<IconScale />} title="KVKK Kapsamındaki Haklarınız">
+        <ul className="legal-modal__list">
+          <li>KVKK&apos;nın 11. maddesi kapsamında kullanıcılar:</li>
+          <li>Kişisel verilerinin işlenip işlenmediğini öğrenme,</li>
+          <li>İşlenen verilere ilişkin bilgi talep etme,</li>
+          <li>Verilerin düzeltilmesini veya silinmesini isteme,</li>
+          <li>İşleme faaliyetlerine itiraz etme</li>
+          <li>
+            haklarına sahiptir. Bu kapsamda taleplerinizi iletişim kanallarımız üzerinden tarafımıza iletebilirsiniz.
+          </li>
+        </ul>
+      </Section>
+    </>
+  );
+}
+
 function TermsOfUseBody() {
   return (
     <>
@@ -396,6 +457,11 @@ const DOC_CONFIG: Record<
     subtitle: "Bu web sitesinin kullanımına ilişkin kuralları ve sınırları açıklar.",
     closeLabel: "Kullanım koşullarını kapat",
   },
+  kvkk: {
+    title: "KVKK Aydınlatma Metni",
+    subtitle: "İletişim formu kapsamında toplanan kişisel verilere ilişkin bilgilendirme metnidir.",
+    closeLabel: "KVKK aydınlatma metnini kapat",
+  },
 };
 
 function LegalModalBody({ doc }: { doc: LegalDocId }) {
@@ -406,6 +472,8 @@ function LegalModalBody({ doc }: { doc: LegalDocId }) {
       return <PrivacyPolicyBody />;
     case "terms":
       return <TermsOfUseBody />;
+    case "kvkk":
+      return <KvkkDisclosureBody />;
     default:
       return null;
   }
@@ -479,6 +547,9 @@ export function FooterLegalLinks() {
   return (
     <>
       <div className="footer-legal">
+        <button type="button" className="footer-legal__modal-trigger" onClick={() => setActive("kvkk")}>
+          KVKK Aydınlatma Metni
+        </button>
         <button type="button" className="footer-legal__modal-trigger" onClick={() => setActive("privacy")}>
           Gizlilik Politikası
         </button>

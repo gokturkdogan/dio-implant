@@ -14,6 +14,9 @@ export const contactInquirySchema = z.object({
     .max(5000, "Mesaj en fazla 5000 karakter olabilir"),
   /** Honeypot — doluysa bot; API sessizce başarı döner */
   website: z.string().optional(),
+  kvkkAccepted: z.literal(true, {
+    message: "KVKK aydınlatma metnini onaylamanız gerekir",
+  }),
 });
 
 export type ContactInquiryInput = z.infer<typeof contactInquirySchema>;
