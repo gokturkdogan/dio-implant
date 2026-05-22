@@ -46,7 +46,7 @@ export default function BizeUlasinPage() {
                 <ul className="ct-inquiry-notes">
                   <li>Genellikle 1–2 iş günü içinde dönüş yapılır.</li>
                   <li>
-                    Acil bayi veya bölge bilgisi için{" "}
+                    Bayi veya bölge bilgisi için{" "}
                     <Link href="/iletisim">İletişim sayfası</Link>ndaki haritayı
                     kullanabilirsiniz.
                   </li>
