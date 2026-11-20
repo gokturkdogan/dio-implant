@@ -6,7 +6,9 @@ import { Footer } from "@/components/common/footer";
 import { slugify } from "@/lib/slug";
 import { siteCatalogService } from "@/services/site-catalog.service";
 
-export const dynamic = "force-dynamic";
+/** ISR: sayfa CDN'den sunulur; en geç 5 dk'da bir yenilenir. Admin panelindeki
+ * değişiklikler `revalidatePublicSite()` ile anında yansır. */
+export const revalidate = 300;
 
 export const metadata: Metadata = {
   title: "Kataloglar | DIO Implant",

@@ -1,9 +1,4 @@
 import type { Metadata } from "next";
-import { cookies } from "next/headers";
-import {
-  ADMIN_THEME_COOKIE_NAME,
-  parseAdminThemeCookie,
-} from "../lib/admin-theme";
 import "./globals.css";
 import "./styles/navbar.css";
 import "./styles/homepage.css";
@@ -34,21 +29,20 @@ export const metadata: Metadata = {
   },
 };
 
-export default async function RootLayout({
+/**
+ * Root layout bilinçli olarak `cookies()` / `headers()` kullanmaz: aksi halde tüm site
+ * (public sayfalar dahil) her istekte sunucuda yeniden render edilir. Admin teması
+ * `app/admin-panel/layout.tsx` içindeki boot script ile `<html>` üzerine yazılır.
+ */
+export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const cookieStore = await cookies();
-  const ssrAdminTheme = parseAdminThemeCookie(
-    cookieStore.get(ADMIN_THEME_COOKIE_NAME)?.value,
-  );
-
   return (
     <html
       lang="tr"
       data-scroll-behavior="smooth"
-      {...(ssrAdminTheme ? { "data-admin-theme": ssrAdminTheme } : {})}
       suppressHydrationWarning
     >
       <body>

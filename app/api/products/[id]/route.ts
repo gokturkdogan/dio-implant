@@ -1,3 +1,4 @@
+import { requireAdminApi } from "@/lib/require-admin-api";
 import { productService } from "../../../../services/product.service";
 import { jsonError, jsonOk } from "../../../../lib/http";
 import {
@@ -24,6 +25,9 @@ export async function GET(_: Request, { params }: ProductRouteParams) {
 
 export async function PUT(request: Request, { params }: ProductRouteParams) {
   try {
+    if (!(await requireAdminApi())) {
+      return jsonOk({ error: "Yetkisiz" }, 401);
+    }
     const { id } = await params;
     const productId = productIdSchema.parse(id);
     const payload = await request.json();
@@ -38,6 +42,9 @@ export async function PUT(request: Request, { params }: ProductRouteParams) {
 
 export async function DELETE(_: Request, { params }: ProductRouteParams) {
   try {
+    if (!(await requireAdminApi())) {
+      return jsonOk({ error: "Yetkisiz" }, 401);
+    }
     const { id } = await params;
     const productId = productIdSchema.parse(id);
     await productService.remove(productId);

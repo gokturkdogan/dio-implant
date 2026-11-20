@@ -7,13 +7,14 @@ import { AcademySpeakerBio } from "../../../../components/academy/academy-speake
 import { speakerBioDisplayParts } from "../../../../lib/academy-speaker-bio";
 import { getTrainingBySlug } from "../../../../lib/academy-training-events";
 
-export const dynamic = "force-dynamic";
 export const dynamicParams = true;
-/** Eğitmen güncellemeleri anında görünsün (CDN / tam route önbelleği devre dışı). */
-export const revalidate = 0;
+/** ISR: ilk ziyarette üretilir, en geç 5 dk'da bir yenilenir. Eğitim/eğitmen
+ * güncellemeleri `revalidatePublicSite()` ile anında yansır. */
+export const revalidate = 300;
 
 type Props = { params: Promise<{ slug: string }> };
 
+/** Boş liste: build sırasında değil, ilk istekte üretilip önbelleğe alınır. */
 export async function generateStaticParams() {
   return [];
 }

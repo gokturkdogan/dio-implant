@@ -10,7 +10,9 @@ import {
   type CarouselProduct,
 } from "@/components/products/product-carousel";
 
-export const dynamic = "force-dynamic";
+/** ISR: sayfa CDN'den sunulur; en geç 5 dk'da bir yenilenir. Admin panelindeki
+ * değişiklikler `revalidatePublicSite()` ile anında yansır. */
+export const revalidate = 300;
 
 export const metadata: Metadata = {
   title: "Ürünler | DIO Implant",

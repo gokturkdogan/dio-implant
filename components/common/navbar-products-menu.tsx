@@ -3,9 +3,9 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import type { Category } from "@/db/schema/category";
-import type { Product } from "@/db/schema/product";
 import {
   buildProductCatalogTree,
+  type ProductCatalogItem,
   type ProductCatalogNode,
 } from "@/lib/product-catalog-tree";
 
@@ -49,18 +49,17 @@ function ExpandChevron() {
 
 export function NavbarProductsMenu() {
   const [categories, setCategories] = useState<Category[] | null>(null);
-  const [products, setProducts] = useState<Product[] | null>(null);
+  const [products, setProducts] = useState<ProductCatalogItem[] | null>(null);
 
   useEffect(() => {
     let cancelled = false;
     (async () => {
       try {
-        const [cRes, pRes] = await Promise.all([
-          fetch("/api/categories"),
-          fetch("/api/products"),
-        ]);
-        const rawC = await cRes.json();
-        const rawP = await pRes.json();
+        // Tek, CDN'de önbelleklenen uç (bkz. app/api/navbar-menu/route.ts).
+        const res = await fetch("/api/navbar-menu");
+        const raw = (await res.json()) as { categories?: unknown; products?: unknown };
+        const rawC = raw?.categories;
+        const rawP = raw?.products;
         if (cancelled) return;
         setCategories(Array.isArray(rawC) ? rawC : []);
         setProducts(Array.isArray(rawP) ? rawP : []);
@@ -76,7 +75,7 @@ export function NavbarProductsMenu() {
     };
   }, []);
 
-  const menuNodes = useMemo((): ProductCatalogNode[] => {
+  const menuNodes = useMemo((): ProductCatalogNode<ProductCatalogItem>[] => {
     if (!categories?.length || !products) return [];
     return buildProductCatalogTree(categories, products);
   }, [categories, products]);

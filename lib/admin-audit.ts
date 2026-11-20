@@ -2,6 +2,7 @@ import "server-only";
 import type { AdminAuditLogRow } from "@/db/schema/admin-audit-log";
 import { adminAuditService } from "@/services/admin-audit.service";
 import { getAdminSession } from "./require-admin-api";
+import { revalidatePublicSite } from "./revalidate-public";
 
 export type AdminAuditAction =
   | "create"
@@ -142,10 +143,28 @@ export function shouldSkipEphemeralUploadAudit(
   );
 }
 
+/** Public sitede görünen içerik türleri — değiştiklerinde ISR önbelleği temizlenir. */
+const PUBLIC_CONTENT_RESOURCES = new Set<AdminAuditResourceType>([
+  "category",
+  "product",
+  "training",
+  "instructor",
+  "dealer",
+  "regional_office",
+  "site_catalog",
+  "digital_library",
+  "site_contact",
+]);
+
 /** Başarılı panel mutasyonundan sonra çağrılır; hata fırlatmaz. */
 export async function auditAdminAction(
   input: AuditAdminActionInput & { skipIfEphemeralUpload?: boolean },
 ): Promise<void> {
+  // Tüm içerik mutasyonları buradan geçtiği için public önbellek temizliği de burada.
+  // Audit kaydı atlansa bile (ara upload adımı, oturum okunamaması) önbellek temizlenir.
+  if (PUBLIC_CONTENT_RESOURCES.has(input.resourceType)) {
+    revalidatePublicSite();
+  }
   if (
     input.skipIfEphemeralUpload !== false &&
     input.action === "upload" &&

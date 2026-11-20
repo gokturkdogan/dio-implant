@@ -1,3 +1,4 @@
+import { requireAdminApi } from "@/lib/require-admin-api";
 import { categoryService } from "../../../../services/category.service";
 import { jsonError, jsonOk } from "../../../../lib/http";
 import {
@@ -24,6 +25,9 @@ export async function GET(_: Request, { params }: CategoryRouteParams) {
 
 export async function PUT(request: Request, { params }: CategoryRouteParams) {
   try {
+    if (!(await requireAdminApi())) {
+      return jsonOk({ error: "Yetkisiz" }, 401);
+    }
     const { id } = await params;
     const categoryId = categoryIdSchema.parse(id);
     const payload = await request.json();
@@ -38,6 +42,9 @@ export async function PUT(request: Request, { params }: CategoryRouteParams) {
 
 export async function DELETE(_: Request, { params }: CategoryRouteParams) {
   try {
+    if (!(await requireAdminApi())) {
+      return jsonOk({ error: "Yetkisiz" }, 401);
+    }
     const { id } = await params;
     const categoryId = categoryIdSchema.parse(id);
     await categoryService.remove(categoryId);

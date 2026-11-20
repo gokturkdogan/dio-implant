@@ -1,3 +1,4 @@
+import { requireAdminApi } from "@/lib/require-admin-api";
 import { sitePopupService } from "../../../services/site-popup.service";
 import { jsonError, jsonOk } from "../../../lib/http";
 import { createSitePopupSchema } from "../../../validations/site-popup.validation";
@@ -13,6 +14,9 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
+    if (!(await requireAdminApi())) {
+      return jsonOk({ error: "Yetkisiz" }, 401);
+    }
     const payload = await request.json();
     const input = createSitePopupSchema.parse(payload);
 

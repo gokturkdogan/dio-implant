@@ -8,6 +8,17 @@ import type { Category } from "@/db/schema/category";
 import { productService } from "@/services/product.service";
 import { categoryService } from "@/services/category.service";
 import { ProductPageClient } from "./product-page-client";
+import { isAppError } from "@/lib/errors";
+
+/** ISR: ilk ziyarette üretilir, en geç 5 dk'da bir yenilenir. Ürün güncellemeleri
+ * `revalidatePublicSite()` ile anında yansır. */
+export const revalidate = 300;
+export const dynamicParams = true;
+
+/** Boş liste: build sırasında değil, ilk istekte üretilip önbelleğe alınır. */
+export async function generateStaticParams() {
+  return [];
+}
 
 function normalizePosters(raw: unknown): Array<{ title: string; url: string }> {
   if (!Array.isArray(raw)) return [];
@@ -89,8 +100,11 @@ export default async function UrunDetayPage({
   let product: Product;
   try {
     product = await productService.getBySlug(slug);
-  } catch {
-    notFound();
+  } catch (error) {
+    // Yalnızca gerçekten bulunamayan ürün 404 olsun; geçici DB hataları
+    // fırlatılsın ki ISR önbellekteki son sağlam sayfayı sunmaya devam etsin.
+    if (isAppError(error) && error.statusCode === 404) notFound();
+    throw error;
   }
 
   let category: Category | null = null;

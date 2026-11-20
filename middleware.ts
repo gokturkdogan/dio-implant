@@ -20,7 +20,17 @@ function isStaticAsset(pathname: string) {
   return /\.[a-zA-Z0-9]+$/.test(pathname);
 }
 
-async function getMaintenanceEnabled(request: NextRequest): Promise<boolean> {
+/**
+ * Bakım modu durumu instance başına kısa süre önbelleğe alınır.
+ * Fluid compute aynı instance'ı birçok istek için yeniden kullandığından,
+ * her sayfa isteğinde ayrı bir fonksiyon + DB sorgusu tetiklenmez.
+ * Admin panelinden yapılan değişiklik en geç bu süre sonunda devreye girer.
+ */
+const MAINTENANCE_CACHE_TTL_MS = 30_000;
+let maintenanceCache: { value: boolean; expiresAt: number } | null = null;
+let maintenanceInFlight: Promise<boolean> | null = null;
+
+async function fetchMaintenanceEnabled(request: NextRequest): Promise<boolean> {
   try {
     const statusUrl = new URL(MAINTENANCE_STATUS_API, request.nextUrl.origin);
     const res = await fetch(statusUrl, {
@@ -33,6 +43,25 @@ async function getMaintenanceEnabled(request: NextRequest): Promise<boolean> {
   } catch {
     return false;
   }
+}
+
+async function getMaintenanceEnabled(request: NextRequest): Promise<boolean> {
+  const now = Date.now();
+  if (maintenanceCache && maintenanceCache.expiresAt > now) {
+    return maintenanceCache.value;
+  }
+  // Aynı anda gelen istekler tek bir kontrolü paylaşsın.
+  if (!maintenanceInFlight) {
+    maintenanceInFlight = fetchMaintenanceEnabled(request)
+      .then((value) => {
+        maintenanceCache = { value, expiresAt: Date.now() + MAINTENANCE_CACHE_TTL_MS };
+        return value;
+      })
+      .finally(() => {
+        maintenanceInFlight = null;
+      });
+  }
+  return maintenanceInFlight;
 }
 
 export async function middleware(request: NextRequest) {
@@ -105,6 +134,13 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/:path*"],
+  /**
+   * Middleware yalnızca sayfa isteklerinde çalışsın. Statik dosyalar (_next/static,
+   * _next/image, uzantılı public dosyalar) ve /api uçları hariç tutulur; bunlar için
+   * middleware zaten hiçbir şey yapmıyordu ama her biri ayrı bir çağrı olarak faturalanıyordu.
+   */
+  matcher: [
+    "/((?!_next/static|_next/image|api/|favicon\\.ico|robots\\.txt|sitemap\\.xml|.*\\.[a-zA-Z0-9]+$).*)",
+  ],
 };
 

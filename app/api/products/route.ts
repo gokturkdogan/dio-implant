@@ -1,3 +1,4 @@
+import { requireAdminApi } from "@/lib/require-admin-api";
 import { productService } from "../../../services/product.service";
 import { jsonError, jsonOk } from "../../../lib/http";
 import {
@@ -22,6 +23,9 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   try {
+    if (!(await requireAdminApi())) {
+      return jsonOk({ error: "Yetkisiz" }, 401);
+    }
     const payload = await request.json();
     const input = createProductSchema.parse(payload);
 
