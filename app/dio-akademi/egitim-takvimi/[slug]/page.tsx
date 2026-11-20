@@ -8,9 +8,9 @@ import { speakerBioDisplayParts } from "../../../../lib/academy-speaker-bio";
 import { getTrainingBySlug } from "../../../../lib/academy-training-events";
 
 export const dynamicParams = true;
-/** ISR: ilk ziyarette üretilir, en geç 5 dk'da bir yenilenir. Eğitim/eğitmen
+/** ISR: ilk ziyarette üretilir, en geç 1 saatte bir yenilenir. Eğitim/eğitmen
  * güncellemeleri `revalidatePublicSite()` ile anında yansır. */
-export const revalidate = 300;
+export const revalidate = 3600;
 
 type Props = { params: Promise<{ slug: string }> };
 

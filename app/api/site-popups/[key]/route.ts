@@ -1,3 +1,5 @@
+import { NextResponse } from "next/server";
+import { publicCdnCacheHeaders } from "@/lib/cdn-cache";
 import { auditAdminAction } from "@/lib/admin-audit";
 import { requireAdminApi } from "@/lib/require-admin-api";
 import { sitePopupService } from "../../../../services/site-popup.service";
@@ -13,12 +15,18 @@ type SitePopupKeyParams = {
   }>;
 };
 
+/**
+ * Ana sayfa popup'ı — ana sayfaya gelen her ziyaretçi çağırır. Yanıt CDN'de 60 sn
+ * saklanır; böylece her ziyarette fonksiyon + DB sorgusu çalışmaz. Admin panelindeki
+ * değişiklik ziyaretçilere en geç ~1 dk içinde yansır. Admin paneli güncel veriyi
+ * önbelleksiz `/api/admin/site-popups/[key]` ucundan okur.
+ */
 export async function GET(_: Request, { params }: SitePopupKeyParams) {
   try {
     const { key } = await params;
     const parsedKey = sitePopupKeySchema.parse(key);
     const row = await sitePopupService.getByKey(parsedKey);
-    return jsonOk(row);
+    return NextResponse.json(row, { status: 200, headers: publicCdnCacheHeaders(60) });
   } catch (error) {
     return jsonError(error);
   }

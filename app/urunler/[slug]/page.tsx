@@ -10,9 +10,9 @@ import { categoryService } from "@/services/category.service";
 import { ProductPageClient } from "./product-page-client";
 import { isAppError } from "@/lib/errors";
 
-/** ISR: ilk ziyarette üretilir, en geç 5 dk'da bir yenilenir. Ürün güncellemeleri
+/** ISR: ilk ziyarette üretilir, en geç 1 saatte bir yenilenir. Ürün güncellemeleri
  * `revalidatePublicSite()` ile anında yansır. */
-export const revalidate = 300;
+export const revalidate = 3600;
 export const dynamicParams = true;
 
 /** Boş liste: build sırasında değil, ilk istekte üretilip önbelleğe alınır. */

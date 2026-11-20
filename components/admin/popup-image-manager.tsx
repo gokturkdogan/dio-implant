@@ -82,7 +82,10 @@ export function PopupImageManager() {
   const fetchPopupData = useCallback(async () => {
     setLoadingPopup(true);
     try {
-      const res = await fetch("/api/site-popups/homepage", { cache: "no-store" });
+      const res = await fetch("/api/admin/site-popups/homepage", {
+        cache: "no-store",
+        credentials: "include",
+      });
       const body = await res.json().catch(() => null);
 
       if (!res.ok || !body) {

@@ -7,7 +7,7 @@ import { productService } from "@/services/product.service";
  * ISR ile önbelleğe alınır (CDN'den sunulur, fonksiyon/DB çalışmaz).
  * Admin panelindeki değişiklikler `revalidatePublicSite()` ile anında yansır.
  */
-export const revalidate = 300;
+export const revalidate = 3600;
 
 export async function GET() {
   try {
