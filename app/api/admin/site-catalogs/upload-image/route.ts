@@ -1,4 +1,4 @@
-import { revalidatePublicSite } from "@/lib/revalidate-public";
+import { revalidateForResource } from "@/lib/revalidate-public";
 import { z } from "zod";
 import { requireAdminApi } from "@/lib/require-admin-api";
 import {
@@ -37,7 +37,7 @@ export async function POST(request: Request) {
     const url = await processImageFileToCloudinaryWebp(file, folder, "cover");
     const catalog = await siteCatalogService.setCoverAssets(catalogId, url, folder);
     // Kapak doğrudan DB'ye yazılıyor ve bu uç audit kaydı tutmuyor; önbelleği burada temizle.
-    revalidatePublicSite();
+    revalidateForResource("site_catalog");
     return jsonOk({ ok: true, url, catalog });
   } catch (e) {
     return jsonError(e);

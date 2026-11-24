@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import Link from "next/link";
+import Link from "@/components/common/site-link";
 import { SiteCatalogDownloadButton } from "@/components/catalog/site-catalog-download-button";
 import { Footer } from "@/components/common/footer";
 import { slugify } from "@/lib/slug";
 import { siteCatalogService } from "@/services/site-catalog.service";
 
 /** ISR: sayfa CDN'den sunulur; en geç günde bir yenilenir. Admin panelindeki
- * değişiklikler `revalidatePublicSite()` ile anında yansır. */
+ * değişiklikler `revalidateForResource()` (lib/revalidate-public.ts) ile anında yansır. */
 export const revalidate = 86400;
 
 export const metadata: Metadata = {
@@ -46,7 +46,7 @@ export default async function KataloglarPage() {
               >
                 İçeriğe geç
               </a>
-              <Link prefetch={false}
+              <Link
                 href="/urunler"
                 className="ct-hero-btn ct-hero-btn--ghost"
               >

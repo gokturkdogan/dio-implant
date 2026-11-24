@@ -78,7 +78,7 @@ export function AdminUsersList({ initialUsers }: Props) {
   return (
     <>
       <div className="admin-egitimler-toolbar">
-        <Link
+        <Link prefetch={false}
           href="/admin-panel/kullanicilar/yeni"
           className="admin-btn admin-btn--primary"
         >

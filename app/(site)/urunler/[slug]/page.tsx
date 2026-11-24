@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import Link from "next/link";
+import Link from "@/components/common/site-link";
 import { notFound } from "next/navigation";
-import { Footer } from "../../../components/common/footer";
+import { Footer } from "@/components/common/footer";
 import type { Product } from "@/db/schema/product";
 import type { Category } from "@/db/schema/category";
 import { productService } from "@/services/product.service";
@@ -11,7 +11,7 @@ import { ProductPageClient } from "./product-page-client";
 import { isAppError } from "@/lib/errors";
 
 /** ISR: ilk ziyarette üretilir, en geç günde bir yenilenir. Ürün güncellemeleri
- * `revalidatePublicSite()` ile anında yansır. */
+ * `revalidateForResource()` (lib/revalidate-public.ts) ile anında yansır. */
 export const revalidate = 86400;
 export const dynamicParams = true;
 
@@ -199,7 +199,7 @@ export default async function UrunDetayPage({
                         </svg>
                       )}
                       {crumb.href ? (
-                        <Link prefetch={false} href={crumb.href} className="pd-breadcrumb-link">
+                        <Link href={crumb.href} className="pd-breadcrumb-link">
                           {crumb.label}
                         </Link>
                       ) : (
@@ -218,7 +218,7 @@ export default async function UrunDetayPage({
                 )}
 
                 <div className="pd-hero-actions">
-                  <Link prefetch={false} href="/kataloglar" className="pd-btn pd-btn--outline">
+                  <Link href="/kataloglar" className="pd-btn pd-btn--outline">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
                       <polyline points="7 10 12 15 17 10" />
@@ -337,7 +337,7 @@ export default async function UrunDetayPage({
                   Tüm teknik detaylar, ölçüler ve klinik verilere tek bir dokümandan ulaşın.
                 </p>
                 <div className="pd-cta-actions">
-                  <Link prefetch={false} href="/kataloglar" className="pd-btn pd-btn--primary pd-btn--lg">
+                  <Link href="/kataloglar" className="pd-btn pd-btn--primary pd-btn--lg">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
                       <polyline points="7 10 12 15 17 10" />

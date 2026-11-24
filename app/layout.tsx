@@ -14,8 +14,6 @@ import "./styles/products-index.css";
 import "./styles/product-carousel.css";
 import "./styles/admin-panel.css";
 import "./styles/contact.css";
-import { NavbarShell } from "../components/common/navbar-shell";
-import { NavbarEnhancements } from "../components/common/navbar-enhancements";
 
 const FAVICON_PNG =
   "https://res.cloudinary.com/drjz8v617/image/upload/w_32,h_32,c_pad,f_png,q_auto/dio-logo-original.webp";
@@ -26,6 +24,8 @@ export const metadata: Metadata = {
   icons: {
     icon: [{ url: FAVICON_PNG, type: "image/png" }],
     shortcut: FAVICON_PNG,
+    // iOS bu adresi kendiliğinden ister; public/ altında statik dosya olarak sunulur.
+    apple: "/apple-touch-icon.png",
   },
 };
 
@@ -33,6 +33,7 @@ export const metadata: Metadata = {
  * Root layout bilinçli olarak `cookies()` / `headers()` kullanmaz: aksi halde tüm site
  * (public sayfalar dahil) her istekte sunucuda yeniden render edilir. Admin teması
  * `app/admin-panel/layout.tsx` içindeki boot script ile `<html>` üzerine yazılır.
+ * Navbar ve bakım modu public sayfalara özeldir: bkz. `app/(site)/layout.tsx`.
  */
 export default function RootLayout({
   children,
@@ -46,8 +47,6 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body>
-        <NavbarShell />
-        <NavbarEnhancements />
         {children}
       </body>
     </html>

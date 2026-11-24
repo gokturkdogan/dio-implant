@@ -381,7 +381,7 @@ export function AdminInviteUserForm() {
       </div>
 
       <div className="admin-invite-user__actions">
-        <Link href="/admin-panel/kullanicilar" className="admin-btn admin-btn--ghost">
+        <Link prefetch={false} href="/admin-panel/kullanicilar" className="admin-btn admin-btn--ghost">
           İptal
         </Link>
         <button

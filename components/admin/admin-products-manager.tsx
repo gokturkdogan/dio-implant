@@ -630,7 +630,7 @@ export function AdminProductsManager({ initialProducts, initialCategories }: Pro
   return (
     <>
       <div className="admin-egitimler-toolbar">
-        <Link href="/admin-panel/urunler/yeni" className="admin-btn admin-btn--primary">
+        <Link prefetch={false} href="/admin-panel/urunler/yeni" className="admin-btn admin-btn--primary">
           Yeni ürün
         </Link>
         <button type="button" className="admin-btn admin-btn--ghost" onClick={() => void syncList()}>
@@ -701,7 +701,7 @@ export function AdminProductsManager({ initialProducts, initialCategories }: Pro
                     })}
                   </td>
                   <td className="admin-table-actions">
-                    <Link
+                    <Link prefetch={false}
                       href={`/admin-panel/urunler/duzenle/${p.id}`}
                       className="admin-table-action-btn"
                     >

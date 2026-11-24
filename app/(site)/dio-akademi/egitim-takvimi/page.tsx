@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import { Footer } from "../../../components/common/footer";
-import { TrainingCalendarView } from "../../../components/academy/training-calendar-view";
-import { TrainingEventGrid } from "../../../components/academy/training-event-grid";
-import { getTrainingEventsSorted } from "../../../lib/academy-training-events";
+import { Footer } from "@/components/common/footer";
+import { TrainingCalendarView } from "@/components/academy/training-calendar-view";
+import { TrainingEventGrid } from "@/components/academy/training-event-grid";
+import { getTrainingEventsSorted } from "@/lib/academy-training-events";
 
 /** ISR: sayfa CDN'den sunulur; en geç günde bir yenilenir. Admin panelindeki
- * değişiklikler `revalidatePublicSite()` ile anında yansır. */
+ * değişiklikler `revalidateForResource()` (lib/revalidate-public.ts) ile anında yansır. */
 export const revalidate = 86400;
 
 export const metadata: Metadata = {

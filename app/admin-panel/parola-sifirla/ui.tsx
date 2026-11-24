@@ -200,7 +200,7 @@ export function AdminResetPasswordClient({ token }: { token: string }) {
                 Sıfırlama bağlantısı geçersiz. Lütfen şifremi unuttum sayfasından
                 yeniden talep edin.
               </p>
-              <Link
+              <Link prefetch={false}
                 href="/admin-panel/sifremi-unuttum"
                 className="admin-btn admin-btn--primary admin-auth__submit"
               >
@@ -212,7 +212,7 @@ export function AdminResetPasswordClient({ token }: { token: string }) {
               <p className="admin-auth__success-text">
                 Parolanız güncellendi. Giriş sayfasından oturum açabilirsiniz.
               </p>
-              <Link
+              <Link prefetch={false}
                 href="/admin-panel/login"
                 className="admin-btn admin-btn--primary admin-auth__submit"
               >
@@ -264,7 +264,7 @@ export function AdminResetPasswordClient({ token }: { token: string }) {
                 {loading ? "Kaydediliyor…" : "Parolayı kaydet"}
               </button>
               <p className="admin-auth__hint">
-                <Link href="/admin-panel/login" className="admin-auth__link">
+                <Link prefetch={false} href="/admin-panel/login" className="admin-auth__link">
                   Giriş sayfasına dön
                 </Link>
               </p>

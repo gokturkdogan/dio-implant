@@ -56,7 +56,7 @@ export function TrainingEventsList({ initialEvents }: Props) {
   return (
     <>
       <div className="admin-egitimler-toolbar">
-        <Link href="/admin-panel/egitimler/yeni" className="admin-btn admin-btn--primary">
+        <Link prefetch={false} href="/admin-panel/egitimler/yeni" className="admin-btn admin-btn--primary">
           Yeni eğitim
         </Link>
         <button
@@ -88,7 +88,7 @@ export function TrainingEventsList({ initialEvents }: Props) {
             {events.map((ev) => (
               <tr key={ev.slug}>
                 <td>
-                  <Link
+                  <Link prefetch={false}
                     className="admin-table-link"
                     href={`/dio-akademi/egitim-takvimi/${ev.slug}`}
                     target="_blank"
@@ -104,7 +104,7 @@ export function TrainingEventsList({ initialEvents }: Props) {
                   <code className="admin-code">{ev.slug}</code>
                 </td>
                 <td className="admin-table-actions">
-                  <Link
+                  <Link prefetch={false}
                     href={`/admin-panel/egitimler/duzenle/${encodeURIComponent(ev.slug)}`}
                     className="admin-table-action-btn"
                   >

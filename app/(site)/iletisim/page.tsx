@@ -6,7 +6,7 @@ import { regionalOfficeService } from "@/services/regional-office.service";
 import { siteContactService } from "@/services/site-contact.service";
 
 /** ISR: sayfa CDN'den sunulur; en geç günde bir yenilenir. Admin panelindeki
- * değişiklikler `revalidatePublicSite()` ile anında yansır. */
+ * değişiklikler `revalidateForResource()` (lib/revalidate-public.ts) ile anında yansır. */
 export const revalidate = 86400;
 
 export const metadata: Metadata = {

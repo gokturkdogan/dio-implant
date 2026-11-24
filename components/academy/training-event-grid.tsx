@@ -1,5 +1,5 @@
 import Image from "next/image";
-import Link from "next/link";
+import Link from "@/components/common/site-link";
 import {
   ACADEMY_EVENT_GRID_COVER_URL,
   getTrainingCardDateParts,
@@ -100,7 +100,7 @@ export function TrainingEventGrid({ events }: Props) {
 
         return (
           <li key={ev.slug} className="ac-event-grid__cell">
-            <Link prefetch={false}
+            <Link
               href={`/dio-akademi/egitim-takvimi/${ev.slug}`}
               className="ac-event-card ac-event-card--tile"
             >

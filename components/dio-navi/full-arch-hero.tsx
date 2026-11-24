@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
+import Link from "@/components/common/site-link";
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 
 type HeroPhase = "intro" | "exit" | "static";
@@ -256,7 +256,7 @@ export function FullArchHero() {
                       <path d="M5 12h14M12 5l7 7-7 7" />
                     </svg>
                   </a>
-                  <Link prefetch={false}
+                  <Link
                     href="/digital-solutions/dio-navi"
                     className="btn np-btn-ghost"
                   >
@@ -302,7 +302,7 @@ export function FullArchHero() {
                 <path d="M5 12h14M12 5l7 7-7 7" />
               </svg>
             </a>
-            <Link prefetch={false} href="/digital-solutions/dio-navi" className="btn np-btn-ghost">
+            <Link href="/digital-solutions/dio-navi" className="btn np-btn-ghost">
               DIO NAVI ana sayfa
             </Link>
           </div>

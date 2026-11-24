@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import Link from "@/components/common/site-link";
 import { Footer } from "@/components/common/footer";
 import { ContactInquiryForm } from "@/components/contact/contact-inquiry-form";
 
@@ -47,7 +47,7 @@ export default function BizeUlasinPage() {
                   <li>Genellikle 1–2 iş günü içinde dönüş yapılır.</li>
                   <li>
                     Bayi veya bölge bilgisi için{" "}
-                    <Link prefetch={false} href="/iletisim">İletişim sayfası</Link>ndaki haritayı
+                    <Link href="/iletisim">İletişim sayfası</Link>ndaki haritayı
                     kullanabilirsiniz.
                   </li>
                 </ul>

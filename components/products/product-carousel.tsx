@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import Link from "@/components/common/site-link";
 import Image from "next/image";
 import {
   useCallback,
@@ -114,7 +114,7 @@ export function ProductCarousel({ products }: Props) {
                 } as React.CSSProperties}
                 aria-hidden={pos.cls !== " pc-slide--active"}
               >
-                <Link prefetch={false} href={`/urunler/${p.slug}`} className="pc-card" tabIndex={pos.cls === " pc-slide--active" ? 0 : -1}>
+                <Link href={`/urunler/${p.slug}`} className="pc-card" tabIndex={pos.cls === " pc-slide--active" ? 0 : -1}>
                   <div className="pc-card-media">
                     {p.imageUrl ? (
                       <Image

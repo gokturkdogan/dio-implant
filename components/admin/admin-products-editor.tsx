@@ -336,7 +336,7 @@ export function AdminProductsEditor({ mode, categories, initialProduct }: Props)
   return (
     <div className="admin-training-editor">
       <div className="admin-training-editor__head">
-        <Link href={LIST_HREF} className="admin-training-editor__back">← Ürün listesine dön</Link>
+        <Link prefetch={false} href={LIST_HREF} className="admin-training-editor__back">← Ürün listesine dön</Link>
         <h1 className="admin-training-editor__title">{mode === "create" ? "Yeni ürün" : "Ürünü düzenle"}</h1>
       </div>
 
@@ -453,7 +453,7 @@ export function AdminProductsEditor({ mode, categories, initialProduct }: Props)
         </AccordionSection>
 
         <div className="ate-footer">
-          <Link href={LIST_HREF} className="admin-btn admin-btn--ghost">Vazgeç</Link>
+          <Link prefetch={false} href={LIST_HREF} className="admin-btn admin-btn--ghost">Vazgeç</Link>
           <button type="submit" className="admin-btn admin-btn--primary" disabled={saving}>
             {saving ? "Kaydediliyor…" : mode === "create" ? "Oluştur" : "Kaydet"}
           </button>

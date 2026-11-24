@@ -1,13 +1,13 @@
-import Link from "next/link";
+import Link from "@/components/common/site-link";
 import { Footer } from "../common/footer";
-import { HomepagePopup } from "./homepage-popup";
+import { HomepagePopup, type HomepagePopupData } from "./homepage-popup";
 import { HomepageEnhancements } from "./homepage-enhancements";
 
-export function HomepageContent() {
+export function HomepageContent({ popup }: { popup: HomepagePopupData | null }) {
   return (
     <>
       <HomepageEnhancements />
-      <HomepagePopup />
+      <HomepagePopup popup={popup} />
       <section className="hero" id="hero">
         <div className="hero-slides">
           <div className="hero-slide active" data-index="0">
@@ -211,7 +211,7 @@ export function HomepageContent() {
                 />
                 <div className="pcat-image-glow" />
               </div>
-              <Link prefetch={false} href="/urunler" className="btn btn-primary pcat-btn">
+              <Link href="/urunler" className="btn btn-primary pcat-btn">
                 <span>Daha Fazla Görüntüle</span>
                 <svg
                   width="18"
@@ -234,7 +234,7 @@ export function HomepageContent() {
                 />
                 <div className="pcat-image-glow" />
               </div>
-              <Link prefetch={false} href="/urunler" className="btn btn-primary pcat-btn">
+              <Link href="/urunler" className="btn btn-primary pcat-btn">
                 <span>Daha Fazla Görüntüle</span>
                 <svg
                   width="18"
@@ -257,7 +257,7 @@ export function HomepageContent() {
                 />
                 <div className="pcat-image-glow" />
               </div>
-              <Link prefetch={false} href="/urunler" className="btn btn-primary pcat-btn">
+              <Link href="/urunler" className="btn btn-primary pcat-btn">
                 <span>Daha Fazla Görüntüle</span>
                 <svg
                   width="18"

@@ -1,7 +1,6 @@
 "use client";
 
 import { useCallback, useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
 import {
   Calendar,
   dateFnsLocalizer,
@@ -101,7 +100,6 @@ type Props = {
 };
 
 export function TrainingCalendarView({ events }: Props) {
-  const router = useRouter();
 
   const rbcEvents = useMemo<CalendarEvent[]>(
     () =>
@@ -121,12 +119,10 @@ export function TrainingCalendarView({ events }: Props) {
 
   const [calDate, setCalDate] = useState(initialDate);
 
-  const onSelectEvent = useCallback(
-    (event: CalendarEvent) => {
-      router.push(`/dio-akademi/egitim-takvimi/${event.resource.slug}`);
-    },
-    [router],
-  );
+  const onSelectEvent = useCallback((event: CalendarEvent) => {
+    // Tam sayfa geçişi (bkz. components/common/site-link.tsx): CDN'deki HTML kullanılır.
+    window.location.assign(`/dio-akademi/egitim-takvimi/${event.resource.slug}`);
+  }, []);
 
   const components = useMemo<Components<CalendarEvent>>(
     () => ({

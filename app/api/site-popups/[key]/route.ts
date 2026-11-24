@@ -13,7 +13,7 @@ type SitePopupKeyParams = {
   }>;
 };
 
-/** Ziyaretçiler önbellekli `/api/public/homepage-popup` ucunu, admin paneli
+/** Ziyaretçiler popup verisini ana sayfa HTML'i içinde alır; admin paneli
  * `/api/admin/site-popups/[key]` ucunu kullanır. */
 export async function GET(_: Request, { params }: SitePopupKeyParams) {
   try {

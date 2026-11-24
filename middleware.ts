@@ -13,134 +13,48 @@ const ADMIN_PUBLIC_PATHS = new Set([
   ADMIN_RESET_PASSWORD_PATH,
   ADMIN_USER_SETUP_PATH,
 ]);
-const MAINTENANCE_PATH = "/maintenance";
-const MAINTENANCE_STATUS_API = "/api/public/site-maintenance";
 
 function isStaticAsset(pathname: string) {
   return /\.[a-zA-Z0-9]+$/.test(pathname);
 }
 
 /**
- * Bakım modu durumu instance başına kısa süre önbelleğe alınır.
- * Fluid compute aynı instance'ı birçok istek için yeniden kullandığından,
- * her sayfa isteğinde ayrı bir fonksiyon + DB sorgusu tetiklenmez.
- * Admin panelinden yapılan değişiklik en geç bu süre sonunda devreye girer.
+ * Yalnızca admin paneli oturum kontrolü. Public sayfalar middleware'den hiç geçmez;
+ * bakım modu `app/(site)/layout.tsx` içinde sayfa render'ında uygulanır.
  */
-const MAINTENANCE_CACHE_TTL_MS = 30_000;
-let maintenanceCache: { value: boolean; expiresAt: number } | null = null;
-let maintenanceInFlight: Promise<boolean> | null = null;
-
-async function fetchMaintenanceEnabled(request: NextRequest): Promise<boolean> {
-  try {
-    const statusUrl = new URL(MAINTENANCE_STATUS_API, request.nextUrl.origin);
-    const res = await fetch(statusUrl, {
-      headers: { "x-middleware-request": "1" },
-      cache: "no-store",
-    });
-    if (!res.ok) return false;
-    const data = (await res.json()) as { enabled?: unknown };
-    return data.enabled === true;
-  } catch {
-    return false;
-  }
-}
-
-async function getMaintenanceEnabled(request: NextRequest): Promise<boolean> {
-  const now = Date.now();
-  if (maintenanceCache && maintenanceCache.expiresAt > now) {
-    return maintenanceCache.value;
-  }
-  // Aynı anda gelen istekler tek bir kontrolü paylaşsın.
-  if (!maintenanceInFlight) {
-    maintenanceInFlight = fetchMaintenanceEnabled(request)
-      .then((value) => {
-        maintenanceCache = { value, expiresAt: Date.now() + MAINTENANCE_CACHE_TTL_MS };
-        return value;
-      })
-      .finally(() => {
-        maintenanceInFlight = null;
-      });
-  }
-  return maintenanceInFlight;
-}
-
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Next static dosyaları ve common public assets geçsin.
-  if (
-    pathname.startsWith("/_next") ||
-    pathname === "/favicon.ico" ||
-    pathname === "/robots.txt" ||
-    pathname === "/sitemap.xml"
-  ) {
+  // Giriş ve şifremi unuttum sayfalarına erişim serbest
+  if (ADMIN_PUBLIC_PATHS.has(pathname)) {
     return NextResponse.next();
   }
 
-  // Admin panel auth akışı.
-  if (pathname.startsWith("/admin-panel")) {
-    // Giriş ve şifremi unuttum sayfalarına erişim serbest
-    if (ADMIN_PUBLIC_PATHS.has(pathname)) {
-      return NextResponse.next();
-    }
-
-    // /admin-panel altındaki statik dosyaları auth'tan muaf tut.
-    if (isStaticAsset(pathname)) {
-      return NextResponse.next();
-    }
-
-    const token = request.cookies.get(ADMIN_COOKIE_NAME)?.value;
-    if (!token) {
-      const url = request.nextUrl.clone();
-      url.pathname = ADMIN_LOGIN_PATH;
-      url.searchParams.set("next", pathname);
-      return NextResponse.redirect(url);
-    }
-
-    try {
-      await verifyAdminToken(token);
-      return NextResponse.next();
-    } catch {
-      const url = request.nextUrl.clone();
-      url.pathname = ADMIN_LOGIN_PATH;
-      url.searchParams.set("next", pathname);
-      return NextResponse.redirect(url);
-    }
-  }
-
-  // API uçları bakım modundan etkilenmesin (admin yönetimi ve veri akışları açık kalsın).
-  if (pathname.startsWith("/api")) {
-    return NextResponse.next();
-  }
-
-  // Public static dosyaları geç.
+  // /admin-panel altındaki statik dosyaları auth'tan muaf tut.
   if (isStaticAsset(pathname)) {
     return NextResponse.next();
   }
 
-  // Bakım sayfası ve status endpoint loop'a girmesin.
-  if (pathname === MAINTENANCE_PATH || pathname === MAINTENANCE_STATUS_API) {
-    return NextResponse.next();
-  }
-
-  const maintenanceEnabled = await getMaintenanceEnabled(request);
-  if (maintenanceEnabled) {
+  const token = request.cookies.get(ADMIN_COOKIE_NAME)?.value;
+  if (!token) {
     const url = request.nextUrl.clone();
-    url.pathname = MAINTENANCE_PATH;
-    return NextResponse.rewrite(url);
+    url.pathname = ADMIN_LOGIN_PATH;
+    url.searchParams.set("next", pathname);
+    return NextResponse.redirect(url);
   }
 
-  return NextResponse.next();
+  try {
+    await verifyAdminToken(token);
+    return NextResponse.next();
+  } catch {
+    const url = request.nextUrl.clone();
+    url.pathname = ADMIN_LOGIN_PATH;
+    url.searchParams.set("next", pathname);
+    return NextResponse.redirect(url);
+  }
 }
 
 export const config = {
-  /**
-   * Middleware yalnızca sayfa isteklerinde çalışsın. Statik dosyalar (_next/static,
-   * _next/image, uzantılı public dosyalar) ve /api uçları hariç tutulur; bunlar için
-   * middleware zaten hiçbir şey yapmıyordu ama her biri ayrı bir çağrı olarak faturalanıyordu.
-   */
-  matcher: [
-    "/((?!_next/static|_next/image|api/|favicon\\.ico|robots\\.txt|sitemap\\.xml|.*\\.[a-zA-Z0-9]+$).*)",
-  ],
+  /** Middleware yalnızca admin panelinde çalışır. */
+  matcher: ["/admin-panel", "/admin-panel/:path*"],
 };
-

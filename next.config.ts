@@ -4,6 +4,9 @@ const nextConfig: NextConfig = {
   reactStrictMode: true,
   transpilePackages: ["turkey-map-react"],
   images: {
+    // Görseller Cloudinary'de boyutlandırılır (bkz. lib/image-loader.ts).
+    loader: "custom",
+    loaderFile: "./lib/image-loader.ts",
     remotePatterns: [
       {
         protocol: "https",
@@ -24,12 +27,7 @@ const nextConfig: NextConfig = {
   },
   async redirects() {
     return [
-      {
-        source: "/favicon.ico",
-        destination:
-          "https://res.cloudinary.com/drjz8v617/image/upload/w_32,h_32,c_pad,f_png,q_auto/dio-logo-original.webp",
-        permanent: false,
-      },
+      // /favicon.ico artık public/favicon.ico olarak statik sunuluyor (fonksiyon çalışmaz).
       {
         source: "/kurumsal/hakkimizda",
         destination: "/about",

@@ -254,7 +254,7 @@ export function AdminCompleteUserSetupClient({ token }: { token: string }) {
                   ? "Davet bağlantısı geçersiz."
                   : loadError}
               </p>
-              <Link
+              <Link prefetch={false}
                 href="/admin-panel/login"
                 className="admin-btn admin-btn--primary admin-auth__submit"
               >
@@ -277,7 +277,7 @@ export function AdminCompleteUserSetupClient({ token }: { token: string }) {
                   </>
                 ) : null}
               </p>
-              <Link
+              <Link prefetch={false}
                 href="/admin-panel/login"
                 className="admin-btn admin-btn--primary admin-auth__submit"
               >
@@ -344,7 +344,7 @@ export function AdminCompleteUserSetupClient({ token }: { token: string }) {
                 {loading ? "Kaydediliyor…" : "Hesabı oluştur"}
               </button>
               <p className="admin-auth__hint">
-                <Link href="/admin-panel/login" className="admin-auth__link">
+                <Link prefetch={false} href="/admin-panel/login" className="admin-auth__link">
                   Giriş sayfasına dön
                 </Link>
               </p>

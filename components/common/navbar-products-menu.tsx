@@ -1,8 +1,8 @@
 "use client";
 
-import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
-import type { Category } from "@/db/schema/category";
+import Link from "@/components/common/site-link";
+import { useMemo } from "react";
+import type { NavbarMenuData } from "@/lib/navbar-menu-types";
 import {
   buildProductCatalogTree,
   type ProductCatalogItem,
@@ -47,48 +47,13 @@ function ExpandChevron() {
   );
 }
 
-export function NavbarProductsMenu() {
-  const [categories, setCategories] = useState<Category[] | null>(null);
-  const [products, setProducts] = useState<ProductCatalogItem[] | null>(null);
-
-  useEffect(() => {
-    let cancelled = false;
-    (async () => {
-      try {
-        // Tek, CDN'de önbelleklenen uç (bkz. app/api/navbar-menu/route.ts).
-        const res = await fetch("/api/navbar-menu");
-        const raw = (await res.json()) as { categories?: unknown; products?: unknown };
-        const rawC = raw?.categories;
-        const rawP = raw?.products;
-        if (cancelled) return;
-        setCategories(Array.isArray(rawC) ? rawC : []);
-        setProducts(Array.isArray(rawP) ? rawP : []);
-      } catch {
-        if (!cancelled) {
-          setCategories([]);
-          setProducts([]);
-        }
-      }
-    })();
-    return () => {
-      cancelled = true;
-    };
-  }, []);
+export function NavbarProductsMenu({ menu }: { menu: NavbarMenuData }) {
+  const { categories, products } = menu;
 
   const menuNodes = useMemo((): ProductCatalogNode<ProductCatalogItem>[] => {
-    if (!categories?.length || !products) return [];
+    if (!categories.length || !products.length) return [];
     return buildProductCatalogTree(categories, products);
   }, [categories, products]);
-
-  if (categories === null || products === null) {
-    return (
-      <li className="nav-dropdown-item" role="none">
-        <span className="nav-dropdown-link" style={{ opacity: 0.65 }}>
-          Ürünler yükleniyor…
-        </span>
-      </li>
-    );
-  }
 
   if (menuNodes.length === 0) {
     return (
@@ -134,7 +99,7 @@ export function NavbarProductsMenu() {
               <ul className="nav-submenu" id={rootPanelId} role="menu">
                 {node.products.map((p) => (
                   <li key={p.id} role="none">
-                    <Link prefetch={false} href={`/urunler/${p.slug}`} className="nav-dropdown-link" role="menuitem">
+                    <Link href={`/urunler/${p.slug}`} className="nav-dropdown-link" role="menuitem">
                       {p.name}
                     </Link>
                   </li>
@@ -202,7 +167,7 @@ export function NavbarProductsMenu() {
                     <ul className="nav-submenu" id={subPanelId} role="menu">
                       {plist.map((p) => (
                         <li key={p.id} role="none">
-                          <Link prefetch={false}
+                          <Link
                             href={`/urunler/${p.slug}`}
                             className="nav-dropdown-link"
                             role="menuitem"

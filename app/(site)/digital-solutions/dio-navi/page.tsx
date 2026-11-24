@@ -1,6 +1,6 @@
-import Link from "next/link";
-import { Footer } from "../../../components/common/footer";
-import { DioNaviEnhancements } from "../../../components/dio-navi/dio-navi-enhancements";
+import Link from "@/components/common/site-link";
+import { Footer } from "@/components/common/footer";
+import { DioNaviEnhancements } from "@/components/dio-navi/dio-navi-enhancements";
 
 export default function DioNaviPage() {
   return (
@@ -167,7 +167,7 @@ export default function DioNaviPage() {
                 <path d="M5 12h14M12 5l7 7-7 7" />
               </svg>
             </a>
-            <Link prefetch={false} href="/" className="btn np-btn-ghost">
+            <Link href="/" className="btn np-btn-ghost">
               Anasayfaya dön
             </Link>
           </div>

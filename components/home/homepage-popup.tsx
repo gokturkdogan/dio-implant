@@ -5,17 +5,13 @@ import { usePathname } from "next/navigation";
 
 const SESSION_KEY = "dio:homepagePopupClosed";
 
-type SitePopupDto = {
-  key: string;
+/** Sunucuda (ana sayfa ISR render'ında) hazırlanan popup verisi. */
+export type HomepagePopupData = {
   enabled: boolean;
   imageUrl: string;
-  linkUrl: string | null;
-  openInNewTab: boolean;
-  startAt: string | null;
-  endAt: string | null;
 };
 
-export function HomepagePopup() {
+export function HomepagePopup({ popup }: { popup: HomepagePopupData | null }) {
   const pathname = usePathname();
   const isHomepage = pathname === "/";
 
@@ -29,36 +25,24 @@ export function HomepagePopup() {
 
   useEffect(() => {
     if (!isHomepage) return;
+    if (!popup?.enabled || !popup.imageUrl) return;
 
     try {
       const alreadyClosed = sessionStorage.getItem(SESSION_KEY) === "1";
       if (alreadyClosed) return;
     } catch {
-      // storage erişilemezse istek atalım, modal kararını API belirlesin
+      // storage erişilemezse popup gösterilir
     }
 
-    const controller = new AbortController();
-
-    fetch("/api/public/homepage-popup", { signal: controller.signal })
-      .then(async (res) => {
-        if (!res.ok) return null;
-        const data = (await res.json()) as SitePopupDto;
-        return data;
-      })
-      .then((data) => {
-        if (!data?.enabled) return;
-        if (!data.imageUrl) return;
-        setImageUrl(data.imageUrl);
-        setOpen(true);
-      })
-      .catch(() => {
-        // API erişilemezse fallback ile göster (session kapalı değilse)
-        setImageUrl(null);
-        setOpen(true);
-      });
-
-    return () => controller.abort();
-  }, [isHomepage]);
+    // Veri sayfayla birlikte geldiği için ayrı istek yok; açılış bir sonraki
+    // tick'e bırakılır (hidrasyon tamamlandıktan sonra, eski davranışla aynı).
+    const imageUrl = popup.imageUrl;
+    const t = setTimeout(() => {
+      setImageUrl(imageUrl);
+      setOpen(true);
+    }, 0);
+    return () => clearTimeout(t);
+  }, [isHomepage, popup]);
 
   useEffect(() => {
     if (!open) return;

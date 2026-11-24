@@ -462,7 +462,7 @@ export function TrainingEventEditor({ mode, initialEvent, originalSlug }: Props)
   return (
     <div className="admin-training-editor">
       <div className="admin-training-editor__head">
-        <Link href={LIST_HREF} className="admin-training-editor__back">
+        <Link prefetch={false} href={LIST_HREF} className="admin-training-editor__back">
           ← Eğitim listesine dön
         </Link>
         <h1 className="admin-training-editor__title">{pageTitle}</h1>
@@ -727,7 +727,7 @@ export function TrainingEventEditor({ mode, initialEvent, originalSlug }: Props)
 
         {/* ── Footer ── */}
         <div className="ate-footer">
-          <Link href={LIST_HREF} className="admin-btn admin-btn--ghost">
+          <Link prefetch={false} href={LIST_HREF} className="admin-btn admin-btn--ghost">
             Vazgeç
           </Link>
           <button

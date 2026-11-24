@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
-import { Footer } from "../../../components/common/footer";
-import { FullArchHero } from "../../../components/dio-navi/full-arch-hero";
-import { FullArchEnhancements } from "../../../components/dio-navi/full-arch-enhancements";
+import { Footer } from "@/components/common/footer";
+import { FullArchHero } from "@/components/dio-navi/full-arch-hero";
+import { FullArchEnhancements } from "@/components/dio-navi/full-arch-enhancements";
 
 export const metadata: Metadata = {
   title: "DIO NAVI Full Arch | DIO Implant",

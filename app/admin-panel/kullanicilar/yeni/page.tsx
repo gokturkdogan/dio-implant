@@ -25,7 +25,7 @@ export default async function AdminYeniKullaniciPage() {
                 bağlantıdan parolasını belirler.
               </div>
             </div>
-            <Link
+            <Link prefetch={false}
               href="/admin-panel/kullanicilar"
               className="admin-btn admin-btn--ghost admin-card__head-action"
             >

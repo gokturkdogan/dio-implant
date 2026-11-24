@@ -54,7 +54,7 @@ export function TrainingEventSpeakersField({ speakers, onChange }: Props) {
       <span>Konuşmacılar</span>
       <p className="admin-field__help">
         Eğitmenleri{" "}
-        <Link href="/admin-panel/egitmenler" className="admin-table-link">
+        <Link prefetch={false} href="/admin-panel/egitmenler" className="admin-table-link">
           Eğitmenler
         </Link>{" "}
         sayfasından yönetir; burada etkinliğe eklemek üzere seçersiniz. Seçim
@@ -164,7 +164,7 @@ export function TrainingEventSpeakersField({ speakers, onChange }: Props) {
         >
           + Eğitmenden ekle
         </button>
-        <Link href="/admin-panel/egitmenler" className="admin-btn admin-btn--ghost">
+        <Link prefetch={false} href="/admin-panel/egitmenler" className="admin-btn admin-btn--ghost">
           Eğitmenleri yönet →
         </Link>
         <button

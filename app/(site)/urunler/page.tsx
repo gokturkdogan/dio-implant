@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import Link from "@/components/common/site-link";
 import { Footer } from "@/components/common/footer";
 import { buildProductCatalogTree } from "@/lib/product-catalog-tree";
 import type { Product } from "@/db/schema/product";
@@ -11,7 +11,7 @@ import {
 } from "@/components/products/product-carousel";
 
 /** ISR: sayfa CDN'den sunulur; en geç günde bir yenilenir. Admin panelindeki
- * değişiklikler `revalidatePublicSite()` ile anında yansır. */
+ * değişiklikler `revalidateForResource()` (lib/revalidate-public.ts) ile anında yansır. */
 export const revalidate = 86400;
 
 export const metadata: Metadata = {

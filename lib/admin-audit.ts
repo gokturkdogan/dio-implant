@@ -2,11 +2,7 @@ import "server-only";
 import type { AdminAuditLogRow } from "@/db/schema/admin-audit-log";
 import { adminAuditService } from "@/services/admin-audit.service";
 import { getAdminSession } from "./require-admin-api";
-import {
-  revalidateHomepagePopup,
-  revalidatePublicSite,
-  revalidateSiteMaintenance,
-} from "./revalidate-public";
+import { revalidateForResource } from "./revalidate-public";
 
 export type AdminAuditAction =
   | "create"
@@ -147,32 +143,13 @@ export function shouldSkipEphemeralUploadAudit(
   );
 }
 
-/** Public sitede görünen içerik türleri — değiştiklerinde ISR önbelleği temizlenir. */
-const PUBLIC_CONTENT_RESOURCES = new Set<AdminAuditResourceType>([
-  "category",
-  "product",
-  "training",
-  "instructor",
-  "dealer",
-  "regional_office",
-  "site_catalog",
-  "digital_library",
-  "site_contact",
-]);
-
 /** Başarılı panel mutasyonundan sonra çağrılır; hata fırlatmaz. */
 export async function auditAdminAction(
   input: AuditAdminActionInput & { skipIfEphemeralUpload?: boolean },
 ): Promise<void> {
   // Tüm içerik mutasyonları buradan geçtiği için public önbellek temizliği de burada.
-  // Audit kaydı atlansa bile (ara upload adımı, oturum okunamaması) önbellek temizlenir.
-  if (PUBLIC_CONTENT_RESOURCES.has(input.resourceType)) {
-    revalidatePublicSite();
-  } else if (input.resourceType === "site_maintenance") {
-    revalidateSiteMaintenance();
-  } else if (input.resourceType === "site_popup") {
-    revalidateHomepagePopup();
-  }
+  // Audit kaydı atlansa bile (ara upload adımı, oturum okunamaması) ilgili sayfalar yenilenir.
+  revalidateForResource(input.resourceType);
   if (
     input.skipIfEphemeralUpload !== false &&
     input.action === "upload" &&

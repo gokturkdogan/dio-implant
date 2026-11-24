@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import Link from "next/link";
-import { AboutTimeline } from "../../components/about/about-timeline";
-import { Footer } from "../../components/common/footer";
+import Link from "@/components/common/site-link";
+import { AboutTimeline } from "@/components/about/about-timeline";
+import { Footer } from "@/components/common/footer";
 
 export const metadata: Metadata = {
   title: "Hakkımızda | DIO Implant",
@@ -220,7 +220,7 @@ export default function AboutPage() {
                 konforunu öne alır.
               </p>
             </div>
-            <Link prefetch={false} href="/digital-solutions/dio-navi" className="btn btn-primary">
+            <Link href="/digital-solutions/dio-navi" className="btn btn-primary">
               <span>DIO NAVI&apos;yi inceleyin</span>
               <svg
                 width="18"

@@ -1,7 +1,8 @@
 "use client";
 
-import Link from "next/link";
+import Link from "@/components/common/site-link";
 import { usePathname } from "next/navigation";
+import type { NavbarMenuData } from "@/lib/navbar-menu-types";
 import { NavbarProductsMenu } from "./navbar-products-menu";
 
 function pathMatches(pathname: string, base: string) {
@@ -9,7 +10,7 @@ function pathMatches(pathname: string, base: string) {
   return pathname === base || pathname.startsWith(`${base}/`);
 }
 
-export function Navbar() {
+export function Navbar({ menu }: { menu: NavbarMenuData }) {
   const pathname = usePathname() ?? "";
 
   const homeActive = pathname === "/";
@@ -31,7 +32,7 @@ export function Navbar() {
   return (
     <header className="header" id="header">
       <div className="header-inner">
-        <Link prefetch={false} href="/" className="logo">
+        <Link href="/" className="logo">
           <img
             src="https://res.cloudinary.com/drjz8v617/image/upload/dio-logo-light.webp"
             alt="DIO Implant"
@@ -47,14 +48,14 @@ export function Navbar() {
         <nav className="main-nav" id="mainNav">
           <ul className="nav-list">
             <li className={`nav-item${homeActive ? " active" : ""}`}>
-              <Link prefetch={false} href="/">Anasayfa</Link>
+              <Link href="/">Anasayfa</Link>
             </li>
 
             <li
               className={`nav-item nav-item-dropdown${productsActive ? " active" : ""}`}
             >
               <div className="nav-dropdown-row">
-                <Link prefetch={false} href="/urunler" className="nav-dropdown-trigger">
+                <Link href="/urunler" className="nav-dropdown-trigger">
                   Ürünler
                   <svg
                     className="nav-dropdown-caret"
@@ -96,7 +97,7 @@ export function Navbar() {
               </div>
 
               <ul className="nav-dropdown" id="nav-submenu-urunler" role="menu">
-                <NavbarProductsMenu />
+                <NavbarProductsMenu menu={menu} />
               </ul>
             </li>
 
@@ -118,7 +119,7 @@ export function Navbar() {
               </div>
               <ul className="nav-dropdown" id="nav-submenu-dijital" role="menu">
                 <li className="nav-dropdown-item" role="none">
-                  <Link prefetch={false}
+                  <Link
                     href="/digital-solutions/dio-navi"
                     className={`nav-dropdown-link${dioNaviActive ? " active" : ""}`}
                     role="menuitem"
@@ -127,7 +128,7 @@ export function Navbar() {
                   </Link>
                 </li>
                 <li className="nav-dropdown-item" role="none">
-                  <Link prefetch={false}
+                  <Link
                     href="/digital-solutions/full-arch"
                     className={`nav-dropdown-link${fullArchActive ? " active" : ""}`}
                     role="menuitem"
@@ -155,7 +156,7 @@ export function Navbar() {
               </div>
               <ul className="nav-dropdown" id="nav-submenu-akademi" role="menu">
                 <li className="nav-dropdown-item" role="none">
-                  <Link prefetch={false}
+                  <Link
                     href="/dio-akademi/egitim-takvimi"
                     className={`nav-dropdown-link${academyCalendarActive ? " active" : ""}`}
                     role="menuitem"
@@ -166,12 +167,12 @@ export function Navbar() {
               </ul>
             </li>
             <li className={`nav-item${catalogsActive ? " active" : ""}`}>
-              <Link prefetch={false} href="/kataloglar">Kataloglar</Link>
+              <Link href="/kataloglar">Kataloglar</Link>
             </li>
             <li
               className={`nav-item${digitalLibraryActive ? " active" : ""}`}
             >
-              <Link prefetch={false} href="/dijital-kutuphane">Dijital Kütüphane</Link>
+              <Link href="/dijital-kutuphane">Dijital Kütüphane</Link>
             </li>
             <li
               className={`nav-item nav-item-dropdown${corporateActive ? " active" : ""}`}
@@ -191,7 +192,7 @@ export function Navbar() {
               </div>
               <ul className="nav-dropdown" id="nav-submenu-kurumsal" role="menu">
                 <li className="nav-dropdown-item" role="none">
-                  <Link prefetch={false}
+                  <Link
                     href="/about"
                     className={`nav-dropdown-link${corporateActive ? " active" : ""}`}
                     role="menuitem"
@@ -203,10 +204,10 @@ export function Navbar() {
               </ul>
             </li>
             <li className={`nav-item${contactActive ? " active" : ""}`}>
-              <Link prefetch={false} href="/iletisim">İletişim</Link>
+              <Link href="/iletisim">İletişim</Link>
             </li>
             <li className={`nav-item${bizeUlasinActive ? " active" : ""}`}>
-              <Link prefetch={false} href="/bize-ulasin">Bize Ulaşın</Link>
+              <Link href="/bize-ulasin">Bize Ulaşın</Link>
             </li>
           </ul>
         </nav>

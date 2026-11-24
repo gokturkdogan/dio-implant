@@ -124,7 +124,7 @@ export function AdminLoginClient({ nextPath }: { nextPath: string }) {
             </label>
 
             <div className="admin-auth__forgot-row">
-              <Link href="/admin-panel/sifremi-unuttum" className="admin-auth__link">
+              <Link prefetch={false} href="/admin-panel/sifremi-unuttum" className="admin-auth__link">
                 Şifremi unuttum
               </Link>
             </div>

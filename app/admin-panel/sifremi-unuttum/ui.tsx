@@ -78,7 +78,7 @@ export function AdminForgotPasswordClient() {
           {submitted && successMessage ? (
             <div className="admin-auth__success-block">
               <p className="admin-auth__success-text">{successMessage}</p>
-              <Link href="/admin-panel/login" className="admin-btn admin-btn--primary admin-auth__submit">
+              <Link prefetch={false} href="/admin-panel/login" className="admin-btn admin-btn--primary admin-auth__submit">
                 Giriş sayfasına dön
               </Link>
             </div>
@@ -118,7 +118,7 @@ export function AdminForgotPasswordClient() {
               </button>
 
               <p className="admin-auth__hint">
-                <Link href="/admin-panel/login" className="admin-auth__link">
+                <Link prefetch={false} href="/admin-panel/login" className="admin-auth__link">
                   Giriş sayfasına dön
                 </Link>
               </p>

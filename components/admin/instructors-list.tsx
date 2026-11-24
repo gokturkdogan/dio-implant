@@ -228,7 +228,7 @@ export function InstructorsList({ initialInstructors }: Props) {
 
       <p className="admin-field__help" style={{ marginTop: 16 }}>
         Bu listeden eklediğiniz eğitmenleri{" "}
-        <Link href="/admin-panel/egitimler" className="admin-table-link">
+        <Link prefetch={false} href="/admin-panel/egitimler" className="admin-table-link">
           eğitim düzenlerken
         </Link>{" "}
         konuşmacı alanından seçebilirsiniz.

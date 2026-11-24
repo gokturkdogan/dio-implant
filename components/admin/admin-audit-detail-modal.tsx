@@ -251,7 +251,7 @@ export function AdminAuditDetailModal({ log, onClose }: Props) {
 
         <div className="admin-audit-detail-modal-v2__footer">
           {log.adminPath ? (
-            <Link
+            <Link prefetch={false}
               href={log.adminPath}
               className="admin-btn admin-btn--primary admin-audit-detail-modal-v2__link-btn"
               onClick={onClose}
