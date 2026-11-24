@@ -47,7 +47,7 @@ export default function BizeUlasinPage() {
                   <li>Genellikle 1–2 iş günü içinde dönüş yapılır.</li>
                   <li>
                     Bayi veya bölge bilgisi için{" "}
-                    <Link href="/iletisim">İletişim sayfası</Link>ndaki haritayı
+                    <Link prefetch={false} href="/iletisim">İletişim sayfası</Link>ndaki haritayı
                     kullanabilirsiniz.
                   </li>
                 </ul>

@@ -2,7 +2,11 @@ import "server-only";
 import type { AdminAuditLogRow } from "@/db/schema/admin-audit-log";
 import { adminAuditService } from "@/services/admin-audit.service";
 import { getAdminSession } from "./require-admin-api";
-import { revalidatePublicSite } from "./revalidate-public";
+import {
+  revalidateHomepagePopup,
+  revalidatePublicSite,
+  revalidateSiteMaintenance,
+} from "./revalidate-public";
 
 export type AdminAuditAction =
   | "create"
@@ -164,6 +168,10 @@ export async function auditAdminAction(
   // Audit kaydı atlansa bile (ara upload adımı, oturum okunamaması) önbellek temizlenir.
   if (PUBLIC_CONTENT_RESOURCES.has(input.resourceType)) {
     revalidatePublicSite();
+  } else if (input.resourceType === "site_maintenance") {
+    revalidateSiteMaintenance();
+  } else if (input.resourceType === "site_popup") {
+    revalidateHomepagePopup();
   }
   if (
     input.skipIfEphemeralUpload !== false &&

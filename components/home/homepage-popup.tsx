@@ -39,7 +39,7 @@ export function HomepagePopup() {
 
     const controller = new AbortController();
 
-    fetch("/api/site-popups/homepage", { signal: controller.signal })
+    fetch("/api/public/homepage-popup", { signal: controller.signal })
       .then(async (res) => {
         if (!res.ok) return null;
         const data = (await res.json()) as SitePopupDto;

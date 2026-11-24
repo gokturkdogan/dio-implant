@@ -256,7 +256,7 @@ export function FullArchHero() {
                       <path d="M5 12h14M12 5l7 7-7 7" />
                     </svg>
                   </a>
-                  <Link
+                  <Link prefetch={false}
                     href="/digital-solutions/dio-navi"
                     className="btn np-btn-ghost"
                   >
@@ -302,7 +302,7 @@ export function FullArchHero() {
                 <path d="M5 12h14M12 5l7 7-7 7" />
               </svg>
             </a>
-            <Link href="/digital-solutions/dio-navi" className="btn np-btn-ghost">
+            <Link prefetch={false} href="/digital-solutions/dio-navi" className="btn np-btn-ghost">
               DIO NAVI ana sayfa
             </Link>
           </div>

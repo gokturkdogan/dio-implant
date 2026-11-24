@@ -100,7 +100,7 @@ export function TrainingEventGrid({ events }: Props) {
 
         return (
           <li key={ev.slug} className="ac-event-grid__cell">
-            <Link
+            <Link prefetch={false}
               href={`/dio-akademi/egitim-takvimi/${ev.slug}`}
               className="ac-event-card ac-event-card--tile"
             >

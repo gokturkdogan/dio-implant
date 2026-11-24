@@ -16,3 +16,21 @@ export function revalidatePublicSite(): void {
     console.error("[revalidatePublicSite]", err);
   }
 }
+
+/** Bakım modu durumu değiştiğinde middleware'in okuduğu önbellekli ucu temizler. */
+export function revalidateSiteMaintenance(): void {
+  try {
+    revalidatePath("/api/public/site-maintenance");
+  } catch (err) {
+    console.error("[revalidateSiteMaintenance]", err);
+  }
+}
+
+/** Ana sayfa popup'ı değiştiğinde önbellekli public ucu temizler. */
+export function revalidateHomepagePopup(): void {
+  try {
+    revalidatePath("/api/public/homepage-popup");
+  } catch (err) {
+    console.error("[revalidateHomepagePopup]", err);
+  }
+}

@@ -4,9 +4,9 @@ import { Footer } from "@/components/common/footer";
 import { digitalLibraryService } from "@/services/digital-library.service";
 import "../styles/dijital-kutuphane.css";
 
-/** ISR: sayfa CDN'den sunulur; en geç 1 saatte bir yenilenir. Admin panelindeki
+/** ISR: sayfa CDN'den sunulur; en geç günde bir yenilenir. Admin panelindeki
  * değişiklikler `revalidatePublicSite()` ile anında yansır. */
-export const revalidate = 3600;
+export const revalidate = 86400;
 
 export const metadata: Metadata = {
   title: "Dijital Kütüphane | DIO Implant",

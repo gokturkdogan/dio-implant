@@ -134,7 +134,7 @@ export function NavbarProductsMenu() {
               <ul className="nav-submenu" id={rootPanelId} role="menu">
                 {node.products.map((p) => (
                   <li key={p.id} role="none">
-                    <Link href={`/urunler/${p.slug}`} className="nav-dropdown-link" role="menuitem">
+                    <Link prefetch={false} href={`/urunler/${p.slug}`} className="nav-dropdown-link" role="menuitem">
                       {p.name}
                     </Link>
                   </li>
@@ -202,7 +202,7 @@ export function NavbarProductsMenu() {
                     <ul className="nav-submenu" id={subPanelId} role="menu">
                       {plist.map((p) => (
                         <li key={p.id} role="none">
-                          <Link
+                          <Link prefetch={false}
                             href={`/urunler/${p.slug}`}
                             className="nav-dropdown-link"
                             role="menuitem"

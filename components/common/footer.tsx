@@ -7,7 +7,7 @@ export function Footer() {
       <div className="footer-top">
         <div className="footer-inner">
           <div className="footer-brand">
-            <Link href="/" className="footer-logo">
+            <Link prefetch={false} href="/" className="footer-logo">
               <img
                 src="https://res.cloudinary.com/drjz8v617/image/upload/dio-logo-light.webp"
                 alt="DIO Implant"
@@ -56,7 +56,7 @@ export function Footer() {
               <h4 className="footer-col-title">Kurumsal</h4>
               <ul>
                 <li>
-                  <Link href="/about">Hakkımızda</Link>
+                  <Link prefetch={false} href="/about">Hakkımızda</Link>
                 </li>
                 <li>
                   <a href="/egitim-takvimi">DIO Akademi</a>
@@ -70,7 +70,7 @@ export function Footer() {
               <h4 className="footer-col-title">Destek</h4>
               <ul>
                 <li>
-                  <Link href="/bize-ulasin">Bize Ulaşın</Link>
+                  <Link prefetch={false} href="/bize-ulasin">Bize Ulaşın</Link>
                 </li>
                 <li>
                   <a href="/iletisim">İletişim</a>

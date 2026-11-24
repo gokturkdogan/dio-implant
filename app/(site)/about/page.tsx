@@ -220,7 +220,7 @@ export default function AboutPage() {
                 konforunu öne alır.
               </p>
             </div>
-            <Link href="/digital-solutions/dio-navi" className="btn btn-primary">
+            <Link prefetch={false} href="/digital-solutions/dio-navi" className="btn btn-primary">
               <span>DIO NAVI&apos;yi inceleyin</span>
               <svg
                 width="18"

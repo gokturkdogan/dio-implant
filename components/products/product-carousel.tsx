@@ -114,7 +114,7 @@ export function ProductCarousel({ products }: Props) {
                 } as React.CSSProperties}
                 aria-hidden={pos.cls !== " pc-slide--active"}
               >
-                <Link href={`/urunler/${p.slug}`} className="pc-card" tabIndex={pos.cls === " pc-slide--active" ? 0 : -1}>
+                <Link prefetch={false} href={`/urunler/${p.slug}`} className="pc-card" tabIndex={pos.cls === " pc-slide--active" ? 0 : -1}>
                   <div className="pc-card-media">
                     {p.imageUrl ? (
                       <Image

@@ -8,9 +8,9 @@ import { speakerBioDisplayParts } from "../../../../lib/academy-speaker-bio";
 import { getTrainingBySlug } from "../../../../lib/academy-training-events";
 
 export const dynamicParams = true;
-/** ISR: ilk ziyarette üretilir, en geç 1 saatte bir yenilenir. Eğitim/eğitmen
+/** ISR: ilk ziyarette üretilir, en geç günde bir yenilenir. Eğitim/eğitmen
  * güncellemeleri `revalidatePublicSite()` ile anında yansır. */
-export const revalidate = 3600;
+export const revalidate = 86400;
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -161,7 +161,7 @@ export default async function AcademyTrainingDetailPage({ params }: Props) {
                   Kontenjan ve koşullar için DIO Türkiye eğitim ekibi ile
                   iletişime geçin.
                 </p>
-                <Link href="/iletisim" className="acd-cta-btn">
+                <Link prefetch={false} href="/iletisim" className="acd-cta-btn">
                   Bilgi talep et
                 </Link>
               </div>
@@ -289,7 +289,7 @@ export default async function AcademyTrainingDetailPage({ params }: Props) {
         {/* ── Back ── */}
         <div className="acd-back-section">
           <div className="ac-inner">
-            <Link href="/dio-akademi/egitim-takvimi" className="acd-back-link">
+            <Link prefetch={false} href="/dio-akademi/egitim-takvimi" className="acd-back-link">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                 <path d="M19 12H5M12 5l-7 7 7 7" />
               </svg>

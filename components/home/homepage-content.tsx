@@ -211,7 +211,7 @@ export function HomepageContent() {
                 />
                 <div className="pcat-image-glow" />
               </div>
-              <Link href="/urunler" className="btn btn-primary pcat-btn">
+              <Link prefetch={false} href="/urunler" className="btn btn-primary pcat-btn">
                 <span>Daha Fazla Görüntüle</span>
                 <svg
                   width="18"
@@ -234,7 +234,7 @@ export function HomepageContent() {
                 />
                 <div className="pcat-image-glow" />
               </div>
-              <Link href="/urunler" className="btn btn-primary pcat-btn">
+              <Link prefetch={false} href="/urunler" className="btn btn-primary pcat-btn">
                 <span>Daha Fazla Görüntüle</span>
                 <svg
                   width="18"
@@ -257,7 +257,7 @@ export function HomepageContent() {
                 />
                 <div className="pcat-image-glow" />
               </div>
-              <Link href="/urunler" className="btn btn-primary pcat-btn">
+              <Link prefetch={false} href="/urunler" className="btn btn-primary pcat-btn">
                 <span>Daha Fazla Görüntüle</span>
                 <svg
                   width="18"

@@ -167,7 +167,7 @@ export default function DioNaviPage() {
                 <path d="M5 12h14M12 5l7 7-7 7" />
               </svg>
             </a>
-            <Link href="/" className="btn np-btn-ghost">
+            <Link prefetch={false} href="/" className="btn np-btn-ghost">
               Anasayfaya dön
             </Link>
           </div>

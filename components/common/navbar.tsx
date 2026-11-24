@@ -31,7 +31,7 @@ export function Navbar() {
   return (
     <header className="header" id="header">
       <div className="header-inner">
-        <Link href="/" className="logo">
+        <Link prefetch={false} href="/" className="logo">
           <img
             src="https://res.cloudinary.com/drjz8v617/image/upload/dio-logo-light.webp"
             alt="DIO Implant"
@@ -47,14 +47,14 @@ export function Navbar() {
         <nav className="main-nav" id="mainNav">
           <ul className="nav-list">
             <li className={`nav-item${homeActive ? " active" : ""}`}>
-              <Link href="/">Anasayfa</Link>
+              <Link prefetch={false} href="/">Anasayfa</Link>
             </li>
 
             <li
               className={`nav-item nav-item-dropdown${productsActive ? " active" : ""}`}
             >
               <div className="nav-dropdown-row">
-                <Link href="/urunler" className="nav-dropdown-trigger">
+                <Link prefetch={false} href="/urunler" className="nav-dropdown-trigger">
                   Ürünler
                   <svg
                     className="nav-dropdown-caret"
@@ -118,7 +118,7 @@ export function Navbar() {
               </div>
               <ul className="nav-dropdown" id="nav-submenu-dijital" role="menu">
                 <li className="nav-dropdown-item" role="none">
-                  <Link
+                  <Link prefetch={false}
                     href="/digital-solutions/dio-navi"
                     className={`nav-dropdown-link${dioNaviActive ? " active" : ""}`}
                     role="menuitem"
@@ -127,7 +127,7 @@ export function Navbar() {
                   </Link>
                 </li>
                 <li className="nav-dropdown-item" role="none">
-                  <Link
+                  <Link prefetch={false}
                     href="/digital-solutions/full-arch"
                     className={`nav-dropdown-link${fullArchActive ? " active" : ""}`}
                     role="menuitem"
@@ -155,7 +155,7 @@ export function Navbar() {
               </div>
               <ul className="nav-dropdown" id="nav-submenu-akademi" role="menu">
                 <li className="nav-dropdown-item" role="none">
-                  <Link
+                  <Link prefetch={false}
                     href="/dio-akademi/egitim-takvimi"
                     className={`nav-dropdown-link${academyCalendarActive ? " active" : ""}`}
                     role="menuitem"
@@ -166,12 +166,12 @@ export function Navbar() {
               </ul>
             </li>
             <li className={`nav-item${catalogsActive ? " active" : ""}`}>
-              <Link href="/kataloglar">Kataloglar</Link>
+              <Link prefetch={false} href="/kataloglar">Kataloglar</Link>
             </li>
             <li
               className={`nav-item${digitalLibraryActive ? " active" : ""}`}
             >
-              <Link href="/dijital-kutuphane">Dijital Kütüphane</Link>
+              <Link prefetch={false} href="/dijital-kutuphane">Dijital Kütüphane</Link>
             </li>
             <li
               className={`nav-item nav-item-dropdown${corporateActive ? " active" : ""}`}
@@ -191,7 +191,7 @@ export function Navbar() {
               </div>
               <ul className="nav-dropdown" id="nav-submenu-kurumsal" role="menu">
                 <li className="nav-dropdown-item" role="none">
-                  <Link
+                  <Link prefetch={false}
                     href="/about"
                     className={`nav-dropdown-link${corporateActive ? " active" : ""}`}
                     role="menuitem"
@@ -203,10 +203,10 @@ export function Navbar() {
               </ul>
             </li>
             <li className={`nav-item${contactActive ? " active" : ""}`}>
-              <Link href="/iletisim">İletişim</Link>
+              <Link prefetch={false} href="/iletisim">İletişim</Link>
             </li>
             <li className={`nav-item${bizeUlasinActive ? " active" : ""}`}>
-              <Link href="/bize-ulasin">Bize Ulaşın</Link>
+              <Link prefetch={false} href="/bize-ulasin">Bize Ulaşın</Link>
             </li>
           </ul>
         </nav>

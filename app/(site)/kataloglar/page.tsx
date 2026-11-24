@@ -6,9 +6,9 @@ import { Footer } from "@/components/common/footer";
 import { slugify } from "@/lib/slug";
 import { siteCatalogService } from "@/services/site-catalog.service";
 
-/** ISR: sayfa CDN'den sunulur; en geç 1 saatte bir yenilenir. Admin panelindeki
+/** ISR: sayfa CDN'den sunulur; en geç günde bir yenilenir. Admin panelindeki
  * değişiklikler `revalidatePublicSite()` ile anında yansır. */
-export const revalidate = 3600;
+export const revalidate = 86400;
 
 export const metadata: Metadata = {
   title: "Kataloglar | DIO Implant",
@@ -46,7 +46,7 @@ export default async function KataloglarPage() {
               >
                 İçeriğe geç
               </a>
-              <Link
+              <Link prefetch={false}
                 href="/urunler"
                 className="ct-hero-btn ct-hero-btn--ghost"
               >
